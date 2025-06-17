@@ -1,0 +1,6 @@
+@LogisticoWebAPI.Backend_HostAddress = http://localhost:5223
+
+GET {{LogisticoWebAPI.Backend_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
