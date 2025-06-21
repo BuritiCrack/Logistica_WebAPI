@@ -31,10 +31,10 @@ namespace LogisticoWebAPI.Backend.Controllers
             return Ok(states);
         }
 
-        [HttpGet("id")]
+        [HttpGet("{id}")]
         public async Task<IActionResult> GetByIdAsycn(int id)
         {
-            var state = await _context.States.FirstOrDefaultAsync(x => x.Id == id);
+            var state = await _context.States.FindAsync(id);
             if (state == null)
             {
                 return NotFound();
@@ -42,10 +42,10 @@ namespace LogisticoWebAPI.Backend.Controllers
             return Ok(state);
         }
 
-        [HttpDelete("id")]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteByIdAsync(int id)
         {
-            var state = await _context.States.FirstOrDefaultAsync(s => s.Id == id);
+            var state = await _context.States.FindAsync(id);
             if (state == null)
             {
                 return NotFound("El departamento no fue encontrado");
@@ -61,7 +61,7 @@ namespace LogisticoWebAPI.Backend.Controllers
         {
             _context.States.Update(state);
             await _context.SaveChangesAsync();
-            return Ok(state);
+            return NoContent();
         }
     }
 }
