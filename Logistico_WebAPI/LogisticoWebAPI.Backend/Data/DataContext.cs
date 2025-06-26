@@ -10,12 +10,14 @@ namespace LogisticoWebAPI.Backend.Data
         }
 
         public DbSet<State> States { get; set; }
+        public DbSet<Event> Events { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<State>().HasIndex(s => s.Name).IsUnique();
-            
+            modelBuilder.Entity<Event>().HasIndex(e => e.Name).IsUnique();
+
         }
     }
 }

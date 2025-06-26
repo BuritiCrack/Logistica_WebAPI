@@ -1,0 +1,46 @@
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace LogisticoWebAPI.Shared.Entities
+{
+    public class Event
+    {
+        public int Id { get; set; }
+
+        [Required(ErrorMessage = "El campo {0} es obligatorio.")]
+        [MaxLength(50, ErrorMessage = "El campo {0} no puede tener mas de {1} caracteres.")]
+        [Display(Name = "Nombre del Evento")]
+        public string Name { get; set; } = null!;
+
+        [Required(ErrorMessage = "El campo {0} es obligatorio.")]
+        [MaxLength(200, ErrorMessage = "El campo {0} no puede tener mas de {1} caracteres.")]
+        [Display(Name = "Descripción del Evento")]
+        public string Description { get; set; } = null!;
+
+        [Required(ErrorMessage = "El campo {0} es obligatorio.")]
+        [MaxLength(100, ErrorMessage = "El campo {0} no puede tener mas de {1} caracteres.")]
+        [Display(Name = "Lugar del Evento")]
+        public string Place { get; set; } = null!;
+
+        [Required(ErrorMessage = "El campo {0} es obligatorio.")]
+        [Display(Name = "Fecha y Hora de Inicio")]
+        public DateTime FechaHoraInicio { get; set; }
+
+        [Required(ErrorMessage = "El campo {0} es obligatorio.")]
+        [Display(Name = "Fecha y Hora de Fin")]
+        public DateTime FechaHoraFin { get; set; }
+
+        [Required(ErrorMessage = "El campo {0} es obligatorio.")]
+        [MaxLength(50, ErrorMessage = "El campo {0} no puede tener mas de {1} caracteres.")]
+        [Display(Name = "Tipo de Comida")]
+        public string? MealType { get; set; }
+
+        [Required(ErrorMessage = "El campo {0} es obligatorio.")]
+        [Display(Name = "Pago por Persona")]
+        [Range(0, double.MaxValue, ErrorMessage = "El campo {0} debe ser un número positivo.")]
+        [DisplayFormat(DataFormatString = "{0:C}")]
+        public decimal Payment { get; set; }
+
+        [Display(Name = "Foto del Evento")]
+        public string? Photo { get; set; }
+    }
+}

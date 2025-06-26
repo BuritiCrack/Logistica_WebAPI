@@ -1,4 +1,8 @@
 using LogisticoWebAPI.Backend.Data;
+using LogisticoWebAPI.Backend.Repositories.Implementations;
+using LogisticoWebAPI.Backend.Repositories.Interfaces;
+using LogisticoWebAPI.Backend.UnitsOfWork.Implementations;
+using LogisticoWebAPI.Backend.UnitsOfWork.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
@@ -25,6 +29,9 @@ namespace LogisticoWebAPI.Backend
 
             builder.Services.AddDbContext<DataContext>(options =>
                 options.UseSqlServer("name=LogisticoDatabase"));
+            builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+            builder.Services.AddScoped(typeof(IGenericUnitOfWork<>), typeof(GenericUnitOfWork<>));
+
 
             var app = builder.Build();
 
