@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.13.35828.75 d17.13
+VisualStudioVersion = 17.13.35828.75
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogisticoWebAPI.Backend", "LogisticoWebAPI.Backend\LogisticoWebAPI.Backend.csproj", "{08D058A3-4023-4BE8-ADF7-EA2C101FA28D}"
 EndProject
