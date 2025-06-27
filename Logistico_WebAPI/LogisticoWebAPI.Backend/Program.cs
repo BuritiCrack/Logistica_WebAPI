@@ -5,6 +5,7 @@ using LogisticoWebAPI.Backend.UnitsOfWork.Implementations;
 using LogisticoWebAPI.Backend.UnitsOfWork.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using System.Text.Json.Serialization;
 
 namespace LogisticoWebAPI.Backend
 {
@@ -16,7 +17,8 @@ namespace LogisticoWebAPI.Backend
 
             // Add services to the container.
 
-            builder.Services.AddControllers();
+            builder.Services.AddControllers().AddJsonOptions(x => 
+                x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen(c =>
             {
@@ -29,11 +31,28 @@ namespace LogisticoWebAPI.Backend
 
             builder.Services.AddDbContext<DataContext>(options =>
                 options.UseSqlServer("name=LogisticoDatabase"));
+            builder.Services.AddTransient<SeedDb>();
             builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             builder.Services.AddScoped(typeof(IGenericUnitOfWork<>), typeof(GenericUnitOfWork<>));
 
+            builder.Services.AddScoped<IStatesRepository, StatesRepository>();
+            builder.Services.AddScoped<IStatesUnitOfWork, StatesUnitOfWork>();
+
 
             var app = builder.Build();
+
+            SeedData(app);
+
+            void SeedData(WebApplication app)
+            {
+                var scopedFactory = app.Services.GetService<IServiceScopeFactory>();
+
+                using (var scope = scopedFactory!.CreateScope())
+                {
+                    var service = scope.ServiceProvider.GetService<SeedDb>();
+                    service!.SeedAsync().Wait();
+                }
+            }
 
             app.UseCors(c => c
                 .AllowAnyMethod()

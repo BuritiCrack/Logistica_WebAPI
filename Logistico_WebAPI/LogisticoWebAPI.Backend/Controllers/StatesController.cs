@@ -10,8 +10,33 @@ namespace LogisticoWebAPI.Backend.Controllers
     [Route("api/[controller]")]
     public class StatesController : GenericController<State>
     {
-        public StatesController(IGenericUnitOfWork<State> unitOfWork) : base(unitOfWork)
+        private readonly IStatesUnitOfWork _statesUnitOfWork;
+
+        public StatesController(IGenericUnitOfWork<State> unitOfWork, IStatesUnitOfWork statesUnitOfWork) : base(unitOfWork)
         {
+            _statesUnitOfWork = statesUnitOfWork;
+        }
+
+        [HttpGet]
+        public override async Task<IActionResult> GetAsync()
+        {
+            var action = await _statesUnitOfWork.GetAllAsync();
+            if (action.WassSuccess)
+            {
+                return Ok(action.Result);
+            }
+            return BadRequest(action.Message);
+        }
+
+        [HttpGet("{id}")]
+        public override async Task<IActionResult> GetByIdAsync(int id)
+        {
+            var action = await _statesUnitOfWork.GetAsync(id);
+            if (action.WassSuccess)
+            {
+                return Ok(action.Result);
+            }
+            return NotFound(action.Message);
         }
     }
 }

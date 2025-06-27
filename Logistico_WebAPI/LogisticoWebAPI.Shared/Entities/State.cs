@@ -10,5 +10,7 @@ namespace LogisticoWebAPI.Shared.Entities
         [Display(Name = "Departamento")]
         [Required(ErrorMessage = "El campo {0} es obligatorio.")]
         public string Name { get; set; } = null!;
+
+        public ICollection<City>? Cities { get; set; }
     }
 }

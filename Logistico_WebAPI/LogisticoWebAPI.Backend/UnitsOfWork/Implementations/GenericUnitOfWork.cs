@@ -13,19 +13,19 @@ namespace LogisticoWebAPI.Backend.UnitsOfWork.Implementations
             _repository = repository;
         }
 
-        public async Task<ActionResponses<T>> DeleteAsync(int id)
+        public virtual async Task<ActionResponses<T>> DeleteAsync(int id)
             => await _repository.DeleteAsync(id);
 
-        public async Task<ActionResponses<IEnumerable<T>>> GetAllAsync()
+        public virtual async Task<ActionResponses<IEnumerable<T>>> GetAllAsync()
             => await _repository.GetAllAsync();
 
-        public async Task<ActionResponses<T>> GetAsync(int id)
+        public virtual async Task<ActionResponses<T>> GetAsync(int id)
             => await _repository.GetAsync(id);
 
-        public async Task<ActionResponses<T>> PostAsync(T entity)
+        public virtual async Task<ActionResponses<T>> PostAsync(T entity)
             => await _repository.PostAsync(entity);
 
-        public async Task<ActionResponses<T>> PutAsync(T entity)
+        public virtual async Task<ActionResponses<T>> PutAsync(T entity)
             => await _repository.PutAsync(entity);
     }
 }

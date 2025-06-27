@@ -15,7 +15,7 @@ namespace LogisticoWebAPI.Backend.Repositories.Implementations
             _context = context;
             _entity = context.Set<T>();
         }
-        public async Task<ActionResponses<T>> DeleteAsync(int id)
+        public virtual async Task<ActionResponses<T>> DeleteAsync(int id)
         {
             var row = await _entity.FindAsync(id);
             if (row == null)
@@ -45,7 +45,7 @@ namespace LogisticoWebAPI.Backend.Repositories.Implementations
             }
         }
 
-        public async Task<ActionResponses<IEnumerable<T>>> GetAllAsync()
+        public virtual async Task<ActionResponses<IEnumerable<T>>> GetAllAsync()
         {
             return new ActionResponses<IEnumerable<T>>
             {
@@ -54,7 +54,7 @@ namespace LogisticoWebAPI.Backend.Repositories.Implementations
             };
         }
 
-        public async Task<ActionResponses<T>> GetAsync(int id)
+        public virtual async Task<ActionResponses<T>> GetAsync(int id)
         {
             var row = await _entity.FindAsync(id);
             if (row == null)
@@ -73,7 +73,7 @@ namespace LogisticoWebAPI.Backend.Repositories.Implementations
             };
         }
 
-        public async Task<ActionResponses<T>> PostAsync(T entity)
+        public virtual async Task<ActionResponses<T>> PostAsync(T entity)
         {
             _context.Add(entity);
             try
@@ -95,7 +95,7 @@ namespace LogisticoWebAPI.Backend.Repositories.Implementations
             }
         }
 
-        public async Task<ActionResponses<T>> PutAsync(T entity)
+        public virtual async Task<ActionResponses<T>> PutAsync(T entity)
         {
             _context.Update(entity);
             try
