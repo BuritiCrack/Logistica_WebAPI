@@ -3,6 +3,8 @@ using LogisticoWebAPI.Backend.Repositories.Implementations;
 using LogisticoWebAPI.Backend.Repositories.Interfaces;
 using LogisticoWebAPI.Backend.UnitsOfWork.Implementations;
 using LogisticoWebAPI.Backend.UnitsOfWork.Interfaces;
+using LogisticoWebAPI.Shared.Entities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using System.Text.Json.Serialization;
@@ -17,7 +19,7 @@ namespace LogisticoWebAPI.Backend
 
             // Add services to the container.
 
-            builder.Services.AddControllers().AddJsonOptions(x => 
+            builder.Services.AddControllers().AddJsonOptions(x =>
                 x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen(c =>
@@ -38,6 +40,20 @@ namespace LogisticoWebAPI.Backend
             builder.Services.AddScoped<IStatesRepository, StatesRepository>();
             builder.Services.AddScoped<IStatesUnitOfWork, StatesUnitOfWork>();
 
+            builder.Services.AddScoped<IUsersRepository, UsersRepository>();
+            builder.Services.AddScoped<IUsersUnitOfWork, UsersUnitOfWork>();
+
+            builder.Services.AddIdentity<User, IdentityRole>(x =>
+            {
+                x.User.RequireUniqueEmail = true;
+                x.Password.RequireDigit = false;
+                x.Password.RequiredUniqueChars = 0;
+                x.Password.RequireLowercase = false;
+                x.Password.RequireNonAlphanumeric = false;
+                x.Password.RequireUppercase = false;
+            })
+                .AddEntityFrameworkStores<DataContext>()
+                .AddDefaultTokenProviders();
 
             var app = builder.Build();
 

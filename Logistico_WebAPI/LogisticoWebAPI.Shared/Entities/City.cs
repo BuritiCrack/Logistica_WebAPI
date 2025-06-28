@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace LogisticoWebAPI.Shared.Entities
 {
@@ -16,7 +11,8 @@ namespace LogisticoWebAPI.Shared.Entities
         [Required(ErrorMessage = "El campo {0} es obligatorio.")]
         public string Name { get; set; } = null!;
 
-        public int  StateId { get; set; }
+        public int StateId { get; set; }
         public State? State { get; set; }
+        public ICollection<User>? Users { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace LogisticoWebAPI.Shared.Entities
 {
@@ -34,13 +35,17 @@ namespace LogisticoWebAPI.Shared.Entities
         [Display(Name = "Tipo de Comida")]
         public string? MealType { get; set; }
 
+        [Column(TypeName = "decimal(18,2)")]
         [Required(ErrorMessage = "El campo {0} es obligatorio.")]
         [Display(Name = "Pago por Persona")]
         [Range(0, double.MaxValue, ErrorMessage = "El campo {0} debe ser un número positivo.")]
-        [DisplayFormat(DataFormatString = "{0:C}")]
+        [DisplayFormat(DataFormatString = "{0:C2}")]
         public decimal Payment { get; set; }
 
         [Display(Name = "Foto del Evento")]
         public string? Photo { get; set; }
+
+        public ICollection<EventUser>? EventUsers { get; set; }
+
     }
 }
