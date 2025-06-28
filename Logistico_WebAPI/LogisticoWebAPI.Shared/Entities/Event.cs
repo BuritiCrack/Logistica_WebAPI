@@ -13,7 +13,7 @@ namespace LogisticoWebAPI.Shared.Entities
         public string Name { get; set; } = null!;
 
         [Required(ErrorMessage = "El campo {0} es obligatorio.")]
-        [MaxLength(200, ErrorMessage = "El campo {0} no puede tener mas de {1} caracteres.")]
+        [MaxLength(300, ErrorMessage = "El campo {0} no puede tener mas de {1} caracteres.")]
         [Display(Name = "Descripción del Evento")]
         public string Description { get; set; } = null!;
 

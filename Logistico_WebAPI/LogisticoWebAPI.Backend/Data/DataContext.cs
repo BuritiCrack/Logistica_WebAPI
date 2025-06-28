@@ -18,8 +18,8 @@ namespace LogisticoWebAPI.Backend.Data
         {
             base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<State>().HasIndex(s => s.Name).IsUnique();
-            modelBuilder.Entity<Event>().HasIndex(e => e.Name).IsUnique();
-            modelBuilder.Entity<City>().HasIndex(c => new {c.StateId, c.Name }).IsUnique(); // Esto asegura que no haya dos ciudades con el mismo nombre en el mismo estado.
+            modelBuilder.Entity<Event>().HasIndex(e => new { e.FechaHoraInicio, e.Name }).IsUnique();
+            modelBuilder.Entity<City>().HasIndex(c => new { c.StateId, c.Name }).IsUnique(); // Esto asegura que no haya dos ciudades con el mismo nombre en el mismo estado.
 
         }
     }
