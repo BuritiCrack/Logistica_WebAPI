@@ -1,0 +1,14 @@
+﻿@page "/events/edit/{Id:int}"
+
+@if (Event == null)
+{
+    <Loading />
+}
+else
+{
+    <EventForm @ref="eventForm" Event="Event" OnValidSubmit="EditAsync" ReturnAction="Return" />
+}
+
+
+
+

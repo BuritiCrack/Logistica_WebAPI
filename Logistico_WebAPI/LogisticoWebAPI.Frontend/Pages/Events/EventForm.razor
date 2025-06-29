@@ -1,0 +1,104 @@
+﻿<NavigationLock OnBeforeInternalNavigation="OnBeforeInternalNavigation" />
+
+<EditForm EditContext="editContext" OnValidSubmit="OnValidSubmit">
+    <DataAnnotationsValidator />
+    
+    <div class="card">
+        <div class="card-header">
+            <h5 class="card-title mb-0">
+                <i class="fa fa-calendar-plus"></i>
+                @(Event.Id == 0 ? "Crear Evento" : $"Editar Evento: {Event.Name}")
+            </h5>
+        </div>
+        
+        <div class="card-body">
+            <div class="row">
+                <!-- Nombre del Evento -->
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Nombre del Evento:</label>
+                    <InputText class="form-control" @bind-Value="Event.Name" />
+                    <ValidationMessage For="@(() => Event.Name)" />
+                </div>
+                
+                <!-- Lugar del Evento -->
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Lugar del Evento:</label>
+                    <InputText class="form-control" @bind-Value="Event.Place" />
+                    <ValidationMessage For="@(() => Event.Place)" />
+                </div>
+            </div>
+            
+            <!-- Descripción del Evento -->
+            <div class="mb-3">
+                <label class="form-label">Descripción del Evento:</label>
+                <InputTextArea class="form-control" rows="4" @bind-Value="Event.Description" />
+                <ValidationMessage For="@(() => Event.Description)" />
+            </div>
+            
+            <div class="row">
+                <!-- Fecha y Hora de Inicio -->
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Fecha y Hora de Inicio:</label>
+                    <InputDate Type="InputDateType.DateTimeLocal" class="form-control" @bind-Value="Event.FechaHoraInicio" />
+                    <ValidationMessage For="@(() => Event.FechaHoraInicio)" />
+                </div>
+                
+                <!-- Fecha y Hora de Fin -->
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Fecha y Hora de Fin:</label>
+                    <InputDate Type="InputDateType.DateTimeLocal" class="form-control" @bind-Value="Event.FechaHoraFin" />
+                    <ValidationMessage For="@(() => Event.FechaHoraFin)" />
+                </div>
+            </div>
+            
+            <div class="row">
+                <!-- Tipo de Comida -->
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Tipo de Comida:</label>
+                    <InputText class="form-control" @bind-Value="Event.MealType" placeholder="Ej: Almuerzo, Cena, Refrigerio" />
+                    <ValidationMessage For="@(() => Event.MealType)" />
+                </div>
+                
+                <!-- Pago por Persona -->
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Pago por Persona:</label>
+                    <div class="input-group">
+                        <span class="input-group-text">$</span>
+                        <InputNumber class="form-control" @bind-Value="Event.Payment" step="0.01" />
+                    </div>
+                    <ValidationMessage For="@(() => Event.Payment)" />
+                </div>
+            </div>
+            
+            <!-- Foto del Evento -->
+            <div class="mb-3">
+                <label class="form-label">URL de la Foto del Evento:</label>
+                <InputText class="form-control" @bind-Value="Event.Photo" placeholder="https://ejemplo.com/foto-evento.jpg" />
+                <ValidationMessage For="@(() => Event.Photo)" />
+                @if (!string.IsNullOrEmpty(Event.Photo))
+                {
+                    <div class="mt-2">
+                        <small class="text-muted">Vista previa:</small>
+                        <div class="mt-1">
+                            <img src="@Event.Photo" alt="Vista previa" class="img-thumbnail" style="max-width: 200px; max-height: 150px;" />
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+        
+        <div class="card-footer">
+            <div class="d-flex justify-content-between">
+                <button type="button" class="btn btn-secondary" @onclick="ReturnAction">
+                    <i class="fa fa-arrow-left"></i> Cancelar
+                </button>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fa fa-save"></i>
+                    @(Event.Id == 0 ? "Crear Evento" : "Actualizar Evento")
+                </button>
+            </div>
+        </div>
+    </div>
+</EditForm>
+
+
