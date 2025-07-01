@@ -60,6 +60,16 @@ namespace LogisticoWebAPI.Shared.Entities
         [Required(ErrorMessage = "El campo {0} es obligatorio")]
         public string AccountNumber { get; set; } = null!;
 
+        [DisplayName("EPS")]
+        [MaxLength(30, ErrorMessage = "El campo {0} debe tener maximo {1} caracteres")]
+        [Required(ErrorMessage = "El campo {0} es obligatorio")]
+        public string Eps { get; set; } = null!;
+
+        [DisplayName("Fondo de pensiones")]
+        [MaxLength(30, ErrorMessage = "El campo {0} debe tener maximo {1} caracteres")]
+        [Required(ErrorMessage = "El campo {0} es obligatorio")]
+        public string PensionFund { get; set; } = null!;
+
         [DisplayName("Estado del usuario")]
         [Required(ErrorMessage = "El campo {0} es obligatorio")]
         public bool? IsActive { get; set; } = true;
