@@ -85,18 +85,22 @@ else
                                     </span>
                                 </div>
                             </div>
-                            
+
                             <div class="row">
                                 <div class="col">
                                     <div class="d-flex flex-wrap gap-2">
+                                        <button class="btn btn-success btn-sm">
+                                            <i class="fa fa-user-plus"></i> Inscribirse
+                                        </button>
                                         <button class="btn btn-primary btn-sm">
                                             <i class="fa fa-eye"></i> Ver Detalles
                                         </button>
                                         <a class="btn btn-warning btn-sm" href="/events/edit/@eventItem.Id">
                                             <i class="fa fa-edit"></i> Editar
-                                        </a>
-                                        <button class="btn btn-success btn-sm">
-                                            <i class="fa fa-user-plus"></i> Inscribirse
+                                        </a>        
+                                        <button class="btn btn-danger btn-sm"
+                                                @onclick="() => DeleteAsync(eventItem)">
+                                            <i class="fa fa-trash"></i> Borrar
                                         </button>
                                     </div>
                                 </div>

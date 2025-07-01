@@ -27,14 +27,13 @@ namespace LogisticoWebAPI.Frontend.Pages.Events
             Return();
             var toas = SweetAlertService.Mixin(new SweetAlertOptions
             {
-                Title = "Evento creado",
                 Icon = SweetAlertIcon.Success,
                 Toast = true,
                 Position = SweetAlertPosition.TopEnd,
                 ShowConfirmButton = false,
                 Timer = 3000
             });
-            await toas.FireAsync();
+            await toas.FireAsync(message:"Registro creado con éxito");
         }
 
         private void Return()
