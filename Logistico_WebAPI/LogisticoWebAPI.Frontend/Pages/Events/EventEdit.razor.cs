@@ -1,11 +1,13 @@
 using CurrieTechnologies.Razor.SweetAlert2;
 using LogisticoWebAPI.Frontend.Repositories;
 using LogisticoWebAPI.Shared.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
 using System.Net;
 
 namespace LogisticoWebAPI.Frontend.Pages.Events
 {
+    [Authorize(Roles = "Admin")]
     public partial class EventEdit
     {
         private Event? Event;
