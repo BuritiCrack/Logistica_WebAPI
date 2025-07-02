@@ -116,12 +116,35 @@
                             <ValidationMessage For="@(() => userDTO.Experience)" />
                         </div>
 
-                        <!-- Ciudad -->
-                        <div class="col-md-6 mb-3">
+                        <!-- Estados -->
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">Departamento:</label>
+                            <select class="form-select" @onchange="StateChangedAsync">
+                                <option value="0">Seleccione...</option>
+                                @if (states != null)
+                                {
+                                    @foreach (var state in states)
+                                    {
+                                        <option value="@state.Id">@state.Name</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+
+                        <!-- Ciudades -->
+                        <div class="col-md-3 mb-3">
                             <label class="form-label">Ciudad:</label>
-                            <InputNumber class="form-control" @bind-Value="userDTO.CityId" />
+                            <InputSelect class="form-select" @bind-Value="userDTO.CityId">
+                                <option value="0">Seleccione...</option>
+                                @if (cities != null)
+                                {
+                                    @foreach (var city in cities)
+                                    {
+                                        <option value="@city.Id">@city.Name</option>
+                                    }
+                                }
+                            </InputSelect>
                             <ValidationMessage For="@(() => userDTO.CityId)" />
-                            <small class="form-text text-muted">Nota: Necesitarás implementar el dropdown de ciudades</small>
                         </div>
                     </div>
 
