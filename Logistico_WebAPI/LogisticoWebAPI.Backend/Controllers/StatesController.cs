@@ -21,6 +21,13 @@ namespace LogisticoWebAPI.Backend.Controllers
             _statesUnitOfWork = statesUnitOfWork;
         }
 
+        [AllowAnonymous]
+        [HttpGet("combo")]
+        public async Task<IActionResult> GetComboAsync()
+        {
+            return Ok(await _statesUnitOfWork.GetComboAsync());
+        }
+
         [HttpGet]
         public override async Task<IActionResult> GetAsync()
         {

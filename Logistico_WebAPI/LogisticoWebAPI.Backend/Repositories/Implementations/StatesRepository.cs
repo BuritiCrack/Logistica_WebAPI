@@ -46,5 +46,12 @@ namespace LogisticoWebAPI.Backend.Repositories.Implementations
                 Result = state
             };
         }
+
+        public async Task<IEnumerable<State>> GetComboAsync()
+        {
+            return await _context.States
+                .OrderBy(s => s.Name)
+                .ToListAsync();
+        }
     }
 }

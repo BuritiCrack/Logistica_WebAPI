@@ -70,8 +70,12 @@ namespace LogisticoWebAPI.Backend
             builder.Services.AddScoped<IStatesRepository, StatesRepository>();
             builder.Services.AddScoped<IStatesUnitOfWork, StatesUnitOfWork>();
 
+            builder.Services.AddScoped<ICitiesRepository, CitiesRepository>();
+            builder.Services.AddScoped<ICitiesUnitOfWork, CitiesUnitOfWork>();
+
             builder.Services.AddScoped<IUsersRepository, UsersRepository>();
             builder.Services.AddScoped<IUsersUnitOfWork, UsersUnitOfWork>();
+
 
             builder.Services.AddIdentity<User, IdentityRole>(x =>
             {

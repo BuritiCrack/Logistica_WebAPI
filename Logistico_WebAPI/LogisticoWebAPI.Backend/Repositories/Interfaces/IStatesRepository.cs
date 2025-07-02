@@ -6,6 +6,9 @@ namespace LogisticoWebAPI.Backend.Repositories.Interfaces
     public interface IStatesRepository
     {
         Task<ActionResponses<IEnumerable<State>>> GetAllAsync();
+
         Task<ActionResponses<State>> GetAsync(int id);
+
+        Task<IEnumerable<State>> GetComboAsync();
     }
 }

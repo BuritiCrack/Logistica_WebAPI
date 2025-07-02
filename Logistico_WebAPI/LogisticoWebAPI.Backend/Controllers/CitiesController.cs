@@ -12,8 +12,18 @@ namespace LogisticoWebAPI.Backend.Controllers
 
     public class CitiesController : GenericController<City>
     {
-        public CitiesController(IGenericUnitOfWork<City> unitOfWork) : base(unitOfWork)
+        private readonly ICitiesUnitOfWork _citiesUnitOfWork;
+
+        public CitiesController(IGenericUnitOfWork<City> unitOfWork, ICitiesUnitOfWork citiesUnitOfWork) : base(unitOfWork)
         {
+            _citiesUnitOfWork = citiesUnitOfWork;
+        }
+
+        [AllowAnonymous]
+        [HttpGet("combo/{stateId:int}")]
+        public async Task<IActionResult> GetComboAsync(int stateId)
+        {
+            return Ok(await _citiesUnitOfWork.GetComboAsync(stateId));
         }
     }
 }
