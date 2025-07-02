@@ -103,11 +103,9 @@ namespace LogisticoWebAPI.Backend
             {
                 var scopedFactory = app.Services.GetService<IServiceScopeFactory>();
 
-                using (var scope = scopedFactory!.CreateScope())
-                {
-                    var service = scope.ServiceProvider.GetService<SeedDb>();
-                    service!.SeedAsync().Wait();
-                }
+                using var scope = scopedFactory!.CreateScope();
+                var service = scope.ServiceProvider.GetService<SeedDb>();
+                service!.SeedAsync().Wait();
             }
 
             app.UseCors(c => c
