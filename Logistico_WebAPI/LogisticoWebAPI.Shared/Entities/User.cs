@@ -28,17 +28,17 @@ namespace LogisticoWebAPI.Shared.Entities
         public GenderEnum Gender { get; set; }
 
         [DisplayName("Altura (cm)")]
-        [Range(120, 250, ErrorMessage = "El campo {0} debe estar entre {1} y {2}")]
+        [Range(120, 250, ErrorMessage = "El campo {0} debe estar entre {1} y {2}cm")]
         [Required(ErrorMessage = "El campo {0} es obligatorio")]
         public string Height { get; set; } = null!;
 
         [DisplayName("Años")]
-        [Range(18, 70, ErrorMessage = "El campo {0} debe estar entre {1} y {2}")]
+        [Range(18, 70, ErrorMessage = "El campo {0} debe ser mayor o igual a {1}")]
         [Required(ErrorMessage = "El campo {0} es obligatorio")]
         public string Age { get; set; } = null!;
 
         [DisplayName("Experiencia")]
-        [Range(0, 100, ErrorMessage = "El campo {0} debe estar entre {1} y {2}")]
+        [MaxLength(500, ErrorMessage = "El campo {0} debe tener maximo {1} caracteres")]
         [Required(ErrorMessage = "El campo {0} es obligatorio")]
         public string Experience { get; set; } = null!;
 
