@@ -1,7 +1,6 @@
 ﻿using LogisticoWebAPI.Backend.UnitsOfWork.Interfaces;
 using LogisticoWebAPI.Shared.Entities;
 using LogisticoWebAPI.Shared.Enums;
-using System.Reflection.Metadata;
 
 namespace LogisticoWebAPI.Backend.Data
 {
@@ -9,7 +8,6 @@ namespace LogisticoWebAPI.Backend.Data
     {
         private readonly DataContext _context;
         private readonly IUsersUnitOfWork _usersUnitOfWork;
-
 
         public SeedDb(DataContext context, IUsersUnitOfWork usersUnitOfWork)
         {
@@ -43,9 +41,9 @@ namespace LogisticoWebAPI.Backend.Data
                 );
         }
 
-        private async Task<User> CheckUserAsync(string document, string firsName, string lastName, string email,string phone, GenderEnum gender, string height, string age, string experiecie,string address, string skill, BankName bank, AccountType accountType, string accountNumber,string eps,string pensionFund, UserType userType)
+        private async Task<User> CheckUserAsync(string document, string firsName, string lastName, string email, string phone, GenderEnum gender, string height, string age, string experiecie, string address, string skill, BankName bank, AccountType accountType, string accountNumber, string eps, string pensionFund, UserType userType)
         {
-           var user = await _usersUnitOfWork.GetUserAsync(email);
+            var user = await _usersUnitOfWork.GetUserAsync(email);
             if (user == null)
             {
                 user = new User

@@ -35,7 +35,19 @@ namespace LogisticoWebAPI.Frontend.AuthenticationProviders
             return BuildAuthenticationState(token.ToString()!);
 
         }
+        public async Task LoginAsync(string token)
+        {
+            await _jSRuntime.SetLocalStorage(_tokenKey, token);
+            var authState = BuildAuthenticationState(token);
+            NotifyAuthenticationStateChanged(Task.FromResult(authState));
+        }
 
+        public async Task LogoutAsync()
+        {
+            await _jSRuntime.RemoveLocalStorage(_tokenKey);
+            _httpClient.DefaultRequestHeaders.Authorization = null;
+            NotifyAuthenticationStateChanged(Task.FromResult(_anonimous));
+        } 
         private AuthenticationState BuildAuthenticationState(string token)
         {
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", token);
@@ -50,18 +62,6 @@ namespace LogisticoWebAPI.Frontend.AuthenticationProviders
             return unserializedToken.Claims;
         }
 
-        public async Task LoginAsync(string token)
-        {
-            await _jSRuntime.SetLocalStorage(_tokenKey, token);
-            var authState = BuildAuthenticationState(token);
-            NotifyAuthenticationStateChanged(Task.FromResult(authState));
-        }
-
-        public async Task LogoutAsync()
-        {
-            await _jSRuntime.RemoveLocalStorage(_tokenKey);
-            _httpClient.DefaultRequestHeaders.Authorization = null;
-            NotifyAuthenticationStateChanged(Task.FromResult(_anonimous));
-        }
+        
     }
 }

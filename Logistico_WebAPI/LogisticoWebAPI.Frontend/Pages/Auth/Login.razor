@@ -1,0 +1,101 @@
+﻿@page "/Login"
+
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-4">
+        <div class="card shadow">
+            <div class="card-header text-center">
+                <h4 class="card-title mb-0">
+                    <i class="fa fa-sign-in-alt"></i> Iniciar Sesión
+                </h4>
+            </div>
+
+            <div class="card-body">
+                <EditForm Model="loginDTO" OnValidSubmit="LoginAsync">
+                    <DataAnnotationsValidator />
+
+                    <!-- Email -->
+                    <div class="mb-3">
+                        <label class="form-label">
+                            <i class="fa fa-envelope"></i> Email:
+                        </label>
+                        <InputText type="email" 
+                                   class="form-control" 
+                                   @bind-Value="loginDTO.Email" 
+                                   placeholder="correo@ejemplo.com" />
+                        <ValidationMessage For="@(() => loginDTO.Email)" />
+                    </div>
+
+                    <!-- Contraseña -->
+                    <div class="mb-4">
+                        <label class="form-label">
+                            <i class="fa fa-lock"></i> Contraseña:
+                        </label>
+                        <InputText type="password" 
+                                   class="form-control" 
+                                   @bind-Value="loginDTO.Password" 
+                                   placeholder="Ingrese su contraseña" />
+                        <ValidationMessage For="@(() => loginDTO.Password)" />
+                    </div>
+
+                    <!-- Botón de Login -->
+                    <div class="d-grid mb-3">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fa fa-sign-in-alt"></i> Iniciar Sesión
+                        </button>
+                    </div>
+
+                    <!-- Enlaces adicionales -->
+                    <div class="text-center">
+                        <p class="mb-0">
+                            ¿No tienes cuenta? 
+                            <a href="/Register" class="text-decoration-none">
+                                <i class="fa fa-user-plus"></i> Regístrate aquí
+                            </a>
+                        </p>
+                    </div>
+                </EditForm>
+            </div>
+        </div>
+
+        <!-- Información adicional -->
+        <div class="text-center mt-3">
+            <small class="text-muted">
+                <i class="fa fa-shield-alt"></i> 
+                Tu información está protegida y segura
+            </small>
+        </div>
+    </div>
+</div>
+
+<!-- Estilos adicionales para el formulario -->
+<style>
+    .card {
+        border: none;
+        border-radius: 15px;
+    }
+    
+    .card-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-radius: 15px 15px 0 0 !important;
+        padding: 1.5rem;
+    }
+    
+    .form-control:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+    }
+    
+    .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        padding: 12px;
+        font-weight: 500;
+    }
+    
+    .btn-primary:hover {
+        background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
+        transform: translateY(-2px);
+        transition: all 0.3s ease;
+    }
+</style>
