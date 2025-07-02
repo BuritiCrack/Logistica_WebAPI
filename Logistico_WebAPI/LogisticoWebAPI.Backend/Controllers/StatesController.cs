@@ -1,6 +1,8 @@
 ﻿using LogisticoWebAPI.Backend.Data;
 using LogisticoWebAPI.Backend.UnitsOfWork.Interfaces;
 using LogisticoWebAPI.Shared.Entities;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,6 +10,8 @@ namespace LogisticoWebAPI.Backend.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+
     public class StatesController : GenericController<State>
     {
         private readonly IStatesUnitOfWork _statesUnitOfWork;

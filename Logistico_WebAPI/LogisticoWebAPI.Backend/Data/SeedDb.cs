@@ -32,6 +32,7 @@ namespace LogisticoWebAPI.Backend.Data
                 "182",
                 "22",
                 "Ninguna",
+                "Calle luna calle sol",
                 "Ninguna",
                 BankName.Bancolombia,
                 AccountType.Savings,
@@ -42,7 +43,7 @@ namespace LogisticoWebAPI.Backend.Data
                 );
         }
 
-        private async Task<User> CheckUserAsync(string document, string firsName, string lastName, string email,string phone, GenderEnum gender, string height, string age, string experiecie, string skill, BankName bank, AccountType accountType, string accountNumber,string eps,string pensionFund, UserType userType)
+        private async Task<User> CheckUserAsync(string document, string firsName, string lastName, string email,string phone, GenderEnum gender, string height, string age, string experiecie,string address, string skill, BankName bank, AccountType accountType, string accountNumber,string eps,string pensionFund, UserType userType)
         {
            var user = await _usersUnitOfWork.GetUserAsync(email);
             if (user == null)
@@ -59,6 +60,7 @@ namespace LogisticoWebAPI.Backend.Data
                     Height = height,
                     Age = age,
                     Experience = experiecie,
+                    Address = address,
                     Skills = skill,
                     Bank = bank,
                     AccountType = accountType,

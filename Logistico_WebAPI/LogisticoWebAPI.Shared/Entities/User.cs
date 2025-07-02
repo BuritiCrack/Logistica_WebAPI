@@ -42,6 +42,11 @@ namespace LogisticoWebAPI.Shared.Entities
         [Required(ErrorMessage = "El campo {0} es obligatorio")]
         public string Experience { get; set; } = null!;
 
+        [DisplayName("Dirección")]
+        [MaxLength(100, ErrorMessage = "El campo {0} debe tener maximo {1} caracteres")]
+        [Required(ErrorMessage = "El campo {0} es obligatorio")]
+        public string Address { get; set; } = null!;
+
         [DisplayName("Habilidades")]
         [MaxLength(500, ErrorMessage = "El campo {0} debe tener maximo {1} caracteres")]
         [Required(ErrorMessage = "El campo {0} es obligatorio")]

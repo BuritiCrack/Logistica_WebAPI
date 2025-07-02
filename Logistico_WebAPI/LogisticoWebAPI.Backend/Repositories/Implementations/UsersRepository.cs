@@ -1,5 +1,6 @@
 ﻿using LogisticoWebAPI.Backend.Data;
 using LogisticoWebAPI.Backend.Repositories.Interfaces;
+using LogisticoWebAPI.Shared.DTOs;
 using LogisticoWebAPI.Shared.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -11,12 +12,16 @@ namespace LogisticoWebAPI.Backend.Repositories.Implementations
         private readonly DataContext _context;
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly SignInManager<User> _signInManager;
 
-        public UsersRepository(DataContext context, UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
+        public UsersRepository(DataContext context, UserManager<User> userManager, 
+            RoleManager<IdentityRole> roleManager, SignInManager<User> signInManager)
+         
         {
             _context = context;
             _userManager = userManager;
             _roleManager = roleManager;
+            _signInManager = signInManager;
         }
         public async Task<IdentityResult> AddUserAsync(User user, string password)
         {
@@ -31,7 +36,7 @@ namespace LogisticoWebAPI.Backend.Repositories.Implementations
         public async Task CheckRoleAsync(string roleName)
         {
             var roleExists = await _roleManager.RoleExistsAsync(roleName);
-            if(roleExists)
+            if(!roleExists)
             {
                 await _roleManager.CreateAsync(new IdentityRole
                 {
@@ -52,6 +57,16 @@ namespace LogisticoWebAPI.Backend.Repositories.Implementations
         public Task<bool> IsUserInRoleAsync(User user, string roleName)
         {
             return _userManager.IsInRoleAsync(user, roleName);
+        }
+
+        public async Task<SignInResult> LoginAsync(LoginDTO model)
+        {
+            return await _signInManager.PasswordSignInAsync(model.Email, model.Password, false, false);
+        }
+
+        public async Task LogoutAsync()
+        {
+            await _signInManager.SignOutAsync();
         }
     }
 }

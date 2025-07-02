@@ -1,4 +1,5 @@
-﻿using LogisticoWebAPI.Shared.Entities;
+﻿using LogisticoWebAPI.Shared.DTOs;
+using LogisticoWebAPI.Shared.Entities;
 using Microsoft.AspNetCore.Identity;
 
 namespace LogisticoWebAPI.Backend.UnitsOfWork.Interfaces
@@ -14,6 +15,10 @@ namespace LogisticoWebAPI.Backend.UnitsOfWork.Interfaces
         Task AddUserToRoleAsync(User user, string roleName);
 
         Task<bool> IsUserInRoleAsync(User user, string roleName);
+
+        Task<SignInResult> LoginAsync(LoginDTO model);
+
+        Task LogoutAsync();
 
     }
 }
