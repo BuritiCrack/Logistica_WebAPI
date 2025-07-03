@@ -16,8 +16,25 @@ namespace LogisticoWebAPI.Frontend.Pages.Events
         [Inject] private NavigationManager NavigationManager { get; set; } = null!;
         [Inject] private SweetAlertService SweetAlertService { get; set; } = null!;
 
-        private async Task CreateAsync()
+        protected override void OnInitialized()
         {
+            SetDefaultDates();
+        }
+
+        private void SetDefaultDates()
+        {
+            var now = DateTime.Now;
+
+            // Establecer fecha y hora de inicio
+            var startTime = new DateTime(now.Year, now.Month, now.Day, now.Hour, 0, 0).AddHours(1);
+            Event.FechaHoraInicio = startTime;
+
+            // Establecer fecha y hora de fin: 12 horas después del inicio
+            Event.FechaHoraFin = startTime.AddHours(12);
+        }
+
+        private async Task CreateAsync()
+        { 
             var responseHttp = await Repository.PostAsync("api/events", Event);
             if (responseHttp.Error)
             {
