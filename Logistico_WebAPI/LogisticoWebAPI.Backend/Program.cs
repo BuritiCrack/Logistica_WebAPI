@@ -1,4 +1,5 @@
 using LogisticoWebAPI.Backend.Data;
+using LogisticoWebAPI.Backend.Helpers;
 using LogisticoWebAPI.Backend.Repositories.Implementations;
 using LogisticoWebAPI.Backend.Repositories.Interfaces;
 using LogisticoWebAPI.Backend.UnitsOfWork.Implementations;
@@ -64,6 +65,8 @@ namespace LogisticoWebAPI.Backend
             builder.Services.AddDbContext<DataContext>(options =>
                 options.UseSqlServer("name=LogisticoDatabase"));
             builder.Services.AddTransient<SeedDb>();
+            builder.Services.AddScoped<IFileStorage, FileStorage>();
+
             builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             builder.Services.AddScoped(typeof(IGenericUnitOfWork<>), typeof(GenericUnitOfWork<>));
 

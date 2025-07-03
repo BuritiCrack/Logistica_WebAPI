@@ -251,18 +251,13 @@
 
                     <!-- Foto (Opcional) -->
                     <div class="mb-4">
-                        <label class="form-label">Foto (URL - Opcional):</label>
-                        <InputText class="form-control" @bind-Value="userDTO.Photo" placeholder="https://ejemplo.com/mi-foto.jpg" />
-                        <ValidationMessage For="@(() => userDTO.Photo)" />
-                        @if (!string.IsNullOrEmpty(userDTO.Photo))
-                        {
-                            <div class="mt-2">
-                                <small class="text-muted">Vista previa:</small>
-                                <div class="mt-1">
-                                    <img src="@userDTO.Photo" alt="Vista previa" class="img-thumbnail" style="max-width: 150px; max-height: 150px;" />
-                                </div>
-                            </div>
-                        }
+                        <h5 class="text-primary border-bottom pb-2 mt-4">
+                            <i class="fa fa-camera"></i> Foto de Perfil
+                        </h5>
+                        <InputImg Label="Seleccionar Foto"
+                                  ImageURL="@imageUrl"
+                                  ImageSelected="ImageSelected" />
+                        <small class="text-muted">Formatos permitidos: JPG, JPEG, PNG</small>
                     </div>
 
                     <!-- Botones -->

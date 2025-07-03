@@ -1,4 +1,5 @@
-﻿using LogisticoWebAPI.Backend.UnitsOfWork.Interfaces;
+﻿using LogisticoWebAPI.Backend.Helpers;
+using LogisticoWebAPI.Backend.UnitsOfWork.Interfaces;
 using LogisticoWebAPI.Shared.DTOs;
 using LogisticoWebAPI.Shared.Entities;
 using Microsoft.AspNetCore.Mvc;
@@ -15,17 +16,28 @@ namespace LogisticoWebAPI.Backend.Controllers
     {
         private readonly IUsersUnitOfWork _usersUnitOfWork;
         private readonly IConfiguration _configuration;
+        private readonly IFileStorage _fileStorage;
+        private readonly string _container;
 
-        public AccountsController(IUsersUnitOfWork usersUnitOfWork, IConfiguration configuration)
+        public AccountsController(IUsersUnitOfWork usersUnitOfWork, IConfiguration configuration,
+            IFileStorage fileStorage)
         {
             _usersUnitOfWork = usersUnitOfWork;
             _configuration = configuration;
+            _fileStorage = fileStorage;
+            _container = "users";
         }
 
         [HttpPost("CreateUser")]
         public async Task<IActionResult> CreateUser([FromBody] UserDTO model)
         {
             User user = model;
+            if(!string.IsNullOrEmpty(model.Photo))
+            {
+                var phothoUser = Convert.FromBase64String(model.Photo);
+                model.Photo = await _fileStorage.SaveFileAsync(phothoUser,".jpg",_container);
+            }
+
             var result = await _usersUnitOfWork.AddUserAsync(user, model.Password);
             if (result.Succeeded)
             {

@@ -1,7 +1,6 @@
 using CurrieTechnologies.Razor.SweetAlert2;
 using LogisticoWebAPI.Frontend.Repositories;
 using LogisticoWebAPI.Frontend.Services;
-using LogisticoWebAPI.Frontend.Shared;
 using LogisticoWebAPI.Shared.DTOs;
 using LogisticoWebAPI.Shared.Entities;
 using LogisticoWebAPI.Shared.Enums;
@@ -15,6 +14,7 @@ namespace LogisticoWebAPI.Frontend.Pages.Auth
         private List<State>? states;
         private List<City>? cities;
         private bool isLoading;
+        private string? imageUrl;
 
         [Inject] private NavigationManager NavigationManager { get; set; } = null!;
         [Inject] private SweetAlertService SweetAlertService { get; set; } = null!;
@@ -24,6 +24,12 @@ namespace LogisticoWebAPI.Frontend.Pages.Auth
         protected override async Task OnInitializedAsync()
         {
             await LoadStatesAsync();
+        }
+
+        private void ImageSelected(string imagenBase64)
+        {
+            userDTO.Photo = imagenBase64;
+            imageUrl = null;
         }
 
         private async Task LoadStatesAsync()
@@ -58,13 +64,12 @@ namespace LogisticoWebAPI.Frontend.Pages.Auth
             cities = responseHttp.Response;
         }
 
-
         private async Task CreateUserAsync()
         {
             userDTO.UserName = userDTO.Email;
             userDTO.UserType = UserType.User;
             isLoading = true;
-            var responseHttp = await Repository.PostAsync<UserDTO, TokenDTO>("/api/accounts/CreateUser",userDTO);
+            var responseHttp = await Repository.PostAsync<UserDTO, TokenDTO>("/api/accounts/CreateUser", userDTO);
             isLoading = false;
             if (responseHttp.Error)
             {
