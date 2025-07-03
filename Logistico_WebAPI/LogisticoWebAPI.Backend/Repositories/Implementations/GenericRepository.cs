@@ -85,14 +85,23 @@ namespace LogisticoWebAPI.Backend.Repositories.Implementations
                     Result = entity,
                 };
             }
-            catch (DbUpdateException)
+            catch (DbUpdateException ex)
             {
-                return DbUpdateExceptionActionResponse();
+                if (ex.InnerException != null)
+                {
+                    if (ex.InnerException!.Message.Contains("duplicate key"))
+                    {
+                        return DbUpdateExceptionActionResponse();
+                    }
+                }
+
+                return new ActionResponses<T>
+                {
+                    WassSuccess = false,
+                    Message = $"Ocurrió un error al intentar crear el registro: {ex.Message}"
+                };
             }
-            catch (Exception ex)
-            {
-                return ExceptionActionResponse(ex);
-            }
+            
         }
 
         public virtual async Task<ActionResponses<T>> PutAsync(T entity)
@@ -107,9 +116,21 @@ namespace LogisticoWebAPI.Backend.Repositories.Implementations
                     Result = entity,
                 };
             }
-            catch (DbUpdateException)
+            catch (DbUpdateException ex)
             {
-                return DbUpdateExceptionActionResponse();
+                if (ex.InnerException != null)
+                {
+                    if (ex.InnerException!.Message.Contains("duplicate key"))
+                    {
+                        return DbUpdateExceptionActionResponse();
+                    }
+                }
+
+                return new ActionResponses<T>
+                {
+                    WassSuccess = false,
+                    Message = $"Ocurrió un error al intentar crear el registro: {ex.Message}"
+                };
             }
             catch (Exception ex)
             {
