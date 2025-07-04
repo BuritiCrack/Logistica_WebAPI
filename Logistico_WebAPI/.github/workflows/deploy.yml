@@ -19,6 +19,8 @@ jobs:
         pwd
         echo "Files in root:"
         ls -la
+        echo "Files in Logistico_WebAPI:"
+        ls -la Logistico_WebAPI/
         echo "Solution files:"
         find . -name "*.sln"
         echo "Project files:"
@@ -30,20 +32,25 @@ jobs:
         dotnet-version: '8.0.x'
 
     - name: Restore dependencies
-      run: dotnet restore LogisticoWebAPI.sln
+      run: dotnet restore Logistico_WebAPI.sln
+      working-directory: ./Logistico_WebAPI
 
     - name: Build the project
-      run: dotnet build LogisticoWebAPI.sln --no-restore
+      run: dotnet build Logistico_WebAPI.sln --no-restore
+      working-directory: ./Logistico_WebAPI
 
     - name: Run tests
-      run: dotnet test LogisticoWebAPI.sln --no-build --verbosity normal
+      run: dotnet test Logistico_WebAPI.sln --no-build --verbosity normal
+      working-directory: ./Logistico_WebAPI
 
     - name: Publish backend
-      run: dotnet publish LogisticoWebAPI.Backend/LogisticoWebAPI.Backend.csproj -c Release -o ./publish-backend
+      run: dotnet publish LogisticoWebAPI.Backend/LogisticoWebAPI.Backend.csproj -c Release -o ../publish-backend
+      working-directory: ./Logistico_WebAPI
       env:
         LOGISTICO_DATABASE_CONNECTION: ${{ secrets.LOGISTICO_DATABASE_CONNECTION }}
         AZURE_STORAGE_CONNECTION: ${{ secrets.AZURE_STORAGE_CONNECTION }}
         JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
 
     - name: Publish frontend
-      run: dotnet publish LogisticoWebAPI.Frontend/LogisticoWebAPI.Frontend.csproj -c Release -o ./publish-frontend
+      run: dotnet publish LogisticoWebAPI.Frontend/LogisticoWebAPI.Frontend.csproj -c Release -o ../publish-frontend
+      working-directory: ./Logistico_WebAPI
