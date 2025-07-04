@@ -1,0 +1,49 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches:
+      - Logistica_WebAPI
+
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Debug - Show structure
+      run: |
+        echo "Current directory:"
+        pwd
+        echo "Files in root:"
+        ls -la
+        echo "Solution files:"
+        find . -name "*.sln"
+        echo "Project files:"
+        find . -name "*.csproj"
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '8.0.x'
+
+    - name: Restore dependencies
+      run: dotnet restore LogisticoWebAPI.sln
+
+    - name: Build the project
+      run: dotnet build LogisticoWebAPI.sln --no-restore
+
+    - name: Run tests
+      run: dotnet test LogisticoWebAPI.sln --no-build --verbosity normal
+
+    - name: Publish backend
+      run: dotnet publish LogisticoWebAPI.Backend/LogisticoWebAPI.Backend.csproj -c Release -o ./publish-backend
+      env:
+        LOGISTICO_DATABASE_CONNECTION: ${{ secrets.LOGISTICO_DATABASE_CONNECTION }}
+        AZURE_STORAGE_CONNECTION: ${{ secrets.AZURE_STORAGE_CONNECTION }}
+        JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
+
+    - name: Publish frontend
+      run: dotnet publish LogisticoWebAPI.Frontend/LogisticoWebAPI.Frontend.csproj -c Release -o ./publish-frontend
