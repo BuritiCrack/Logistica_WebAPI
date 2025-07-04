@@ -11,7 +11,7 @@
 *.sln.docstates
 
 # Development settings with secrets
-appsettings.Development.json
+**/appsettings.Development.json
 
 # Environment files
 .env
