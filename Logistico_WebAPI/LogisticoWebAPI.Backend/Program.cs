@@ -21,11 +21,29 @@ namespace LogisticoWebAPI.Backend
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
+            // Configurar las variables desde GitHub Secrets o variables de entorno
+            var connectionString = Environment.GetEnvironmentVariable("LOGISTICO_DATABASE_CONNECTION")
+                ?? builder.Configuration.GetConnectionString("LogisticoDatabase")
+                ?? throw new InvalidOperationException("Database connection string not found.");
 
+            var azureStorageConnection = Environment.GetEnvironmentVariable("AZURE_STORAGE_CONNECTION")
+                ?? builder.Configuration.GetConnectionString("AzureStorage")
+                ?? throw new InvalidOperationException("Azure Storage connection string not found.");
+
+            var jwtKey = Environment.GetEnvironmentVariable("JWT_SECRET_KEY")
+                ?? builder.Configuration["jwtKey"]
+                ?? throw new InvalidOperationException("JWT key not found.");
+
+            // Agregar las configuraciones al contenedor de dependencias
+            builder.Configuration["ConnectionStrings:LogisticoDatabase"] = connectionString;
+            builder.Configuration["ConnectionStrings:AzureStorage"] = azureStorageConnection;
+            builder.Configuration["jwtKey"] = jwtKey;
+
+            // Add services to the container.
             builder.Services.AddControllers().AddJsonOptions(x =>
                 x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
             builder.Services.AddEndpointsApiExplorer();
+
             builder.Services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo
@@ -36,8 +54,8 @@ namespace LogisticoWebAPI.Backend
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
                     Description = @"JWT Authorization header using the Bearer scheme. <br /> <br />
-                      Enter 'Bearer' [space] and then your token in the text input below.<br /> <br />
-                      Example: 'Bearer 12345abcdef'<br /> <br />",
+                          Enter 'Bearer' [space] and then your token in the text input below.<br /> <br />
+                          Example: 'Bearer 12345abcdef'<br /> <br />",
                     Name = "Authorization",
                     In = ParameterLocation.Header,
                     Type = SecuritySchemeType.ApiKey,
@@ -45,25 +63,25 @@ namespace LogisticoWebAPI.Backend
                 });
                 c.AddSecurityRequirement(new OpenApiSecurityRequirement()
                 {
-                    {
-                        new OpenApiSecurityScheme
                         {
-                            Reference = new OpenApiReference
+                            new OpenApiSecurityScheme
                             {
-                                Type = ReferenceType.SecurityScheme,
-                                Id = "Bearer"
+                                Reference = new OpenApiReference
+                                {
+                                    Type = ReferenceType.SecurityScheme,
+                                    Id = "Bearer"
+                                },
+                        Scheme = "oauth2",
+                        Name = "Bearer",
+                        In = ParameterLocation.Header,
                             },
-                    Scheme = "oauth2",
-                    Name = "Bearer",
-                    In = ParameterLocation.Header,
-                        },
-                        new List<string>()
-                    }
+                            new List<string>()
+                        }
                 });
             });
 
             builder.Services.AddDbContext<DataContext>(options =>
-                options.UseSqlServer("name=LogisticoDatabase"));
+                options.UseSqlServer(connectionString));
             builder.Services.AddTransient<SeedDb>();
             builder.Services.AddScoped<IFileStorage, FileStorage>();
 
@@ -78,7 +96,6 @@ namespace LogisticoWebAPI.Backend
 
             builder.Services.AddScoped<IUsersRepository, UsersRepository>();
             builder.Services.AddScoped<IUsersUnitOfWork, UsersUnitOfWork>();
-
 
             builder.Services.AddIdentity<User, IdentityRole>(x =>
             {
@@ -99,9 +116,10 @@ namespace LogisticoWebAPI.Backend
                     ValidateAudience = false,
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["jwtKey"]!)),
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey)),
                     ClockSkew = TimeSpan.Zero
                 });
+
             var app = builder.Build();
 
             SeedData(app);
@@ -136,9 +154,8 @@ namespace LogisticoWebAPI.Backend
             }
 
             app.UseHttpsRedirection();
-
+            app.UseAuthentication();
             app.UseAuthorization();
-
             app.MapControllers();
 
             app.Run();
