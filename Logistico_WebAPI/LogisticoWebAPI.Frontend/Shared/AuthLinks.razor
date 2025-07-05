@@ -28,7 +28,11 @@
                 <!-- Detalles del usuario -->
                 <div class="user-details">
                     <span class="user-greeting">Hola,</span>
-                    <span class="user-name" title="@context.User.Identity!.Name">@context.User.Identity!.Name</span>
+                    <span class="user-name">
+                        <a href="EditUser" class="nav-link btn btn-link" title="@context.User.Identity!.Name">
+                            @context.User.Identity!.Name
+                        </a>
+                    </span>
                 </div>
             </div>
             
