@@ -1,0 +1,90 @@
+﻿@page "/ResendToken"
+
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-4">
+        <div class="card shadow">
+            <div class="card-header text-center">
+                <h4 class="card-title mb-0">
+                    <i class="fa fa-paper-plane"></i> Reenviar Correo de Activación
+                </h4>
+            </div>
+
+            <div class="card-body">
+                @if (loading)
+                {
+                    <!-- Estado de carga similar al Loading.razor -->
+                    <div class="d-flex justify-content-center py-4">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Enviando correo...</span>
+                        </div>
+                    </div>
+                    <p class="text-center text-muted mt-3">
+                        Enviando correo de activación...
+                    </p>
+                }
+                else
+                {
+                    <div class="text-center mb-4">
+                        <p class="text-muted">
+                            Ingresa tu dirección de correo electrónico y te enviaremos
+                            un nuevo enlace de activación.
+                        </p>
+                    </div>
+
+                    <EditForm Model="emailDTO" OnValidSubmit="ResendConfirmationEmailTokenAsync">
+                        <DataAnnotationsValidator />
+
+                        <!-- Email -->
+                        <div class="mb-4">
+                            <label class="form-label">
+                                <i class="fa fa-envelope"></i> Correo electrónico:
+                            </label>
+                            <InputText type="email"
+                                       class="form-control"
+                                       @bind-Value="emailDTO.Email"
+                                       placeholder="correo@ejemplo.com" />
+                            <ValidationMessage For="@(() => emailDTO.Email)" />
+                        </div>
+
+                        <!-- Botón de reenvío -->
+                        <div class="d-grid mb-3">
+                            <button type="submit" class="btn btn-success" disabled="@loading">
+                                <i class="fa fa-paper-plane me-1"></i>
+                                Reenviar Correo de Activación
+                            </button>
+                        </div>
+
+                        <!-- Enlaces adicionales -->
+                        <div class="text-center">
+                            <p class="mb-0">
+                                ¿Ya tienes tu cuenta activa?
+                                <a href="/Login" class="text-decoration-none">
+                                    <i class="fa fa-sign-in-alt"></i> Iniciar sesión
+                                </a>
+                            </p>
+                        </div>
+
+                        <div class="text-center mt-2">
+                            <p class="mb-0">
+                                ¿No tienes cuenta?
+                                <a href="/Register" class="text-decoration-none">
+                                    <i class="fa fa-user-plus"></i> Regístrate aquí
+                                </a>
+                            </p>
+                        </div>
+                    </EditForm>
+                }
+            </div>
+        </div>
+
+        <!-- Información adicional -->
+        <div class="text-center mt-3">
+            <small class="text-muted">
+                <i class="fa fa-info-circle"></i>
+                Revisa tu bandeja de entrada y carpeta de spam
+            </small>
+        </div>
+    </div>
+</div>
+
+<!-- Estilos adicionales para el formulario -->
