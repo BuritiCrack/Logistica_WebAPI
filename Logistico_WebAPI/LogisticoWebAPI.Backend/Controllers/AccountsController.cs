@@ -114,7 +114,7 @@ namespace LogisticoWebAPI.Backend.Controllers
                 var result = await _usersUnitOfWork.UpdateUserAsync(currentUser);
                 if (result.Succeeded)
                 {
-                    return NoContent();
+                    return Ok(BuildToken(currentUser));
                 }
 
                 return BadRequest(result.Errors.FirstOrDefault());
@@ -199,7 +199,7 @@ namespace LogisticoWebAPI.Backend.Controllers
             if (result.Succeeded)
             {
                 var user = await _usersUnitOfWork.GetUserAsync(model.Email);
-                return Ok(BuildTokenAsync(user));
+                return Ok(BuildToken(user));
             }
             if (result.IsLockedOut)
             {
@@ -212,7 +212,7 @@ namespace LogisticoWebAPI.Backend.Controllers
             return BadRequest("Email o contraseña incorrectos");
         }
 
-        private TokenDTO BuildTokenAsync(User user)
+        private TokenDTO BuildToken(User user)
         {
             var claims = new List<Claim>
             {

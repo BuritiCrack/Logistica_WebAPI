@@ -1,6 +1,7 @@
 using CurrieTechnologies.Razor.SweetAlert2;
 using LogisticoWebAPI.Frontend.Repositories;
 using LogisticoWebAPI.Frontend.Services;
+using LogisticoWebAPI.Shared.DTOs;
 using LogisticoWebAPI.Shared.Entities;
 using Microsoft.AspNetCore.Components;
 using System.Net;
@@ -92,14 +93,15 @@ namespace LogisticoWebAPI.Frontend.Pages.Auth
 
         private async Task SaveUserAsync()
         {
-            var responseHttp = await Repository.PutAsync<User>("/api/accounts", user!);
-            if(responseHttp.Error)
+            var responseHttp = await Repository.PutAsync<User, TokenDTO>("/api/accounts", user!);
+            if (responseHttp.Error)
             {
                 var message = await responseHttp.GetErrorMessageAsync();
                 await SweetAlertService.FireAsync("Error",message, SweetAlertIcon.Error);
                 return;
             }
 
+            await LoginService.LoginAsync(responseHttp.Response!.Token);
             NavigationManager.NavigateTo("/");
         }
     }
