@@ -2,6 +2,7 @@
 using LogisticoWebAPI.Backend.UnitsOfWork.Interfaces;
 using LogisticoWebAPI.Shared.DTOs;
 using LogisticoWebAPI.Shared.Entities;
+using LogisticoWebAPI.Shared.Responses;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -19,14 +20,16 @@ namespace LogisticoWebAPI.Backend.Controllers
         private readonly IUsersUnitOfWork _usersUnitOfWork;
         private readonly IConfiguration _configuration;
         private readonly IFileStorage _fileStorage;
+        private readonly IMailHelper _mailHelper;
         private readonly string _container;
 
         public AccountsController(IUsersUnitOfWork usersUnitOfWork, IConfiguration configuration,
-            IFileStorage fileStorage)
+            IFileStorage fileStorage, IMailHelper mailHelper)
         {
             _usersUnitOfWork = usersUnitOfWork;
             _configuration = configuration;
             _fileStorage = fileStorage;
+            _mailHelper = mailHelper;
             _container = "users";
         }
 
@@ -53,7 +56,6 @@ namespace LogisticoWebAPI.Backend.Controllers
 
             return NoContent();
         }
-
 
         [HttpPut]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
@@ -111,25 +113,64 @@ namespace LogisticoWebAPI.Backend.Controllers
             return Ok(await _usersUnitOfWork.GetUserAsync(User.Identity!.Name!));
         }
 
-
         [HttpPost("CreateUser")]
         public async Task<IActionResult> CreateUser([FromBody] UserDTO model)
         {
             User user = model;
-            if(!string.IsNullOrEmpty(model.Photo))
+            if (!string.IsNullOrEmpty(model.Photo))
             {
                 var phothoUser = Convert.FromBase64String(model.Photo);
-                model.Photo = await _fileStorage.SaveFileAsync(phothoUser,".jpg",_container);
+                model.Photo = await _fileStorage.SaveFileAsync(phothoUser, ".jpg", _container);
             }
 
             var result = await _usersUnitOfWork.AddUserAsync(user, model.Password);
             if (result.Succeeded)
             {
-                await _usersUnitOfWork.AddUserToRoleAsync(user,user.UserType.ToString());
-                return Ok(BuildTokenAsync(user));
+                await _usersUnitOfWork.AddUserToRoleAsync(user, user.UserType.ToString());
+                var response = await SendConfirmationEmailAsync(user);
+                if (response.WassSuccess)
+                {
+                    return NoContent();
+                }
+
+                return BadRequest(response.Message);
             }
 
             return BadRequest(result.Errors.FirstOrDefault());
+        }
+
+        private async Task<ActionResponses<string>> SendConfirmationEmailAsync(User user)
+        {
+            var myToken = await _usersUnitOfWork.GenerateEmailConfirmationTokenAsync(user);
+            var tokenLink = Url.Action("ConfirmEmail", "accounts", new
+            {
+                userId = user.Id,
+                token = myToken
+            }, HttpContext.Request.Scheme, _configuration["Url Frontend"]);
+
+            return _mailHelper.SendEmail(user.FullName!, user.Email!,
+                $"Logistica - Confirmación de correo electrónico",
+                $"<h1>Confirma tu correo electrónico</h1><p>Para confirmar tu correo electrónico, haz clic " +
+                $"en el siguiente enlace:</p><a href='{tokenLink}'>Confirmar correo electrónico</a>");
+        }
+
+        [HttpGet("ConfirmEmail")]
+        public async Task<IActionResult> ConfirmEmailAsync(string userId, string token)
+        {
+            token = token.Replace(" ", "+");
+            var user = await _usersUnitOfWork.GetUserAsync(new Guid(userId));
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            var result = await _usersUnitOfWork.ConfirmEmailAsync(user, token);
+            if (!result.Succeeded)
+            {
+                return BadRequest(result.Errors.FirstOrDefault());
+            }
+
+            return NoContent();
         }
 
         [HttpPost("Login")]
@@ -141,8 +182,17 @@ namespace LogisticoWebAPI.Backend.Controllers
                 var user = await _usersUnitOfWork.GetUserAsync(model.Email);
                 return Ok(BuildTokenAsync(user));
             }
+            if (result.IsLockedOut)
+            {
+                return BadRequest("Usuario bloqueado, intente de nuevo en 5 minutos");
+            }
+            if (result.IsNotAllowed)
+            {
+                return BadRequest("Usuario no permitido, verifique su correo electrónico");
+            }
             return BadRequest("Email o contraseña incorrectos");
         }
+
         private TokenDTO BuildTokenAsync(User user)
         {
             var claims = new List<Claim>

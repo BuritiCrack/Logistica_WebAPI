@@ -66,10 +66,10 @@ namespace LogisticoWebAPI.Frontend.Pages.Auth
 
         private async Task CreateUserAsync()
         {
+            isLoading = true;
             userDTO.UserName = userDTO.Email;
             userDTO.UserType = UserType.User;
-            isLoading = true;
-            var responseHttp = await Repository.PostAsync<UserDTO, TokenDTO>("/api/accounts/CreateUser", userDTO);
+            var responseHttp = await Repository.PostAsync<UserDTO>("/api/accounts/CreateUser", userDTO);
             isLoading = false;
             if (responseHttp.Error)
             {
@@ -78,7 +78,8 @@ namespace LogisticoWebAPI.Frontend.Pages.Auth
                 return;
             }
 
-            await LoginService.LoginAsync(responseHttp.Response!.Token);
+            await SweetAlertService.FireAsync("Éxito", "Usuario creado exitosamente. Por favor, confirme " +
+                "su cuenta a través del correo electrónico.", SweetAlertIcon.Info);
             NavigationManager.NavigateTo("/");
         }
     }

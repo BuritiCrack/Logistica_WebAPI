@@ -1,6 +1,7 @@
 ﻿using LogisticoWebAPI.Backend.UnitsOfWork.Interfaces;
 using LogisticoWebAPI.Shared.Entities;
 using LogisticoWebAPI.Shared.Enums;
+using Microsoft.EntityFrameworkCore;
 
 namespace LogisticoWebAPI.Backend.Data
 {
@@ -43,9 +44,13 @@ namespace LogisticoWebAPI.Backend.Data
 
         private async Task<User> CheckUserAsync(string document, string firsName, string lastName, string email, string phone, GenderEnum gender, string height, string age, string experiecie, string address, string skill, BankName bank, AccountType accountType, string accountNumber, string eps, string pensionFund, UserType userType)
         {
+
             var user = await _usersUnitOfWork.GetUserAsync(email);
             if (user == null)
             {
+                var city = await _context.Cities.FirstOrDefaultAsync(x => x.Name == "Medellín");
+                city ??= await _context.Cities.FirstOrDefaultAsync();
+
                 user = new User
                 {
                     Document = document,
@@ -66,11 +71,15 @@ namespace LogisticoWebAPI.Backend.Data
                     UserType = userType,
                     Eps = eps,
                     PensionFund = pensionFund,
-                    City = _context.Cities.FirstOrDefault()
+                    City = city
                 };
 
                 await _usersUnitOfWork.AddUserAsync(user, "123456");
                 await _usersUnitOfWork.AddUserToRoleAsync(user, userType.ToString());
+
+                var token = await _usersUnitOfWork.GenerateEmailConfirmationTokenAsync(user);
+                await _usersUnitOfWork.ConfirmEmailAsync(user, token);
+
             }
 
             return user;

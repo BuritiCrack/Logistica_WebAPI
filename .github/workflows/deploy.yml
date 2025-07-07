@@ -1,3 +1,4 @@
+
 name: Deploy to Production
 
 on:
@@ -50,6 +51,7 @@ jobs:
         LOGISTICO_DATABASE_CONNECTION: ${{ secrets.LOGISTICO_DATABASE_CONNECTION }}
         AZURE_STORAGE_CONNECTION: ${{ secrets.AZURE_STORAGE_CONNECTION }}
         JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
+        MAIL_SECRET: ${{ secrets.MAIL_SECRET }}
 
     - name: Publish frontend
       run: dotnet publish LogisticoWebAPI.Frontend/LogisticoWebAPI.Frontend.csproj -c Release -o ../publish-frontend

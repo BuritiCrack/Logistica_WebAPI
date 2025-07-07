@@ -34,10 +34,15 @@ namespace LogisticoWebAPI.Backend
                 ?? builder.Configuration["jwtKey"]
                 ?? throw new InvalidOperationException("JWT key not found.");
 
+            var mailPassword = Environment.GetEnvironmentVariable("MAIL_SECRET")
+                ?? builder.Configuration["Mail:Password"]
+                ?? throw new InvalidOperationException("Mail password not found.");
+
             // Agregar las configuraciones al contenedor de dependencias
             builder.Configuration["ConnectionStrings:LogisticoDatabase"] = connectionString;
             builder.Configuration["ConnectionStrings:AzureStorage"] = azureStorageConnection;
             builder.Configuration["jwtKey"] = jwtKey;
+            builder.Configuration["Mail:Password"] = mailPassword;
 
             // Add services to the container.
             builder.Services.AddControllers().AddJsonOptions(x =>
@@ -84,6 +89,7 @@ namespace LogisticoWebAPI.Backend
                 options.UseSqlServer(connectionString));
             builder.Services.AddTransient<SeedDb>();
             builder.Services.AddScoped<IFileStorage, FileStorage>();
+            builder.Services.AddScoped<IMailHelper, MailHelper>();
 
             builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             builder.Services.AddScoped(typeof(IGenericUnitOfWork<>), typeof(GenericUnitOfWork<>));
@@ -99,12 +105,18 @@ namespace LogisticoWebAPI.Backend
 
             builder.Services.AddIdentity<User, IdentityRole>(x =>
             {
+                x.Tokens.AuthenticatorTokenProvider = TokenOptions.DefaultAuthenticatorProvider;
+                x.SignIn.RequireConfirmedEmail = true;
                 x.User.RequireUniqueEmail = true;
                 x.Password.RequireDigit = false;
                 x.Password.RequiredUniqueChars = 0;
                 x.Password.RequireLowercase = false;
                 x.Password.RequireNonAlphanumeric = false;
                 x.Password.RequireUppercase = false;
+                x.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+                x.Lockout.MaxFailedAccessAttempts = 3;
+                x.Lockout.AllowedForNewUsers = true;
+
             })
                 .AddEntityFrameworkStores<DataContext>()
                 .AddDefaultTokenProviders();
