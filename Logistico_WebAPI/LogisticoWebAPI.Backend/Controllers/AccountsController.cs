@@ -48,6 +48,8 @@ namespace LogisticoWebAPI.Backend.Controllers
                     u.FullName,
                     u.PhoneNumber,
                     u.Email,
+                    u.EmailConfirmed,
+                    u.Photo,
                     u.Age,
                     u.UserType,
                     u.IsActive
