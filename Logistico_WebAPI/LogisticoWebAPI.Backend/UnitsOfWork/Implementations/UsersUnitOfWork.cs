@@ -56,5 +56,8 @@ namespace LogisticoWebAPI.Backend.UnitsOfWork.Implementations
 
         public async Task<IdentityResult> ResetPasswordAsync(User user, string token, string password)
             => await _usersRepository.ResetPasswordAsync(user, token, password);
+
+        public Task<IEnumerable<User>> GetAllUsersAsync()
+            => _usersRepository.GetAllUsersAsync();
     }
 }

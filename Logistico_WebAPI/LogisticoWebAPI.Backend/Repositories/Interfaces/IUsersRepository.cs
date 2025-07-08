@@ -8,6 +8,8 @@ namespace LogisticoWebAPI.Backend.Repositories.Interfaces
     {
         Task<User> GetUserAsync(string email);
 
+        Task<IEnumerable<User>> GetAllUsersAsync();
+
         Task<IdentityResult> AddUserAsync(User user, string password);
 
         Task CheckRoleAsync(string roleName);

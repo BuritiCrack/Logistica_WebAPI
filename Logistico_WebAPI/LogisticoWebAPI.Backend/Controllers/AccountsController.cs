@@ -33,6 +33,35 @@ namespace LogisticoWebAPI.Backend.Controllers
             _container = "users";
         }
 
+        [HttpGet("users")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> GetAllUsersAsync()
+        {
+            try
+            {
+                var users = await _usersUnitOfWork.GetAllUsersAsync();
+                var usersDTO = users.Select(u => new
+                {
+                    u.Document,
+                    u.FirstName,
+                    u.LastName,
+                    u.FullName,
+                    u.PhoneNumber,
+                    u.Email,
+                    u.Age,
+                    u.UserType,
+                    u.IsActive
+                });
+
+                return Ok(usersDTO);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Error al obtener los usuarios: {ex.Message}");
+            }
+        }
+        
+
         [HttpPost("RecoverPassword")]
         public async Task<IActionResult> RecoverPasswordAsync([FromBody] EmailDTO model)
         {

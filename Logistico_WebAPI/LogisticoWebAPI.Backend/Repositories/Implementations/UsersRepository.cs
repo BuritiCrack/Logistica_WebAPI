@@ -108,5 +108,12 @@ namespace LogisticoWebAPI.Backend.Repositories.Implementations
         {
             await _signInManager.SignOutAsync();
         }
+
+        public async Task<IEnumerable<User>> GetAllUsersAsync()
+        {
+            return await  _context.Users
+                .OrderBy(u => u.IsActive)
+                .ToListAsync();
+        }
     }
 }
