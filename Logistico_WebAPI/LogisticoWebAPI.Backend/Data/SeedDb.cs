@@ -19,6 +19,7 @@ namespace LogisticoWebAPI.Backend.Data
         public async Task SeedAsync()
         {
             await _context.Database.EnsureCreatedAsync();
+            await CheckStatesFullAsync();
             await CheckStatesAsync();
             await CheckRolesAsync();
             await CheckUserAsync(
@@ -40,6 +41,15 @@ namespace LogisticoWebAPI.Backend.Data
                 "Colpensiones",
                 UserType.Admin
                 );
+        }
+
+        private async Task CheckStatesFullAsync()
+        {
+            if(!_context.States.Any())
+            {
+                var statesCitiesSQLScrip = File.ReadAllText("Data\\StatesAndCitiesFromColombiaOnly.sql");
+                await _context.Database.ExecuteSqlRawAsync(statesCitiesSQLScrip);
+            }
         }
 
         private async Task<User> CheckUserAsync(string document, string firsName, string lastName, string email, string phone, GenderEnum gender, string height, string age, string experiecie, string address, string skill, BankName bank, AccountType accountType, string accountNumber, string eps, string pensionFund, UserType userType)
