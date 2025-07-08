@@ -24,11 +24,12 @@ namespace LogisticoWebAPI.Shared.Entities
 
         [Required(ErrorMessage = "El campo {0} es obligatorio.")]
         [Display(Name = "Fecha y Hora de Inicio")]
-        public DateTime FechaHoraInicio { get; set; }
+        public DateTime StartDate { get; set; }
+
 
         [Required(ErrorMessage = "El campo {0} es obligatorio.")]
         [Display(Name = "Fecha y Hora de Fin")]
-        public DateTime FechaHoraFin { get; set; }
+        public DateTime EndDate { get; set; }
 
         [Required(ErrorMessage = "El campo {0} es obligatorio.")]
         [MaxLength(50, ErrorMessage = "El campo {0} no puede tener mas de {1} caracteres.")]
@@ -45,7 +46,13 @@ namespace LogisticoWebAPI.Shared.Entities
         [Display(Name = "Foto del Evento")]
         public string? Photo { get; set; }
 
+        [Display(Name = "Fecha de Creación")]
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
         public ICollection<EventUser>? EventUsers { get; set; }
+
+        [Display(Name = "Número de Participantes")]
+        public int NumberOfParticipants => EventUsers?.Count ?? 0;
 
     }
 }

@@ -39,15 +39,15 @@
                 <!-- Fecha y Hora de Inicio -->
                 <div class="col-md-6 mb-3">
                     <label class="form-label">Fecha y Hora de Inicio:</label>
-                    <InputDate Type="InputDateType.DateTimeLocal" class="form-control" @bind-Value="Event.FechaHoraInicio" />
-                    <ValidationMessage For="@(() => Event.FechaHoraInicio)" />
+                    <InputDate Type="InputDateType.DateTimeLocal" class="form-control" @bind-Value="Event.StartDate" />
+                    <ValidationMessage For="@(() => Event.StartDate)" />
                 </div>
                 
                 <!-- Fecha y Hora de Fin -->
                 <div class="col-md-6 mb-3">
                     <label class="form-label">Fecha y Hora de Fin:</label>
-                    <InputDate Type="InputDateType.DateTimeLocal" class="form-control" @bind-Value="Event.FechaHoraFin" />
-                    <ValidationMessage For="@(() => Event.FechaHoraFin)" />
+                    <InputDate Type="InputDateType.DateTimeLocal" class="form-control" @bind-Value="Event.EndDate" />
+                    <ValidationMessage For="@(() => Event.EndDate)" />
                 </div>
             </div>
             

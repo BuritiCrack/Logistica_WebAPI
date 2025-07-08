@@ -27,10 +27,10 @@ namespace LogisticoWebAPI.Frontend.Pages.Events
 
             // Establecer fecha y hora de inicio
             var startTime = new DateTime(now.Year, now.Month, now.Day, now.Hour, 0, 0).AddHours(1);
-            Event.FechaHoraInicio = startTime;
+            Event.StartDate = startTime;
 
             // Establecer fecha y hora de fin: 12 horas después del inicio
-            Event.FechaHoraFin = startTime.AddHours(12);
+            Event.EndDate = startTime.AddHours(12);
         }
 
         private async Task CreateAsync()
