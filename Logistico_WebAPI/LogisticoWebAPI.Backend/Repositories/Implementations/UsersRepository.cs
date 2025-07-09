@@ -112,7 +112,8 @@ namespace LogisticoWebAPI.Backend.Repositories.Implementations
         public async Task<IEnumerable<User>> GetAllUsersAsync()
         {
             return await  _context.Users
-                .OrderBy(u => u.IsActive)
+                .OrderByDescending(u => u.IsActive)
+                .ThenBy(u => u.FirstName)
                 .ToListAsync();
         }
     }

@@ -77,7 +77,7 @@ namespace LogisticoWebAPI.Shared.Entities
 
         [Display(Name = "Estado del usuario")]
         [Required(ErrorMessage = "El campo {0} es obligatorio")]
-        public bool? IsActive { get; set; } = true;
+        public bool IsActive { get; set; } = false;
 
         [Display(Name = "Foto")]
         public string? Photo { get; set; }

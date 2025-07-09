@@ -5,6 +5,7 @@ using LogisticoWebAPI.Shared.Entities;
 using LogisticoWebAPI.Shared.Responses;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -52,6 +53,7 @@ namespace LogisticoWebAPI.Backend.Controllers
                     u.Photo,
                     u.Age,
                     u.Id,
+                    u.LockoutEnd,
                     u.UserType,
                     u.IsActive
                 });
@@ -216,7 +218,28 @@ namespace LogisticoWebAPI.Backend.Controllers
                 {
                     return NotFound();
                 }
+
+                if (!user.EmailConfirmed)
+                {
+                    if (!user.IsActive)
+                    {
+                        return BadRequest("El usuario no ha confirmado su correo electrónico, no se puede activar.");
+                    }
+                    else
+                    {
+                        // Si está activo pero sin confirmación, forzar desactivación
+                        user.IsActive = false;
+                        await _usersUnitOfWork.UpdateUserAsync(user);
+                        return BadRequest("Usuario desactivado por falta de verificación de correo");
+                    }
+                }
+
                 user.IsActive = !user.IsActive;
+
+                if (user.IsActive)
+                {
+                    user.LockoutEnd = DateTime.UtcNow;
+                }
 
                 var result = await _usersUnitOfWork.UpdateUserAsync(user);
                 if (result.Succeeded)
