@@ -208,13 +208,15 @@
                                             </button>
                                             @if (user.IsActive == true)
                                             {
-                                                <button class="btn btn-outline-danger btn-sm" title="Desactivar usuario">
+                                                <button class="btn btn-outline-danger btn-sm" @onclick="() => DeactivateUser(user)"
+                                                    title="Desactivar usuario">
                                                     <i class="fa fa-user-times"></i>
                                                 </button>
                                             }
                                             else
                                             {
-                                                <button class="btn btn-outline-success btn-sm" title="Activar usuario">
+                                                <button class="btn btn-outline-success btn-sm" @onclick="() => DeactivateUser(user)"
+                                                    title="Activar usuario">
                                                     <i class="fa fa-user-check"></i>
                                                 </button>
                                             }

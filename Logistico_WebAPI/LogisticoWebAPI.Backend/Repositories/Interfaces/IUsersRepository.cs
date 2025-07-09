@@ -1,6 +1,7 @@
 ﻿using LogisticoWebAPI.Shared.DTOs;
 using LogisticoWebAPI.Shared.Entities;
 using Microsoft.AspNetCore.Identity;
+using Org.BouncyCastle.Bcpg.OpenPgp;
 
 namespace LogisticoWebAPI.Backend.Repositories.Interfaces
 {

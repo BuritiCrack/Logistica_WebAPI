@@ -51,6 +51,7 @@ namespace LogisticoWebAPI.Backend.Controllers
                     u.EmailConfirmed,
                     u.Photo,
                     u.Age,
+                    u.Id,
                     u.UserType,
                     u.IsActive
                 });
@@ -196,6 +197,32 @@ namespace LogisticoWebAPI.Backend.Controllers
                     return Ok(BuildToken(currentUser));
                 }
 
+                return BadRequest(result.Errors.FirstOrDefault());
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPut("{id:guid}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> PutState(string id)
+        {
+            try
+            {
+                var user = await _usersUnitOfWork.GetUserAsync(new Guid(id));
+                if (user == null)
+                {
+                    return NotFound();
+                }
+                user.IsActive = !user.IsActive;
+
+                var result = await _usersUnitOfWork.UpdateUserAsync(user);
+                if (result.Succeeded)
+                {
+                    return NoContent();
+                }
                 return BadRequest(result.Errors.FirstOrDefault());
             }
             catch (Exception ex)

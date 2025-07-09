@@ -1,11 +1,12 @@
 using CurrieTechnologies.Razor.SweetAlert2;
 using LogisticoWebAPI.Frontend.Repositories;
-using LogisticoWebAPI.Shared.DTOs;
 using LogisticoWebAPI.Shared.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
 
 namespace LogisticoWebAPI.Frontend.Pages.Users
 {
+    [Authorize(Roles = "Admin")]
     public partial class UsersIndex
     {
         public List<User>? Users { get; set; }
@@ -14,7 +15,7 @@ namespace LogisticoWebAPI.Frontend.Pages.Users
         [Inject] private NavigationManager NavigationManager { get; set; } = null!;
         [Inject] private SweetAlertService SweetAlertService { get; set; } = null!;
 
-        protected async override Task OnInitializedAsync()
+        protected override async Task OnInitializedAsync()
         {
             await LoadAsync();
         }
@@ -29,6 +30,42 @@ namespace LogisticoWebAPI.Frontend.Pages.Users
                 return;
             }
             Users = responseHttp.Response;
+        }
+
+        private async Task DeactivateUser(User user)
+        {
+            var result = await SweetAlertService.FireAsync(new SweetAlertOptions
+            {
+                Title = "Confirmacion",
+                Text = $"¿Deseas cambiar el estado del usuario: {user.FullName}?",
+                Icon = SweetAlertIcon.Question,
+                ShowCancelButton = true
+            });
+
+            var confirm = string.IsNullOrEmpty(result.Value);
+            if (confirm)
+            {
+                return;
+            }
+
+            var responseHttp = await Repository.PutAsync<User>($"api/accounts/{user.Id}", user);
+            if (responseHttp.Error)
+            {
+                var message = await responseHttp.GetErrorMessageAsync();
+                await SweetAlertService.FireAsync("Errro", message, SweetAlertIcon.Error);
+                return;
+            }
+
+            await LoadAsync();
+            var toas = SweetAlertService.Mixin(new SweetAlertOptions
+            {
+                Icon = SweetAlertIcon.Success,
+                Toast = true,
+                Position = SweetAlertPosition.TopEnd,
+                ShowConfirmButton = false,
+                Timer = 3000
+            });
+            await toas.FireAsync(message: "Registro actualizado con éxito");
         }
     }
 }

@@ -35,5 +35,6 @@ namespace LogisticoWebAPI.Backend.UnitsOfWork.Interfaces
         Task<IdentityResult> ResetPasswordAsync(User user, string token, string password);
 
         Task<IEnumerable<User>> GetAllUsersAsync();
+
     }
 }
