@@ -22,11 +22,12 @@ namespace LogisticoWebAPI.Shared.Entities
         [Display(Name = "Lugar del Evento")]
         public string Place { get; set; } = null!;
 
+        [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd hh:mm tt}")]
         [Required(ErrorMessage = "El campo {0} es obligatorio.")]
         [Display(Name = "Fecha y Hora de Inicio")]
         public DateTime StartDate { get; set; }
 
-
+        [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd hh:mm tt}")]
         [Required(ErrorMessage = "El campo {0} es obligatorio.")]
         [Display(Name = "Fecha y Hora de Fin")]
         public DateTime EndDate { get; set; }

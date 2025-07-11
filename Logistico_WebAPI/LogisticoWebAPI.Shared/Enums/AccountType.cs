@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace LogisticoWebAPI.Shared.Enums
 {
@@ -11,6 +6,7 @@ namespace LogisticoWebAPI.Shared.Enums
     {
         [Display(Name = "Ahorros")]
         Savings,
+
         [Display(Name = "Corriente")]
         Checking,
     }

@@ -21,6 +21,7 @@ namespace LogisticoWebAPI.Backend.Data
             modelBuilder.Entity<State>().HasIndex(s => s.Name).IsUnique();
             modelBuilder.Entity<Event>().HasIndex(e => new { e.StartDate, e.Name }).IsUnique();
             modelBuilder.Entity<City>().HasIndex(c => new { c.StateId, c.Name }).IsUnique(); // Esto asegura que no haya dos ciudades con el mismo nombre en el mismo estado.
-        }
+            modelBuilder.Entity<EventUser>().HasIndex(eu => new { eu.EventId, eu.UserId }).IsUnique(); // Esto asegura que un usuario no pueda registrarse más de una vez al mismo evento.
+        } 
     }
 }
