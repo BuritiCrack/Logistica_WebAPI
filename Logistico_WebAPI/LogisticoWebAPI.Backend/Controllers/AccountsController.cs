@@ -5,7 +5,6 @@ using LogisticoWebAPI.Shared.Entities;
 using LogisticoWebAPI.Shared.Responses;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -53,6 +52,7 @@ namespace LogisticoWebAPI.Backend.Controllers
                     u.Photo,
                     u.Age,
                     u.Id,
+                    u.PensionFund,
                     u.LockoutEnd,
                     u.UserType,
                     u.IsActive
@@ -65,7 +65,55 @@ namespace LogisticoWebAPI.Backend.Controllers
                 return BadRequest($"Error al obtener los usuarios: {ex.Message}");
             }
         }
-        
+
+        [HttpGet("user/{id:guid}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> GetUserAsync(string id)
+        {
+            var user = await _usersUnitOfWork.GetUserAsync(new Guid(id));
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            var userDTO = new
+            {
+                user.Document,
+                user.FirstName,
+                user.LastName,
+                user.FullName,
+                user.PhoneNumber,
+                user.Email,
+                user.EmailConfirmed,
+                user.Photo,
+                user.Height,
+                user.Gender,
+                user.Skills,
+                user.Experience,
+                user.Eps,
+                user.Address,
+                user.Age,
+                user.Bank,
+                user.AccountType,
+                user.AccountNumber,
+                user.PensionFund,
+                user.LockoutEnd,
+                user.UserType,
+                user.IsActive,
+                City = user.City != null ? new
+                {
+                    user.City.Id,
+                    user.City.Name,
+                    State = user.City.State != null ? new
+                    {
+                        user.City.State.Id,
+                        user.City.State.Name
+                    } : null
+                } : null
+            };
+
+            return Ok(userDTO);
+        }
 
         [HttpPost("RecoverPassword")]
         public async Task<IActionResult> RecoverPasswordAsync([FromBody] EmailDTO model)
@@ -132,7 +180,6 @@ namespace LogisticoWebAPI.Backend.Controllers
 
             return BadRequest(response.Message);
         }
-
 
         [HttpPost("changePassword")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]

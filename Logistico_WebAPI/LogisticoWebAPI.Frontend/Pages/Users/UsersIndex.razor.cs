@@ -34,12 +34,15 @@ namespace LogisticoWebAPI.Frontend.Pages.Users
 
         private async Task DeactivateUser(User user)
         {
+            var action = user.IsActive ? "desactivar" : "activar";
             var result = await SweetAlertService.FireAsync(new SweetAlertOptions
             {
-                Title = "Confirmacion",
-                Text = $"¿Deseas cambiar el estado del usuario: {user.FullName}?",
+                Title = "Confirmación",
+                Text = $"¿Estás seguro de que deseas {action} a {user.FullName}?",
                 Icon = SweetAlertIcon.Question,
-                ShowCancelButton = true
+                ShowCancelButton = true,
+                ConfirmButtonText = $"Sí, {action}",
+                CancelButtonText = "Cancelar"
             });
 
             var confirm = string.IsNullOrEmpty(result.Value);

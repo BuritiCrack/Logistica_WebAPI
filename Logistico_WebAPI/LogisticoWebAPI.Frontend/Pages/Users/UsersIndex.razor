@@ -200,12 +200,13 @@
                                             Usuario desde: @(user.LockoutEnd?.ToString("dd/MM/yyyy") ?? "N/A")
                                         </small>
                                         <div class="btn-group">
-                                            <button class="btn btn-outline-primary btn-sm" title="Ver detalles">
+                                            <a class="btn btn-outline-primary btn-sm" href="/user/details/@user.Id"
+                                                    title="Ver detalles">
                                                 <i class="fa fa-eye"></i>
-                                            </button>
-                                            <button class="btn btn-outline-warning btn-sm" title="Editar usuario">
+                                            </a>
+                                            <a class="btn btn-outline-warning btn-sm" href="/EditUser" title="Editar usuario">
                                                 <i class="fa fa-edit"></i>
-                                            </button>
+                                            </a>
                                             @if (user.IsActive == true)
                                             {
                                                 <button class="btn btn-outline-danger btn-sm" @onclick="() => DeactivateUser(user)"
