@@ -37,11 +37,11 @@ namespace LogisticoWebAPI.Frontend.Pages.Users
             var action = user.IsActive ? "desactivar" : "activar";
             var result = await SweetAlertService.FireAsync(new SweetAlertOptions
             {
-                Title = "Confirmación",
-                Text = $"¿Estás seguro de que deseas {action} a {user.FullName}?",
+                Title = "Confirmaciï¿½n",
+                Text = $"ï¿½Estï¿½s seguro de que deseas {action} a {user.FullName}?",
                 Icon = SweetAlertIcon.Question,
                 ShowCancelButton = true,
-                ConfirmButtonText = $"Sí, {action}",
+                ConfirmButtonText = $"Sï¿½, {action}",
                 CancelButtonText = "Cancelar"
             });
 
@@ -68,7 +68,7 @@ namespace LogisticoWebAPI.Frontend.Pages.Users
                 ShowConfirmButton = false,
                 Timer = 3000
             });
-            await toas.FireAsync(message: "Registro actualizado con éxito");
+            await toas.FireAsync(message: "Registro actualizado con ï¿½xito");
         }
     }
 }

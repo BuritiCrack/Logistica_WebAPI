@@ -1,11 +1,13 @@
 using CurrieTechnologies.Razor.SweetAlert2;
 using LogisticoWebAPI.Frontend.Repositories;
 using LogisticoWebAPI.Shared.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
 using System.Net;
 
 namespace LogisticoWebAPI.Frontend.Pages.Events
 {
+    [Authorize(Roles = "User,Admin")]
     public partial class EventsIndex
     {
         public List<Event>? Events { get; set; }
@@ -73,6 +75,30 @@ namespace LogisticoWebAPI.Frontend.Pages.Events
             });
             await toas.FireAsync(message: "Registro borrado con éxito");
 
+        }
+
+        private async Task AppyToEventAsync(int eventId)
+        {
+            var ApplyToEventDTO = new ApplyToEventDTO
+            {
+                EventId = eventId
+            };
+            var responseHttp = await Repository.PostAsync("api/EventApplications/apply", ApplyToEventDTO);
+            if (responseHttp.Error)
+            {
+                var message = await responseHttp.GetErrorMessageAsync();
+                await SweetAlertService.FireAsync("Error", message, SweetAlertIcon.Error);
+                return;
+            }
+            await LoadAsycn();
+            var toas = SweetAlertService.Mixin(new SweetAlertOptions
+            {
+                Toast = true,
+                Position = SweetAlertPosition.TopEnd,
+                ShowConfirmButton = false,
+                Timer = 3000
+            });
+            await toas.FireAsync(icon: SweetAlertIcon.Success, message: "Postulación enviada con éxito");
         }
     }
     

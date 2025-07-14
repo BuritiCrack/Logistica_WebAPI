@@ -1,0 +1,142 @@
+@page "/myapplications"
+
+<h3>Mis Aplicaciones a Eventos</h3>
+
+@if (Applications == null)
+{
+    <Loading />
+}
+else if (!Applications.Any())
+{
+    <div class="alert alert-info">
+        <h4>No tienes aplicaciones registradas</h4>
+        <p>Aún no te has aplicado a ningún evento. <a href="/events">Ver eventos disponibles</a></p>
+    </div>
+}
+else
+{
+    <div class="row">
+        @foreach (var application in Applications!)
+        {
+            <div class="col-md-6 mb-4">
+                <div class="card h-100">
+                    @if (!string.IsNullOrEmpty(application.Event?.Photo))
+                    {
+                        <img src="@application.Event.Photo" class="card-img-top" alt="@application.Event.Name" style="height: 200px; object-fit: cover;">
+                    }
+                    else
+                    {
+                        <div class="card-img-top bg-secondary d-flex align-items-center justify-content-center" style="height: 200px;">
+                            <i class="fa fa-calendar-alt fa-3x text-white"></i>
+                        </div>
+                    }
+                    
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">@application.Event?.Name</h5>
+                        <p class="card-text">@application.Event?.Description</p>
+                        
+                        <div class="mt-auto">
+                            <div class="row mb-2">
+                                <div class="col">
+                                    <small class="text-muted">
+                                        <i class="fa fa-map-marker-alt"></i> @application.Event?.Place
+                                    </small>
+                                </div>
+                            </div>
+                            
+                            <div class="row mb-2">
+                                <div class="col">
+                                    <small class="text-muted">
+                                        <i class="fa fa-clock"></i>
+                                        Inicio: @application.Event?.StartDate.ToString("dd/MM/yyyy HH:mm")
+                                    </small>
+                                </div>
+                            </div>
+                            
+                            <div class="row mb-2">
+                                <div class="col">
+                                    <small class="text-muted">
+                                        <i class="fa fa-clock"></i>
+                                        Fin: @application.Event?.EndDate.ToString("dd/MM/yyyy HH:mm")
+                                    </small>
+                                </div>
+                            </div>
+                            
+                            <div class="row mb-2">
+                                <div class="col">
+                                    <small class="text-muted">
+                                        <i class="fa fa-calendar-check"></i>
+                                        Aplicaste el: @application.RegistrationDate.ToString("dd/MM/yyyy HH:mm")
+                                    </small>
+                                </div>
+                            </div>
+                            
+                            @if (!string.IsNullOrEmpty(application.Event?.MealType))
+                            {
+                                <div class="row mb-2">
+                                    <div class="col">
+                                        <small class="text-muted">
+                                            <i class="fa fa-utensils"></i> @application.Event.MealType
+                                        </small>
+                                    </div>
+                                </div>
+                            }
+                            
+                            <div class="row mb-3">
+                                <div class="col">
+                                    <span class="badge bg-success fs-6">
+                                        <i class="fa fa-dollar-sign"></i> @application.Event?.Payment.ToString("C2")
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- Estado de la aplicación -->
+                            <div class="row mb-3">
+                                <div class="col">
+                                    <span class="badge @GetStatusBadgeClass(application.Status) fs-6">
+                                        <i class="fa @GetStatusIcon(application.Status)"></i> @GetStatusText(application.Status)
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- Comentarios del administrador -->
+                            @if (!string.IsNullOrEmpty(application.AdminComments))
+                            {
+                                <div class="row mb-3">
+                                    <div class="col">
+                                        <div class="alert alert-info">
+                                            <small>
+                                                <strong>Comentarios del administrador:</strong><br />
+                                                @application.AdminComments
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+
+                            <!-- Botones de acción -->
+                            <div class="row">
+                                <div class="col">
+                                    <div class="d-flex flex-wrap gap-2 justify-content-center">
+                                        @if (application.Status == ApplicationStatus.Pending || application.Status == ApplicationStatus.Accepted)
+                                        {
+                                            <button class="btn btn-danger btn-sm"
+                                                    @onclick="() => CancelApplicationAsync(application.Id)">
+                                                <i class="fa fa-times"></i> Cancelar Aplicación
+                                            </button>
+                                        }
+                                        
+                                        <a class="btn btn-info btn-sm" href="/events">
+                                            <i class="fa fa-arrow-left"></i> Ver más eventos
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+
