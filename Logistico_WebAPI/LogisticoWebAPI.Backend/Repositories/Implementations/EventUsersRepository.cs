@@ -102,10 +102,7 @@ namespace LogisticoWebAPI.Backend.Repositories.Implementations
         public async Task<ActionResponses<UpdateApplicationStatusDTO>> UpdateApplicationStatusAsync(string email, UpdateApplicationStatusDTO updateApplicationStatusDTO)
         {
             var application = await _context.EventUsers
-                .Include(eu => eu.Event)
-                .Include(eu => eu.User)
                 .FirstOrDefaultAsync(eu => eu.Id == updateApplicationStatusDTO.ApplicationId);
-
             if (application == null)
             {
                 return new ActionResponses<UpdateApplicationStatusDTO>
@@ -124,10 +121,18 @@ namespace LogisticoWebAPI.Backend.Repositories.Implementations
                     Message = "No se puede cambiar el estado de una aplicación cancelada por el usuario."
                 };
             }
-            try
+            var user = await _usersRepository.GetUserAsync(email);
+            if (user == null)
+            {
+                return new ActionResponses<UpdateApplicationStatusDTO>
+                {
+                    WassSuccess = false,
+                    Message = "El usuario especificado no existe."
+                };
+            }
+                try
             {
                 application.Status = updateApplicationStatusDTO.NewStatus;
-                application.AdminComments = updateApplicationStatusDTO.AdminComments;
                 application.LastUpdated = DateTime.UtcNow;
 
                 await _context.SaveChangesAsync();
@@ -218,13 +223,6 @@ namespace LogisticoWebAPI.Backend.Repositories.Implementations
 
         public async Task<ActionResponses<IEnumerable<EventUser>>> GetUserApplicationsAsync(string email)
         {
-            var status = new[]
-            {
-                ApplicationStatus.Pending,
-                ApplicationStatus.Accepted,
-                ApplicationStatus.Rejected,
-                ApplicationStatus.CancelledByUser
-            };
             var applications = await _context.EventUsers
                 .Include(eu => eu.Event)
                 .Include(eu => eu.User)

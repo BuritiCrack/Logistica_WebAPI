@@ -71,53 +71,17 @@ namespace LogisticoWebAPI.Backend.Controllers
         }
 
         
-        //[HttpPut("{eventId:int}/user/{userId}/status")]
-        //[Authorize(Roles = "Admin")]
-        //public async Task<IActionResult> UpdateApplicationStatusAsync([FromBody] UpdateApplicationStatusDTO statusDto)
-        //{
-        //    try
-        //    {
-        //        // Buscar la aplicación específica
-        //        var userApplications = await _eventUsersUnitOfWork.GetUserApplicationsAsync(User.Identity!.Name!);
-        //        if (!userApplications.WassSuccess)
-        //        {
-        //            return BadRequest(new ActionResponses<UpdateApplicationStatusDTO>
-        //            {
-        //                WassSuccess = false,
-        //                Message = userApplications.Message
-        //            });
-        //        }
+        [HttpPut("updatestatus")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> UpdateApplicationStatusAsync(UpdateApplicationStatusDTO statusDto)
+        {
+            var action = await _eventUsersUnitOfWork.UpdateApplicationStatusAsync(User.Identity!.Name!, statusDto);
+            if (action.WassSuccess)
+            {
+                return Ok(action.Result);
+            }
+            return BadRequest(action.Message);
 
-        //        var application = userApplications.Result!.FirstOrDefault(a => a.EventId == statusDto.ApplicationId);
-        //        if (application == null)
-        //        {
-        //            return NotFound(new ActionResponses<UpdateApplicationStatusDTO>
-        //            {
-        //                WassSuccess = false,
-        //                Message = "Aplicación no encontrada."
-        //            });
-        //        }
-
-        //        // Actualizar el estado usando el UnitOfWork
-        //        var result = await _eventUsersUnitOfWork.UpdateApplicationStatusAsync(User.Identity!.Name!, statusDto);
-        //        if (!result.WassSuccess)
-        //        {
-        //            return BadRequest(new ActionResponses<UpdateApplicationStatusDTO>
-        //            {
-        //                WassSuccess = false,
-        //                Message = result.Message
-        //            });
-        //        }
-
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return StatusCode(500, new ActionResponses<UpdateApplicationStatusDTO>
-        //        {
-        //            WassSuccess = false,
-        //            Message = $"Error interno del servidor: {ex.Message}"
-        //        });
-        //    }
-        //}
+        }
     }
 }

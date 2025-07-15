@@ -1,0 +1,226 @@
+﻿@page "/events/applications/{Id:int}"
+
+<h3>Aplicaciones al Evento</h3>
+
+@if (IsLoading)
+{
+    <Loading />
+}
+else if (Applications == null || !Applications.Any())
+{
+    <div class="alert alert-info">
+        <h4>No hay aplicaciones para este evento</h4>
+        <p>Aún no se han registrado aplicaciones para este evento.</p>
+    </div>
+}
+else
+{
+    <!-- Información del evento -->
+    @if (Applications.First().Event != null)
+    {
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fa fa-calendar-alt"></i> @Applications.First().Event!.Name
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>Lugar:</strong> @Applications.First().Event!.Place</p>
+                        <p><strong>Fecha de inicio:</strong> @Applications.First().Event!.StartDate.ToString("dd/MM/yyyy HH:mm")</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Fecha de fin:</strong> @Applications.First().Event!.EndDate.ToString("dd/MM/yyyy HH:mm")</p>
+                        <p><strong>Pago:</strong> @Applications.First().Event!.Payment.ToString("C2")</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    <!-- Lista de aplicaciones -->
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">
+                <i class="fa fa-users"></i> Aplicaciones (@Applications.Count)
+            </h5>
+            <button class="btn btn-secondary btn-sm" @onclick="GoBack">
+                <i class="fa fa-arrow-left"></i> Volver a Eventos
+            </button>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Usuario</th>
+                            <th>Documento</th>
+                            <th>Teléfono</th>
+                            <th>Fecha de Aplicación</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var application in Applications!)
+                        {
+                            <tr>
+                                <!-- Usuario -->
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        @if (!string.IsNullOrEmpty(application.User?.Photo))
+                                        {
+                                            <img src="@application.User.Photo" alt="Foto" 
+                                                 class="rounded-circle me-3" style="width: 40px; height: 40px; object-fit: cover;">
+                                        }
+                                        else
+                                        {
+                                            <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center me-3" 
+                                                 style="width: 40px; height: 40px;">
+                                                <i class="fa fa-user text-white"></i>
+                                            </div>
+                                        }
+                                        <div>
+                                            <div class="fw-bold">@application.User?.FullName</div>
+                                            <small class="text-muted">@application.User?.Email</small>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <!-- Documento -->
+                                <td>
+                                    <span class="badge bg-light text-dark">
+                                        @application.User?.Document
+                                    </span>
+                                </td>
+
+                                <!-- Teléfono -->
+                                <td>
+                                    @if (!string.IsNullOrEmpty(application.User?.PhoneNumber))
+                                    {
+                                        <a href="tel:@application.User.PhoneNumber" class="text-decoration-none">
+                                            <i class="fa fa-phone"></i> @application.User.PhoneNumber
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">No disponible</span>
+                                    }
+                                </td>
+
+                                <!-- Fecha de Aplicación -->
+                                <td>
+                                    <small>
+                                        @application.RegistrationDate.ToString("dd/MM/yyyy")
+                                        <br />
+                                        @application.RegistrationDate.ToString("HH:mm")
+                                    </small>
+                                </td>
+
+                                <!-- Estado -->
+                                <td>
+                                    <span class="badge @GetStatusBadgeClass(application.Status) fs-6">
+                                        <i class="fa @GetStatusIcon(application.Status)"></i>
+                                        @GetStatusText(application.Status)
+                                    </span>
+                                </td>
+
+                                <!-- Acciones -->
+                                <td>
+                                    @if (application.Status == ApplicationStatus.Pending)
+                                    {
+                                        <div class="btn-group" role="group">
+                                            <button class="btn btn-success btn-sm" 
+                                                    @onclick="() => UpdateApplicationStatusAsync(application.Id, ApplicationStatus.Accepted)"
+                                                    title="Aceptar aplicación">
+                                                <i class="fa fa-check"></i> Aceptar
+                                            </button>
+                                            <button class="btn btn-danger btn-sm" 
+                                                    @onclick="() => UpdateApplicationStatusAsync(application.Id, ApplicationStatus.Rejected)"
+                                                    title="Rechazar aplicación">
+                                                <i class="fa fa-times"></i> Rechazar
+                                            </button>
+                                        </div>
+                                    }
+                                    else if (application.Status == ApplicationStatus.Accepted)
+                                    {
+                                        <button class="btn btn-warning btn-sm" 
+                                                @onclick="() => UpdateApplicationStatusAsync(application.Id, ApplicationStatus.Rejected)"
+                                                title="Cambiar a rechazado">
+                                            <i class="fa fa-times"></i> Rechazar
+                                        </button>
+                                    }
+                                    else if (application.Status == ApplicationStatus.Rejected)
+                                    {
+                                        <button class="btn btn-success btn-sm" 
+                                                @onclick="() => UpdateApplicationStatusAsync(application.Id, ApplicationStatus.Accepted)"
+                                                title="Cambiar a aceptado">
+                                            <i class="fa fa-check"></i> Aceptar
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">
+                                            <i class="fa fa-ban"></i> Cancelado
+                                        </span>
+                                    }
+                                </td>
+                            </tr>
+
+                            <!-- Fila expandible para comentarios (si existen) -->
+                            @if (!string.IsNullOrEmpty(application.AdminComments))
+                            {
+                                <tr class="table-light">
+                                    <td colspan="6">
+                                        <div class="ps-4">
+                                            <strong>Comentarios del administrador:</strong>
+                                            <p class="mb-0 mt-1">@application.AdminComments</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Resumen de estadísticas -->
+    <div class="row mt-4">
+        <div class="col-md-3">
+            <div class="card text-center bg-primary text-white">
+                <div class="card-body">
+                    <h5>@Applications.Count(a => a.Status == ApplicationStatus.Pending)</h5>
+                    <small>Pendientes</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center bg-success text-white">
+                <div class="card-body">
+                    <h5>@Applications.Count(a => a.Status == ApplicationStatus.Accepted)</h5>
+                    <small>Aceptados</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center bg-danger text-white">
+                <div class="card-body">
+                    <h5>@Applications.Count(a => a.Status == ApplicationStatus.Rejected)</h5>
+                    <small>Rechazados</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center bg-secondary text-white">
+                <div class="card-body">
+                    <h5>@Applications.Count(a => a.Status == ApplicationStatus.CancelledByUser)</h5>
+                    <small>Cancelados</small>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
