@@ -11,6 +11,7 @@ namespace LogisticoWebAPI.Frontend.Pages.Events
     public partial class EventsIndex
     {
         public List<Event>? Events { get; set; }
+        private HashSet<int> AppliedEventIds { get; set; } = new();
 
         [Inject] private IRepository Repository { get; set; } = null!;
         [Inject] private NavigationManager NavigationManager { get; set; } = null!;
@@ -19,6 +20,7 @@ namespace LogisticoWebAPI.Frontend.Pages.Events
         protected async override Task OnInitializedAsync()
         {
             await LoadAsycn();
+            await LoadUserApplicationsAsync();
         }
 
         private async Task LoadAsycn()
@@ -31,6 +33,18 @@ namespace LogisticoWebAPI.Frontend.Pages.Events
                 return;
             }
             Events = responseHttp.Response;
+        }
+
+        private async Task LoadUserApplicationsAsync()
+        {
+            var responseHttp = await Repository.GetAsync<List<EventUser>>("api/eventapplications/myapplications");
+            if (!responseHttp.Error && responseHttp.Response != null)
+            {
+                AppliedEventIds = responseHttp.Response
+                    .Where(eu => eu.Status != LogisticoWebAPI.Shared.Enums.ApplicationStatus.CancelledByUser)
+                    .Select(eu => eu.EventId)
+                    .ToHashSet();
+            }
         }
 
         private async Task DeleteAsync(Event @event)
@@ -74,7 +88,6 @@ namespace LogisticoWebAPI.Frontend.Pages.Events
                 Timer = 3000
             });
             await toas.FireAsync(message: "Registro borrado con éxito");
-
         }
 
         private async Task AppyToEventAsync(int eventId)
@@ -90,7 +103,11 @@ namespace LogisticoWebAPI.Frontend.Pages.Events
                 await SweetAlertService.FireAsync("Error", message, SweetAlertIcon.Error);
                 return;
             }
-            await LoadAsycn();
+
+            // Agregar el ID del evento a la lista de aplicados
+            AppliedEventIds.Add(eventId);
+            StateHasChanged(); // Forzar re-renderizado
+
             var toas = SweetAlertService.Mixin(new SweetAlertOptions
             {
                 Toast = true,
@@ -99,6 +116,11 @@ namespace LogisticoWebAPI.Frontend.Pages.Events
                 Timer = 3000
             });
             await toas.FireAsync(icon: SweetAlertIcon.Success, message: "Postulación enviada con éxito");
+        }
+
+        private bool HasAppliedToEvent(int eventId)
+        {
+            return AppliedEventIds.Contains(eventId);
         }
     }
     
