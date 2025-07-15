@@ -41,7 +41,15 @@ namespace LogisticoWebAPI.Backend.Repositories.Implementations
                     WassSuccess = false,
                     Message = "El usuario especificado no existe."
                 };
+            }else if (!user.IsActive)
+            {
+                return new ActionResponses<ApplyToEventDTO>
+                {
+                    WassSuccess = false,
+                    Message = "El usuario no está activo. No puede aplicar a eventos."
+                };
             }
+
             if (eventEntity.StartDate <= DateTime.UtcNow)
             {
                 return new ActionResponses<ApplyToEventDTO>
