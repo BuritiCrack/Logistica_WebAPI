@@ -226,8 +226,9 @@ namespace LogisticoWebAPI.Backend.Repositories.Implementations
             var applications = await _context.EventUsers
                 .Include(eu => eu.Event)
                 .Include(eu => eu.User)
-                .OrderByDescending(eu => eu.LastUpdated)
                 .Where(eu => eu.User!.Email == email)
+                .OrderBy(eu => eu.Status == ApplicationStatus.CancelledByUser)
+                .ThenByDescending(eu => eu.LastUpdated)
                 .ToListAsync();
 
             return new ActionResponses<IEnumerable<EventUser>>

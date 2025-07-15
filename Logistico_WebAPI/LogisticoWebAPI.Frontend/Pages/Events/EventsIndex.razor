@@ -94,25 +94,29 @@ else
                             <div class="row">
                                 <div class="col">
                                     <div class="d-flex flex-wrap gap-2 justify-content-center">
-                                        @if (HasAppliedToEvent(eventItem.Id))
-                                        {
-                                            <button class="btn btn-secondary btn-sm" disabled>
-                                                <i class="fa fa-check"></i> Postulado
-                                            </button>
-                                        }
-                                        else
-                                        {
-                                            <button class="btn btn-success btn-sm"
-                                                    @onclick="() => AppyToEventAsync(eventItem.Id)">
-                                                <i class="fa fa-user-plus"></i> Postularme
-                                            </button>
-                                        }
-                                        <a class="btn btn-info btn-sm"
-                                           href="/events/applications/@eventItem.Id">
-                                            <i class="fa fa-users"></i> Postulaciones
-                                        </a>
+                                        <AuthorizeView Roles="User">
+                                            <Authorized>
+                                                @if (HasAppliedToEvent(eventItem.Id))
+                                                {
+                                                    <button class="btn btn-secondary btn-sm" disabled>
+                                                        <i class="fa fa-check"></i> Postulado
+                                                    </button>
+                                                }
+                                                else
+                                                {
+                                                    <button class="btn btn-success btn-sm"
+                                                            @onclick="() => AppyToEventAsync(eventItem.Id)">
+                                                        <i class="fa fa-user-plus"></i> Postularme
+                                                    </button>
+                                                }
+                                            </Authorized>
+                                        </AuthorizeView>
                                         <AuthorizeView Roles="Admin">
                                             <Authorized>
+                                                <a class="btn btn-info btn-sm"
+                                                   href="/events/applications/@eventItem.Id">
+                                                    <i class="fa fa-users"></i> Postulaciones
+                                                </a>
                                                 <a class="btn btn-warning btn-sm" href="/events/edit/@eventItem.Id">
                                                     <i class="fa fa-edit"></i> Editar
                                                 </a>
