@@ -121,7 +121,7 @@ else
                                         @if (application.Status == ApplicationStatus.Pending || application.Status == ApplicationStatus.Accepted)
                                         {
                                             <button class="btn btn-danger btn-sm"
-                                                    @onclick="() => CancelApplicationAsync(application.Id)">
+                                                    @onclick="() => CancelApplicationAsync(application.EventId)">
                                                 <i class="fa fa-times"></i> Cancelar Aplicación
                                             </button>
                                         }
