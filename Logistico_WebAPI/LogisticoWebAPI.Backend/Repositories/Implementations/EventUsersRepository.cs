@@ -3,6 +3,7 @@ using LogisticoWebAPI.Backend.Repositories.Interfaces;
 using LogisticoWebAPI.Shared.DTOs;
 using LogisticoWebAPI.Shared.Entities;
 using LogisticoWebAPI.Shared.Enums;
+using LogisticoWebAPI.Shared.Extensions;
 using LogisticoWebAPI.Shared.Responses;
 using Microsoft.EntityFrameworkCore;
 
@@ -209,10 +210,17 @@ namespace LogisticoWebAPI.Backend.Repositories.Implementations
 
         public async Task<ActionResponses<IEnumerable<EventUser>>> GetUserApplicationsAsync(string email)
         {
+            var status = new[]
+            {
+                ApplicationStatus.Pending,
+                ApplicationStatus.Accepted,
+                ApplicationStatus.Rejected,
+                ApplicationStatus.CancelledByUser
+            };
             var applications = await _context.EventUsers
                 .Include(eu => eu.Event)
                 .Include(eu => eu.User)
-                .OrderByDescending(eu => eu.RegistrationDate)
+                .OrderByDescending(eu => eu.LastUpdated)
                 .Where(eu => eu.User!.Email == email)
                 .ToListAsync();
 

@@ -32,7 +32,7 @@ namespace LogisticoWebAPI.Frontend.Pages.Events
                 await SweetAlertService.FireAsync("Error", message, SweetAlertIcon.Error);
                 return;
             }
-            Events = responseHttp.Response;
+            Events = responseHttp.Response!.OrderByDescending(e => e.CreatedAt).ToList();
         }
 
         private async Task LoadUserApplicationsAsync()
