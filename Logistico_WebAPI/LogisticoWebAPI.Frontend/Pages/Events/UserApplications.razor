@@ -28,11 +28,11 @@ else
                 <div class="row">
                     <div class="col-md-6">
                         <p><strong>Lugar:</strong> @Applications.First().Event!.Place</p>
-                        <p><strong>Fecha de inicio:</strong> @Applications.First().Event!.StartDate.ToString("dd/MM/yyyy HH:mm")</p>
+                        <p><strong>Pago:</strong> @Applications.First().Event!.Payment.ToString("C2")</p>
                     </div>
                     <div class="col-md-6">
-                        <p><strong>Fecha de fin:</strong> @Applications.First().Event!.EndDate.ToString("dd/MM/yyyy HH:mm")</p>
-                        <p><strong>Pago:</strong> @Applications.First().Event!.Payment.ToString("C2")</p>
+                        <p><strong>Fecha de inicio:</strong> @Applications.First().Event!.StartDate.ToString("dd/MM/yyyy hh:mm tt")</p>
+                        <p><strong>Fecha de fin:</strong> @Applications.First().Event!.EndDate.ToString("dd/MM/yyyy hh:mm tt")</p>
                     </div>
                 </div>
             </div>
@@ -43,7 +43,7 @@ else
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
             <h5 class="mb-0">
-                <i class="fa fa-users"></i> Aplicaciones (@Applications.Count)
+                <i class="fa fa-users"></i> Postulaciones (@Applications.Count)
             </h5>
             <button class="btn btn-secondary btn-sm" @onclick="GoBack">
                 <i class="fa fa-arrow-left"></i> Volver a Eventos
@@ -57,7 +57,7 @@ else
                             <th>Usuario</th>
                             <th>Documento</th>
                             <th>Teléfono</th>
-                            <th>Fecha de Aplicación</th>
+                            <th>Fecha de Postulacion</th>
                             <th>Estado</th>
                             <th>Acciones</th>
                         </tr>
@@ -114,7 +114,7 @@ else
                                     <small>
                                         @application.RegistrationDate.ToString("dd/MM/yyyy")
                                         <br />
-                                        @application.RegistrationDate.ToString("HH:mm")
+                                        @application.RegistrationDate.ToString("hh:mm tt")
                                     </small>
                                 </td>
 

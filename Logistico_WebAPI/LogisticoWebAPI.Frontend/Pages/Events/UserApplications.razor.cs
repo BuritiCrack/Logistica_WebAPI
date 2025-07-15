@@ -44,40 +44,34 @@ namespace LogisticoWebAPI.Frontend.Pages.Events
 
         private async Task UpdateApplicationStatusAsync(int applicationId, ApplicationStatus newStatus)
         {
-            var statusText = newStatus == ApplicationStatus.Accepted ? "aceptar" : "rechazar";
-
-            var result = await SweetAlertService.FireAsync(new SweetAlertOptions
+            var statusText = newStatus == ApplicationStatus.Accepted ? "aceptada" : "rechazada";
+            var updateDto = new UpdateApplicationStatusDTO
             {
-                Title = "¿Estás seguro?",
-                Text = $"¿Deseas {statusText} esta aplicación?",
-                Icon = SweetAlertIcon.Question,
-                ShowCancelButton = true,
-                ConfirmButtonText = $"Sí, {statusText}",
-                CancelButtonText = "Cancelar"
+                ApplicationId = applicationId,
+                NewStatus = newStatus
+            };
+
+            var responseHttp = await Repository.PutAsync("api/eventapplications/updatestatus", updateDto);
+            if (responseHttp.Error)
+            {
+                var message = await responseHttp.GetErrorMessageAsync();
+                await SweetAlertService.FireAsync("Error", message, SweetAlertIcon.Error);
+                return;
+            }
+
+            var toas = SweetAlertService.Mixin(new SweetAlertOptions
+            {
+                Icon = SweetAlertIcon.Success,
+                Toast = true,
+                Position = SweetAlertPosition.TopEnd,
+                ShowConfirmButton = false,
+                Timer = 3000
             });
 
-            if (result.IsConfirmed)
-            {
-                var updateDto = new UpdateApplicationStatusDTO
-                {
-                    ApplicationId = applicationId,
-                    NewStatus = newStatus
-                };
-
-                var responseHttp = await Repository.PutAsync("api/eventapplications/updatestatus", updateDto);
-                if (responseHttp.Error)
-                {
-                    var message = await responseHttp.GetErrorMessageAsync();
-                    await SweetAlertService.FireAsync("Error", message, SweetAlertIcon.Error);
-                    return;
-                }
-
-                await SweetAlertService.FireAsync("Éxito", $"Aplicación {statusText}da correctamente.", SweetAlertIcon.Success);
-
-                // Recargar las aplicacionesm
-                await OnParametersSetAsync();
-            }
+            await toas.FireAsync(message: $"Persona {statusText} con éxito");
+            await OnParametersSetAsync();
         }
+        
 
         private string GetStatusBadgeClass(ApplicationStatus status)
         {

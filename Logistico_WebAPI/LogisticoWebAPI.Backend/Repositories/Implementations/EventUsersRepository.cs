@@ -243,7 +243,8 @@ namespace LogisticoWebAPI.Backend.Repositories.Implementations
                 .Include(eu => eu.Event)
                 .Include(eu => eu.User)
                 .Where(eu => eu.EventId == eventId)
-                .OrderByDescending(eu => eu.RegistrationDate)
+                .OrderBy(eu => eu.Status == ApplicationStatus.CancelledByUser)
+                .ThenBy(eu => eu.RegistrationDate)
                 .ToListAsync();
 
             return new ActionResponses<IEnumerable<EventUser>>
