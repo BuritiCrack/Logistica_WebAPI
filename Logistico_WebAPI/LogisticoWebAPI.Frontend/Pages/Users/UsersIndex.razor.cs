@@ -3,6 +3,7 @@ using LogisticoWebAPI.Frontend.Repositories;
 using LogisticoWebAPI.Shared.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
+using System.Net;
 
 namespace LogisticoWebAPI.Frontend.Pages.Users
 {
@@ -37,11 +38,11 @@ namespace LogisticoWebAPI.Frontend.Pages.Users
             var action = user.IsActive ? "desactivar" : "activar";
             var result = await SweetAlertService.FireAsync(new SweetAlertOptions
             {
-                Title = "Confirmaci�n",
-                Text = $"�Est�s seguro de que deseas {action} a {user.FullName}?",
+                Title = "Confirmación",
+                Text = $"¿Estás seguro de que deseas {action} a {user.FullName}?",
                 Icon = SweetAlertIcon.Question,
                 ShowCancelButton = true,
-                ConfirmButtonText = $"S�, {action}",
+                ConfirmButtonText = $"Sí, {action}",
                 CancelButtonText = "Cancelar"
             });
 
@@ -54,6 +55,11 @@ namespace LogisticoWebAPI.Frontend.Pages.Users
             var responseHttp = await Repository.PutAsync<User>($"api/accounts/{user.Id}", user);
             if (responseHttp.Error)
             {
+                if (responseHttp.HttpResponseMessage.StatusCode == HttpStatusCode.NotFound)
+                {
+                    NavigationManager.NavigateTo("/Users");
+                    return;
+                }
                 var message = await responseHttp.GetErrorMessageAsync();
                 await SweetAlertService.FireAsync("Errro", message, SweetAlertIcon.Error);
                 return;
@@ -68,7 +74,7 @@ namespace LogisticoWebAPI.Frontend.Pages.Users
                 ShowConfirmButton = false,
                 Timer = 3000
             });
-            await toas.FireAsync(message: "Registro actualizado con �xito");
+            await toas.FireAsync(message: "Registro actualizado con éxito");
         }
     }
 }
