@@ -1,17 +1,21 @@
-﻿using LogisticoWebAPI.Shared.Responses;
+﻿using LogisticoWebAPI.Shared.DTOs;
+using LogisticoWebAPI.Shared.Responses;
 
 namespace LogisticoWebAPI.Backend.UnitsOfWork.Interfaces
 {
     public interface IGenericUnitOfWork<T> where T : class
     {
-        Task<ActionResponses<T>> GetAsync(int id);
+        Task<ActionResponse<T>> GetAsync(int id);
+        Task<ActionResponse<IEnumerable<T>>> GetAsync(PaginationDTO pagination);
 
-        Task<ActionResponses<IEnumerable<T>>> GetAllAsync();
+        Task<ActionResponse<int>> GetTotalPagesAsync(PaginationDTO pagination);
 
-        Task<ActionResponses<T>> PostAsync(T entity);
+        Task<ActionResponse<IEnumerable<T>>> GetAsync();
 
-        Task<ActionResponses<T>> PutAsync(T entity);
+        Task<ActionResponse<T>> PostAsync(T entity);
 
-        Task<ActionResponses<T>> DeleteAsync(int id);
+        Task<ActionResponse<T>> PutAsync(T entity);
+
+        Task<ActionResponse<T>> DeleteAsync(int id);
     }
 }

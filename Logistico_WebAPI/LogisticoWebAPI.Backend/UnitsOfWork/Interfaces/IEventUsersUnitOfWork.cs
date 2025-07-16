@@ -7,12 +7,12 @@ namespace LogisticoWebAPI.Backend.UnitsOfWork.Interfaces
 {
     public interface IEventUsersUnitOfWork
     {
-        Task<ActionResponses<ApplyToEventDTO>> ApplyToEventAsync(string email, ApplyToEventDTO applyToEventDTO);
-        Task<ActionResponses<UpdateApplicationStatusDTO>> UpdateApplicationStatusAsync(string email, UpdateApplicationStatusDTO updateApplicationStatusDTO);
-        Task<ActionResponses<EventUser>> CancelApplicationAsync(string email, int eventId);
-        Task<ActionResponses<IEnumerable<EventUser>>> GetUserApplicationsAsync(string email);
-        Task<ActionResponses<IEnumerable<EventUser>>> GetEventApplicationsAsync(int eventId);
-        Task<ActionResponses<EventUser>> GetApplicationAsync(int applicationId);
+        Task<ActionResponse<ApplyToEventDTO>> ApplyToEventAsync(string email, ApplyToEventDTO applyToEventDTO);
+        Task<ActionResponse<UpdateApplicationStatusDTO>> UpdateApplicationStatusAsync(string email, UpdateApplicationStatusDTO updateApplicationStatusDTO);
+        Task<ActionResponse<EventUser>> CancelApplicationAsync(string email, int eventId);
+        Task<ActionResponse<IEnumerable<EventUser>>> GetUserApplicationsAsync(string email);
+        Task<ActionResponse<IEnumerable<EventUser>>> GetEventApplicationsAsync(int eventId);
+        Task<ActionResponse<EventUser>> GetApplicationAsync(int applicationId);
         Task<bool> HasUserAppliedToEventAsync(string email, int eventId);
     }
 }

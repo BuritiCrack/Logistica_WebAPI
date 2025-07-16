@@ -2,6 +2,7 @@
 using LogisticoWebAPI.Backend.UnitsOfWork.Interfaces;
 using LogisticoWebAPI.Shared.DTOs;
 using LogisticoWebAPI.Shared.Entities;
+using LogisticoWebAPI.Shared.Responses;
 using Microsoft.AspNetCore.Identity;
 
 namespace LogisticoWebAPI.Backend.UnitsOfWork.Implementations
@@ -60,5 +61,10 @@ namespace LogisticoWebAPI.Backend.UnitsOfWork.Implementations
         public async Task<IEnumerable<User>> GetAllUsersAsync()
             => await _usersRepository.GetAllUsersAsync();
 
+        public async Task<ActionResponse<IEnumerable<User>>> GetAsync(PaginationDTO pagination)
+            => await _usersRepository.GetAsync(pagination);
+
+        public async Task<ActionResponse<int>> GetTotalPagesAsync(PaginationDTO pagination)
+            => await _usersRepository.GetTotalPagesAsync(pagination);
     }
 }

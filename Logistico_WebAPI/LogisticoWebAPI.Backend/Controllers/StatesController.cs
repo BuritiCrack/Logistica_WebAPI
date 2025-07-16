@@ -28,11 +28,11 @@ namespace LogisticoWebAPI.Backend.Controllers
             return Ok(await _statesUnitOfWork.GetComboAsync());
         }
 
-        [HttpGet]
+        [HttpGet("full")]
         public override async Task<IActionResult> GetAsync()
         {
-            var action = await _statesUnitOfWork.GetAllAsync();
-            if (action.WassSuccess)
+            var action = await _statesUnitOfWork.GetAsync();
+            if (action.WasSuccess)
             {
                 return Ok(action.Result);
             }
@@ -43,7 +43,7 @@ namespace LogisticoWebAPI.Backend.Controllers
         public override async Task<IActionResult> GetByIdAsync(int id)
         {
             var action = await _statesUnitOfWork.GetAsync(id);
-            if (action.WassSuccess)
+            if (action.WasSuccess)
             {
                 return Ok(action.Result);
             }

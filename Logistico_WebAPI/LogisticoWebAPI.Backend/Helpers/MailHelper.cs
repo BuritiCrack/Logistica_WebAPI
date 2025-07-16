@@ -12,7 +12,7 @@ namespace LogisticoWebAPI.Backend.Helpers
         {
             _configuration = configuration;
         }
-        public ActionResponses<string> SendEmail(string toName, string toEmail, string subject, string body)
+        public ActionResponse<string> SendEmail(string toName, string toEmail, string subject, string body)
         {
             try 
             {
@@ -40,14 +40,14 @@ namespace LogisticoWebAPI.Backend.Helpers
                     client.Disconnect(true);
                 }
 
-                return new ActionResponses<string> { WassSuccess = true };
+                return new ActionResponse<string> { WasSuccess = true };
            
             }
             catch (Exception ex)
             {
-                return new ActionResponses<string>
+                return new ActionResponse<string>
                 {
-                    WassSuccess = false,
+                    WasSuccess = false,
                     Message = $"Error al enviar el correo: {ex.Message}"
                 };
             }

@@ -1,4 +1,5 @@
 ﻿using LogisticoWebAPI.Backend.UnitsOfWork.Interfaces;
+using LogisticoWebAPI.Shared.DTOs;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LogisticoWebAPI.Backend.Controllers
@@ -12,11 +13,11 @@ namespace LogisticoWebAPI.Backend.Controllers
             _unitOfWork = unitOfWork;
         }
 
-        [HttpGet]
+        [HttpGet("full")]
         public virtual async Task<IActionResult> GetAsync()
         {
-            var action = await _unitOfWork.GetAllAsync();
-            if (action.WassSuccess)
+            var action = await _unitOfWork.GetAsync();
+            if (action.WasSuccess)
             {
                 return Ok(action.Result);
             }
@@ -27,18 +28,40 @@ namespace LogisticoWebAPI.Backend.Controllers
         public virtual async Task<IActionResult> GetByIdAsync(int id)
         {
             var action = await _unitOfWork.GetAsync(id);
-            if (action.WassSuccess)
+            if (action.WasSuccess)
             {
                 return Ok(action.Result);
             }
             return NotFound();
         }
 
+        [HttpGet]
+        public virtual async Task<IActionResult> GetAsync([FromQuery] PaginationDTO pagination)
+        {
+            var action = await _unitOfWork.GetAsync(pagination);
+            if (action.WasSuccess)
+            {
+                return Ok(action.Result);
+            }
+            return BadRequest();
+        }
+
+        [HttpGet("totalPages")]
+        public virtual async Task<IActionResult> GetPagesAsync([FromQuery] PaginationDTO pagination)
+        {
+            var action = await _unitOfWork.GetTotalPagesAsync(pagination);
+            if (action.WasSuccess)
+            {
+                return Ok(action.Result);
+            }
+            return BadRequest();
+        }
+
         [HttpPost]
         public virtual async Task<IActionResult> PostAsync(T entity)
         {
             var action = await _unitOfWork.PostAsync(entity);
-            if (action.WassSuccess)
+            if (action.WasSuccess)
             {
                 return Ok(action.Result);
             }
@@ -49,7 +72,7 @@ namespace LogisticoWebAPI.Backend.Controllers
         public virtual async Task<IActionResult> PutAsync(T entity)
         {
             var action = await _unitOfWork.PutAsync(entity);
-            if (action.WassSuccess)
+            if (action.WasSuccess)
             {
                 return Ok(action.Result);
             }
@@ -60,7 +83,7 @@ namespace LogisticoWebAPI.Backend.Controllers
         public virtual async Task<IActionResult> DeleteAsync(int id)
         {
             var action = await _unitOfWork.DeleteAsync(id);
-            if (action.WassSuccess)
+            if (action.WasSuccess)
             {
                 return NoContent();
             }

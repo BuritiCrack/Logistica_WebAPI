@@ -3,7 +3,6 @@ using LogisticoWebAPI.Backend.Repositories.Interfaces;
 using LogisticoWebAPI.Shared.DTOs;
 using LogisticoWebAPI.Shared.Entities;
 using LogisticoWebAPI.Shared.Enums;
-using LogisticoWebAPI.Shared.Extensions;
 using LogisticoWebAPI.Shared.Responses;
 using Microsoft.EntityFrameworkCore;
 
@@ -21,14 +20,14 @@ namespace LogisticoWebAPI.Backend.Repositories.Implementations
             _usersRepository = usersRepository;
         }
 
-        public async Task<ActionResponses<ApplyToEventDTO>> ApplyToEventAsync(string email, ApplyToEventDTO applyToEventDTO)
+        public async Task<ActionResponse<ApplyToEventDTO>> ApplyToEventAsync(string email, ApplyToEventDTO applyToEventDTO)
         {
             var eventEntity = await _context.Events.FirstOrDefaultAsync(e => e.Id == applyToEventDTO.EventId);
             if (eventEntity == null)
             {
-                return new ActionResponses<ApplyToEventDTO>
+                return new ActionResponse<ApplyToEventDTO>
                 {
-                    WassSuccess = false,
+                    WasSuccess = false,
                     Message = "El evento especificado no existe."
                 };
             }
@@ -36,25 +35,26 @@ namespace LogisticoWebAPI.Backend.Repositories.Implementations
             var user = await _usersRepository.GetUserAsync(email);
             if (user == null)
             {
-                return new ActionResponses<ApplyToEventDTO>
+                return new ActionResponse<ApplyToEventDTO>
                 {
-                    WassSuccess = false,
+                    WasSuccess = false,
                     Message = "El usuario especificado no existe."
                 };
-            }else if (!user.IsActive)
+            }
+            else if (!user.IsActive)
             {
-                return new ActionResponses<ApplyToEventDTO>
+                return new ActionResponse<ApplyToEventDTO>
                 {
-                    WassSuccess = false,
+                    WasSuccess = false,
                     Message = "El usuario no está activo. No puede aplicar a eventos."
                 };
             }
 
             if (eventEntity.StartDate <= DateTime.UtcNow)
             {
-                return new ActionResponses<ApplyToEventDTO>
+                return new ActionResponse<ApplyToEventDTO>
                 {
-                    WassSuccess = false,
+                    WasSuccess = false,
                     Message = "No puedes aplicar a un evento que ya ha comenzado."
                 };
             }
@@ -64,14 +64,14 @@ namespace LogisticoWebAPI.Backend.Repositories.Implementations
                 .AnyAsync(eu => eu.User!.Email == email && eu.EventId == eventEntity.Id);
             if (hasApplied)
             {
-                return new ActionResponses<ApplyToEventDTO>
+                return new ActionResponse<ApplyToEventDTO>
                 {
-                    WassSuccess = false,
+                    WasSuccess = false,
                     Message = "Ya has aplicado a este evento."
                 };
             }
 
-                var eventUser = new EventUser
+            var eventUser = new EventUser
             {
                 User = user,
                 Event = eventEntity
@@ -82,32 +82,31 @@ namespace LogisticoWebAPI.Backend.Repositories.Implementations
                 _context.Add(eventUser);
                 await _context.SaveChangesAsync();
 
-                return new ActionResponses<ApplyToEventDTO>
+                return new ActionResponse<ApplyToEventDTO>
                 {
-                    WassSuccess = true,
+                    WasSuccess = true,
                     Result = applyToEventDTO
                 };
             }
             catch (Exception ex)
             {
-                return new ActionResponses<ApplyToEventDTO>
+                return new ActionResponse<ApplyToEventDTO>
                 {
-                    WassSuccess = false,
+                    WasSuccess = false,
                     Message = ex.Message
                 };
             }
-
         }
 
-        public async Task<ActionResponses<UpdateApplicationStatusDTO>> UpdateApplicationStatusAsync(string email, UpdateApplicationStatusDTO updateApplicationStatusDTO)
+        public async Task<ActionResponse<UpdateApplicationStatusDTO>> UpdateApplicationStatusAsync(string email, UpdateApplicationStatusDTO updateApplicationStatusDTO)
         {
             var application = await _context.EventUsers
                 .FirstOrDefaultAsync(eu => eu.Id == updateApplicationStatusDTO.ApplicationId);
             if (application == null)
             {
-                return new ActionResponses<UpdateApplicationStatusDTO>
+                return new ActionResponse<UpdateApplicationStatusDTO>
                 {
-                    WassSuccess = false,
+                    WasSuccess = false,
                     Message = "La postulación especificada no existe."
                 };
             }
@@ -115,61 +114,61 @@ namespace LogisticoWebAPI.Backend.Repositories.Implementations
             // Verificar que el estado sea válido para cambio por admin
             if (application.Status == ApplicationStatus.CancelledByUser)
             {
-                return new ActionResponses<UpdateApplicationStatusDTO>
+                return new ActionResponse<UpdateApplicationStatusDTO>
                 {
-                    WassSuccess = false,
+                    WasSuccess = false,
                     Message = "No se puede cambiar el estado de una aplicación cancelada por el usuario."
                 };
             }
             var user = await _usersRepository.GetUserAsync(email);
             if (user == null)
             {
-                return new ActionResponses<UpdateApplicationStatusDTO>
+                return new ActionResponse<UpdateApplicationStatusDTO>
                 {
-                    WassSuccess = false,
+                    WasSuccess = false,
                     Message = "El usuario especificado no existe."
                 };
             }
-                try
+            try
             {
                 application.Status = updateApplicationStatusDTO.NewStatus;
                 application.LastUpdated = DateTime.UtcNow;
 
                 await _context.SaveChangesAsync();
 
-                return new ActionResponses<UpdateApplicationStatusDTO>
+                return new ActionResponse<UpdateApplicationStatusDTO>
                 {
-                    WassSuccess = true,
+                    WasSuccess = true,
                     Result = updateApplicationStatusDTO
                 };
             }
             catch (Exception ex)
             {
-                return new ActionResponses<UpdateApplicationStatusDTO>
+                return new ActionResponse<UpdateApplicationStatusDTO>
                 {
-                    WassSuccess = false,
+                    WasSuccess = false,
                     Message = ex.Message
                 };
             }
         }
 
-        public async Task<ActionResponses<EventUser>> CancelApplicationAsync(string email, int eventId)
+        public async Task<ActionResponse<EventUser>> CancelApplicationAsync(string email, int eventId)
         {
             var user = await _usersRepository.GetUserAsync(email);
             if (user == null)
             {
-                return new ActionResponses<EventUser>
+                return new ActionResponse<EventUser>
                 {
-                    WassSuccess = false,
+                    WasSuccess = false,
                     Message = "El usuario especificado no existe."
                 };
             }
             var eventEntity = await _context.Events.FirstOrDefaultAsync(e => e.Id == eventId);
             if (eventEntity == null)
             {
-                return new ActionResponses<EventUser>
+                return new ActionResponse<EventUser>
                 {
-                    WassSuccess = false,
+                    WasSuccess = false,
                     Message = "El evento especificado no existe."
                 };
             }
@@ -181,9 +180,9 @@ namespace LogisticoWebAPI.Backend.Repositories.Implementations
 
             if (application == null)
             {
-                return new ActionResponses<EventUser>
+                return new ActionResponse<EventUser>
                 {
-                    WassSuccess = false,
+                    WasSuccess = false,
                     Message = "No se encontró una postulación para este evento."
                 };
             }
@@ -191,9 +190,9 @@ namespace LogisticoWebAPI.Backend.Repositories.Implementations
             // Solo permitir cancelar si está pendiente o aceptada
             if (application.Status == ApplicationStatus.CancelledByUser)
             {
-                return new ActionResponses<EventUser>
+                return new ActionResponse<EventUser>
                 {
-                    WassSuccess = false,
+                    WasSuccess = false,
                     Message = "Esta aplicación ya fue cancelada anteriormente."
                 };
             }
@@ -204,24 +203,24 @@ namespace LogisticoWebAPI.Backend.Repositories.Implementations
                 application.LastUpdated = DateTime.UtcNow;
                 await _context.SaveChangesAsync();
 
-                return new ActionResponses<EventUser>
+                return new ActionResponse<EventUser>
                 {
-                    WassSuccess = true,
+                    WasSuccess = true,
                     Result = application,
                     Message = "Aplicación cancelada exitosamente."
                 };
             }
             catch (Exception ex)
             {
-                return new ActionResponses<EventUser>
+                return new ActionResponse<EventUser>
                 {
-                    WassSuccess = false,
+                    WasSuccess = false,
                     Message = ex.Message
                 };
             }
         }
 
-        public async Task<ActionResponses<IEnumerable<EventUser>>> GetUserApplicationsAsync(string email)
+        public async Task<ActionResponse<IEnumerable<EventUser>>> GetUserApplicationsAsync(string email)
         {
             var applications = await _context.EventUsers
                 .Include(eu => eu.Event)
@@ -231,14 +230,14 @@ namespace LogisticoWebAPI.Backend.Repositories.Implementations
                 .ThenByDescending(eu => eu.LastUpdated)
                 .ToListAsync();
 
-            return new ActionResponses<IEnumerable<EventUser>>
+            return new ActionResponse<IEnumerable<EventUser>>
             {
-                WassSuccess = true,
+                WasSuccess = true,
                 Result = applications
             };
         }
 
-        public async Task<ActionResponses<IEnumerable<EventUser>>> GetEventApplicationsAsync(int eventId)
+        public async Task<ActionResponse<IEnumerable<EventUser>>> GetEventApplicationsAsync(int eventId)
         {
             var applications = await _context.EventUsers
                 .Include(eu => eu.Event)
@@ -248,14 +247,14 @@ namespace LogisticoWebAPI.Backend.Repositories.Implementations
                 .ThenBy(eu => eu.RegistrationDate)
                 .ToListAsync();
 
-            return new ActionResponses<IEnumerable<EventUser>>
+            return new ActionResponse<IEnumerable<EventUser>>
             {
-                WassSuccess = true,
+                WasSuccess = true,
                 Result = applications
             };
         }
 
-        public async Task<ActionResponses<EventUser>> GetApplicationAsync(int applicationId)
+        public async Task<ActionResponse<EventUser>> GetApplicationAsync(int applicationId)
         {
             try
             {
@@ -266,24 +265,24 @@ namespace LogisticoWebAPI.Backend.Repositories.Implementations
 
                 if (application == null)
                 {
-                    return new ActionResponses<EventUser>
+                    return new ActionResponse<EventUser>
                     {
-                        WassSuccess = false,
+                        WasSuccess = false,
                         Message = "Aplicación no encontrada."
                     };
                 }
 
-                return new ActionResponses<EventUser>
+                return new ActionResponse<EventUser>
                 {
-                    WassSuccess = true,
+                    WasSuccess = true,
                     Result = application
                 };
             }
             catch (Exception ex)
             {
-                return new ActionResponses<EventUser>
+                return new ActionResponse<EventUser>
                 {
-                    WassSuccess = false,
+                    WasSuccess = false,
                     Message = ex.Message
                 };
             }

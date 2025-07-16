@@ -1,13 +1,17 @@
 ﻿using LogisticoWebAPI.Shared.DTOs;
 using LogisticoWebAPI.Shared.Entities;
+using LogisticoWebAPI.Shared.Responses;
 using Microsoft.AspNetCore.Identity;
-using Org.BouncyCastle.Bcpg.OpenPgp;
 
 namespace LogisticoWebAPI.Backend.Repositories.Interfaces
 {
     public interface IUsersRepository
     {
         Task<User> GetUserAsync(string email);
+
+        Task<ActionResponse<IEnumerable<User>>> GetAsync(PaginationDTO pagination);
+
+        Task<ActionResponse<int>> GetTotalPagesAsync(PaginationDTO pagination);
 
         Task<IEnumerable<User>> GetAllUsersAsync();
 

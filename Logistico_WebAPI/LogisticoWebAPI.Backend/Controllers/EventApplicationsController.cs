@@ -26,7 +26,7 @@ namespace LogisticoWebAPI.Backend.Controllers
         public async Task<IActionResult> PostAsync([FromBody] ApplyToEventDTO applyToEventDTO)
         {
             var action = await _eventUsersUnitOfWork.ApplyToEventAsync(User.Identity!.Name!, applyToEventDTO);
-            if (action.WassSuccess)
+            if (action.WasSuccess)
             {
                 return Ok(action.Result);
             }
@@ -38,7 +38,7 @@ namespace LogisticoWebAPI.Backend.Controllers
         public async Task<IActionResult> CancelApplicationAsync(int eventId)
         {
             var action = await _eventUsersUnitOfWork.CancelApplicationAsync(User.Identity!.Name!, eventId);
-            if (action.WassSuccess)
+            if (action.WasSuccess)
             {
                 return Ok(action.Result);
             }
@@ -50,7 +50,7 @@ namespace LogisticoWebAPI.Backend.Controllers
         public override async Task<IActionResult> GetAsync()
         {
             var action = await _eventUsersUnitOfWork.GetUserApplicationsAsync(User.Identity!.Name!);
-            if (action.WassSuccess)
+            if (action.WasSuccess)
             {
                 return Ok(action.Result);
             }
@@ -63,7 +63,7 @@ namespace LogisticoWebAPI.Backend.Controllers
         public async Task<IActionResult> GetAsync(int eventId)
         {
             var action = await _eventUsersUnitOfWork.GetEventApplicationsAsync(eventId);
-            if (action.WassSuccess)
+            if (action.WasSuccess)
             {
                 return Ok(action.Result);
             }
@@ -76,7 +76,7 @@ namespace LogisticoWebAPI.Backend.Controllers
         public async Task<IActionResult> UpdateApplicationStatusAsync(UpdateApplicationStatusDTO statusDto)
         {
             var action = await _eventUsersUnitOfWork.UpdateApplicationStatusAsync(User.Identity!.Name!, statusDto);
-            if (action.WassSuccess)
+            if (action.WasSuccess)
             {
                 return Ok(action.Result);
             }

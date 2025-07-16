@@ -33,6 +33,29 @@ namespace LogisticoWebAPI.Backend.Controllers
             _container = "users";
         }
 
+
+        [HttpGet("all")]
+        public async Task<IActionResult> GetAsync([FromQuery] PaginationDTO pagination)
+        {
+            var response = await _usersUnitOfWork.GetAsync(pagination);
+            if (response.WasSuccess)
+            {
+                return Ok(response.Result);
+            }
+            return BadRequest();
+        }
+
+        [HttpGet("totalPages")]
+        public async Task<IActionResult> GetPagesAsync([FromQuery] PaginationDTO pagination)
+        {
+            var action = await _usersUnitOfWork.GetTotalPagesAsync(pagination);
+            if (action.WasSuccess)
+            {
+                return Ok(action.Result);
+            }
+            return BadRequest();
+        }
+
         [HttpGet("users")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> GetAllUsersAsync()
@@ -137,7 +160,7 @@ namespace LogisticoWebAPI.Backend.Controllers
                 $"<p>Para recuperar su contraseña, por favor hacer clic 'Recuperar Contraseña':</p>" +
                 $"<b><a href ={tokenLink}>Recuperar Contraseña</a></b>");
 
-            if (response.WassSuccess)
+            if (response.WasSuccess)
             {
                 return NoContent();
             }
@@ -173,7 +196,7 @@ namespace LogisticoWebAPI.Backend.Controllers
             }
 
             var response = await SendConfirmationEmailAsync(user);
-            if (response.WassSuccess)
+            if (response.WasSuccess)
             {
                 return NoContent();
             }
@@ -323,7 +346,7 @@ namespace LogisticoWebAPI.Backend.Controllers
             {
                 await _usersUnitOfWork.AddUserToRoleAsync(user, user.UserType.ToString());
                 var response = await SendConfirmationEmailAsync(user);
-                if (response.WassSuccess)
+                if (response.WasSuccess)
                 {
                     return NoContent();
                 }
@@ -334,7 +357,7 @@ namespace LogisticoWebAPI.Backend.Controllers
             return BadRequest(result.Errors.FirstOrDefault());
         }
 
-        private async Task<ActionResponses<string>> SendConfirmationEmailAsync(User user)
+        private async Task<ActionResponse<string>> SendConfirmationEmailAsync(User user)
         {
             var myToken = await _usersUnitOfWork.GenerateEmailConfirmationTokenAsync(user);
             var tokenLink = Url.Action("ConfirmEmail", "accounts", new

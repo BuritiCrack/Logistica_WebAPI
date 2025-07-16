@@ -1,5 +1,6 @@
 ﻿using LogisticoWebAPI.Shared.DTOs;
 using LogisticoWebAPI.Shared.Entities;
+using LogisticoWebAPI.Shared.Responses;
 using Microsoft.AspNetCore.Identity;
 
 namespace LogisticoWebAPI.Backend.UnitsOfWork.Interfaces
@@ -7,6 +8,10 @@ namespace LogisticoWebAPI.Backend.UnitsOfWork.Interfaces
     public interface IUsersUnitOfWork
     {
         Task<User> GetUserAsync(string email);
+
+        Task<ActionResponse<IEnumerable<User>>> GetAsync(PaginationDTO pagination);
+
+        Task<ActionResponse<int>> GetTotalPagesAsync(PaginationDTO pagination);
 
         Task<IdentityResult> AddUserAsync(User user, string password);
 
@@ -35,6 +40,5 @@ namespace LogisticoWebAPI.Backend.UnitsOfWork.Interfaces
         Task<IdentityResult> ResetPasswordAsync(User user, string token, string password);
 
         Task<IEnumerable<User>> GetAllUsersAsync();
-
     }
 }

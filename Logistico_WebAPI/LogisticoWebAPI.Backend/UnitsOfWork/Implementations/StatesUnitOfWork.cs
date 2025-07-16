@@ -14,10 +14,10 @@ namespace LogisticoWebAPI.Backend.UnitsOfWork.Implementations
             _statesRepository = statesRepository;
         }
 
-        public override async Task<ActionResponses<IEnumerable<State>>> GetAllAsync()
-            => await _statesRepository.GetAllAsync();
+        public override async Task<ActionResponse<IEnumerable<State>>> GetAsync()
+            => await _statesRepository.GetAsync();
 
-        public override async Task<ActionResponses<State>> GetAsync(int id)
+        public override async Task<ActionResponse<State>> GetAsync(int id)
             => await _statesRepository.GetAsync(id);
 
         public async Task<IEnumerable<State>> GetComboAsync()

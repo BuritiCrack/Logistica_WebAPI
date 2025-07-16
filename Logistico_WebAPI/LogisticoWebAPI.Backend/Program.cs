@@ -103,6 +103,9 @@ namespace LogisticoWebAPI.Backend
             builder.Services.AddScoped<IUsersRepository, UsersRepository>();
             builder.Services.AddScoped<IUsersUnitOfWork, UsersUnitOfWork>();
 
+            builder.Services.AddScoped<IEventsRepository, EventsRepository>();
+            builder.Services.AddScoped<IEventsUnitOfWork, EventsUnitOfWork>();
+
             builder.Services.AddScoped<IEventUsersRepository, EventUsersRepository>();
             builder.Services.AddScoped<IEventUsersUnitOfWork, EventUsersUnitOfWork>();
 

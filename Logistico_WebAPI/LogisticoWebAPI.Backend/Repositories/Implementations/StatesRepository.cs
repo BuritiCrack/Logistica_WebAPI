@@ -15,34 +15,34 @@ namespace LogisticoWebAPI.Backend.Repositories.Implementations
             _context = context;
         }
 
-        public override async Task<ActionResponses<IEnumerable<State>>> GetAllAsync()
+        public override async Task<ActionResponse<IEnumerable<State>>> GetAsync()
         {
             var states = await _context.States
                 .Include(s => s.Cities)
                 .ToListAsync();
-            return new ActionResponses<IEnumerable<State>>
+            return new ActionResponse<IEnumerable<State>>
             {
-                WassSuccess = true,
+                WasSuccess = true,
                 Result = states
             };
         }
 
-        public override async Task<ActionResponses<State>> GetAsync(int id)
+        public override async Task<ActionResponse<State>> GetAsync(int id)
         {
             var state = await _context.States
                 .Include(s => s.Cities)
                 .FirstOrDefaultAsync(s => s.Id == id);
             if (state == null)
             {
-                return new ActionResponses<State>
+                return new ActionResponse<State>
                 {
-                    WassSuccess = false,
+                    WasSuccess = false,
                     Message = "El departamento no fue encontrado."
                 };
             }
-            return new ActionResponses<State>
+            return new ActionResponse<State>
             {
-                WassSuccess = true,
+                WasSuccess = true,
                 Result = state
             };
         }

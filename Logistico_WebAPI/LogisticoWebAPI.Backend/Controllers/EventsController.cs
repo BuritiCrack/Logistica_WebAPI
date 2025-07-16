@@ -1,4 +1,5 @@
 ﻿using LogisticoWebAPI.Backend.UnitsOfWork.Interfaces;
+using LogisticoWebAPI.Shared.DTOs;
 using LogisticoWebAPI.Shared.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -12,8 +13,22 @@ namespace LogisticoWebAPI.Backend.Controllers
 
     public class EventsController : GenericController<Event>
     {
-        public EventsController(IGenericUnitOfWork<Event> unitOfWork) : base(unitOfWork)
+        private readonly IEventsUnitOfWork _eventsUnitOfWork;
+
+        public EventsController(IGenericUnitOfWork<Event> unitOfWork, IEventsUnitOfWork eventsUnitOfWork) : base(unitOfWork)
         {
+            _eventsUnitOfWork = eventsUnitOfWork;
+        }
+
+        [HttpGet]
+        public override async Task<IActionResult> GetAsync(PaginationDTO pagination)
+        {
+            var action = await _eventsUnitOfWork.GetAsync(pagination);
+            if (action.WasSuccess)
+            {
+                return Ok(action.Result);
+            }
+            return BadRequest();
         }
     }
 }

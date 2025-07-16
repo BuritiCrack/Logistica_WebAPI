@@ -1,7 +1,10 @@
 ﻿using LogisticoWebAPI.Backend.Data;
+using LogisticoWebAPI.Backend.Helpers;
 using LogisticoWebAPI.Backend.Repositories.Interfaces;
 using LogisticoWebAPI.Shared.DTOs;
 using LogisticoWebAPI.Shared.Entities;
+using LogisticoWebAPI.Shared.Enums;
+using LogisticoWebAPI.Shared.Responses;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -115,6 +118,38 @@ namespace LogisticoWebAPI.Backend.Repositories.Implementations
                 .OrderByDescending(u => u.IsActive)
                 .ThenBy(u => u.FirstName)
                 .ToListAsync();
+        }
+
+        public async Task<ActionResponse<IEnumerable<User>>> GetAsync(PaginationDTO pagination)
+        {
+            var query = _context.Users.AsQueryable();
+
+            //TODO: Implementar filtros de busqueda
+
+            return new ActionResponse<IEnumerable<User>>
+            {
+                WasSuccess = true,
+                Result = await query
+                .OrderByDescending(u => u.UserType == UserType.Admin)
+                .OrderByDescending(u => u.IsActive)
+                .ThenBy(u => u.FirstName)
+                .ThenBy(x => x.LastName)
+                .Paginate(pagination)
+                .ToListAsync()
+            };
+        }
+
+        public async Task<ActionResponse<int>> GetTotalPagesAsync(PaginationDTO pagination)
+        {
+            var query = _context.Users.AsQueryable();
+
+            double count = await query.CountAsync();
+            double totalPages = (int)Math.Ceiling(count / pagination.RecordsNumber);
+            return new ActionResponse<int>
+            {
+                WasSuccess = true,
+                Result = (int)totalPages
+            };
         }
     }
 }

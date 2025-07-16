@@ -5,9 +5,9 @@ namespace LogisticoWebAPI.Backend.UnitsOfWork.Interfaces
 {
     public interface IStatesUnitOfWork
     {
-        Task<ActionResponses<IEnumerable<State>>> GetAllAsync();
+        Task<ActionResponse<IEnumerable<State>>> GetAsync();
 
-        Task<ActionResponses<State>> GetAsync(int id);
+        Task<ActionResponse<State>> GetAsync(int id);
 
         Task<IEnumerable<State>> GetComboAsync();
     }

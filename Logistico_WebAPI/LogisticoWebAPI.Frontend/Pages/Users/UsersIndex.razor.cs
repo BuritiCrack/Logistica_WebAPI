@@ -23,7 +23,7 @@ namespace LogisticoWebAPI.Frontend.Pages.Users
 
         private async Task LoadAsync()
         {
-            var responseHttp = await Repository.GetAsync<List<User>>("api/accounts/users");
+            var responseHttp = await Repository.GetAsync<List<User>>("api/accounts/all");
             if (responseHttp.Error)
             {
                 var message = await responseHttp.GetErrorMessageAsync();

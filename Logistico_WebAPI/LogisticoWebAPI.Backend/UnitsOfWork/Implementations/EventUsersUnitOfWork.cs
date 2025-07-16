@@ -16,21 +16,21 @@ namespace LogisticoWebAPI.Backend.UnitsOfWork.Implementations
             _eventUsersRepository = eventUsersRepository;
         }
 
-        public async Task<ActionResponses<ApplyToEventDTO>> ApplyToEventAsync(string email, ApplyToEventDTO applyToEventDTO)
+        public async Task<ActionResponse<ApplyToEventDTO>> ApplyToEventAsync(string email, ApplyToEventDTO applyToEventDTO)
             => await _eventUsersRepository.ApplyToEventAsync(email, applyToEventDTO);
-        public async Task<ActionResponses<UpdateApplicationStatusDTO>> UpdateApplicationStatusAsync(string email, UpdateApplicationStatusDTO updateApplicationStatusDTO)
+        public async Task<ActionResponse<UpdateApplicationStatusDTO>> UpdateApplicationStatusAsync(string email, UpdateApplicationStatusDTO updateApplicationStatusDTO)
             => await _eventUsersRepository.UpdateApplicationStatusAsync(email,updateApplicationStatusDTO);
 
-        public async Task<ActionResponses<EventUser>> CancelApplicationAsync(string email, int eventId)
+        public async Task<ActionResponse<EventUser>> CancelApplicationAsync(string email, int eventId)
             => await _eventUsersRepository.CancelApplicationAsync(email, eventId);
 
-        public async Task<ActionResponses<IEnumerable<EventUser>>> GetUserApplicationsAsync(string email)
+        public async Task<ActionResponse<IEnumerable<EventUser>>> GetUserApplicationsAsync(string email)
             => await _eventUsersRepository.GetUserApplicationsAsync(email);
 
-        public async Task<ActionResponses<IEnumerable<EventUser>>> GetEventApplicationsAsync(int eventId)
+        public async Task<ActionResponse<IEnumerable<EventUser>>> GetEventApplicationsAsync(int eventId)
             => await _eventUsersRepository.GetEventApplicationsAsync(eventId);
 
-        public async Task<ActionResponses<EventUser>> GetApplicationAsync(int applicationId)
+        public async Task<ActionResponse<EventUser>> GetApplicationAsync(int applicationId)
             => await _eventUsersRepository.GetApplicationAsync(applicationId);
 
         public async Task<bool> HasUserAppliedToEventAsync(string email, int eventId)

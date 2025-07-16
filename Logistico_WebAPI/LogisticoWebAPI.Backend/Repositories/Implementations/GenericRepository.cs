@@ -1,5 +1,7 @@
 ﻿using LogisticoWebAPI.Backend.Data;
+using LogisticoWebAPI.Backend.Helpers;
 using LogisticoWebAPI.Backend.Repositories.Interfaces;
+using LogisticoWebAPI.Shared.DTOs;
 using LogisticoWebAPI.Shared.Responses;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,14 +17,14 @@ namespace LogisticoWebAPI.Backend.Repositories.Implementations
             _context = context;
             _entity = context.Set<T>();
         }
-        public virtual async Task<ActionResponses<T>> DeleteAsync(int id)
+        public virtual async Task<ActionResponse<T>> DeleteAsync(int id)
         {
             var row = await _entity.FindAsync(id);
             if (row == null)
             {
-                return new ActionResponses<T>
+                return new ActionResponse<T>
                 {
-                    WassSuccess = false,
+                    WasSuccess = false,
                     Message = "El registro no fue encontrado."
                 };
             }
@@ -30,58 +32,84 @@ namespace LogisticoWebAPI.Backend.Repositories.Implementations
             {
                 _entity.Remove(row);
                 await _context.SaveChangesAsync();
-                return new ActionResponses<T>
+                return new ActionResponse<T>
                 {
-                    WassSuccess = true     
+                    WasSuccess = true     
                 };
             }
             catch 
             {
-                return new ActionResponses<T>
+                return new ActionResponse<T>
                 {
-                    WassSuccess = false,
+                    WasSuccess = false,
                     Message = "No se pudo eliminar, porque tiene registros relacionados."
                 };
             }
         }
 
-        public virtual async Task<ActionResponses<IEnumerable<T>>> GetAllAsync()
+        public virtual async Task<ActionResponse<IEnumerable<T>>> GetAsync()
         {
-            return new ActionResponses<IEnumerable<T>>
+            return new ActionResponse<IEnumerable<T>>
             {
-                WassSuccess = true,
+                WasSuccess = true,
                 Result = await _entity.ToListAsync()
             };
         }
 
-        public virtual async Task<ActionResponses<T>> GetAsync(int id)
+        public virtual async Task<ActionResponse<T>> GetAsync(int id)
         {
             var row = await _entity.FindAsync(id);
             if (row == null)
             {
-                return new ActionResponses<T>
+                return new ActionResponse<T>
                 {
-                    WassSuccess = false,
+                    WasSuccess = false,
                     Message = "El registro no fue encontrado."
                 };
             }
 
-            return new ActionResponses<T>
+            return new ActionResponse<T>
             {
-                WassSuccess = true,
+                WasSuccess = true,
                 Result = row
             };
         }
 
-        public virtual async Task<ActionResponses<T>> PostAsync(T entity)
+        public virtual async Task<ActionResponse<IEnumerable<T>>> GetAsync(PaginationDTO pagination)
+        {
+            var queryable = _entity.AsQueryable();
+
+            return new ActionResponse<IEnumerable<T>>
+            {
+                WasSuccess = true,
+                Result = await queryable
+                    .Paginate(pagination)
+                    .ToListAsync()
+            };
+        }
+
+        public virtual async Task<ActionResponse<int>> GetTotalPagesAsync(PaginationDTO pagination)
+        {
+            var queryable = _entity.AsQueryable();
+            var count = await queryable.CountAsync();
+            int totalPages = (int)Math.Ceiling((double)count / pagination.RecordsNumber);
+
+            return new ActionResponse<int>
+            {
+                WasSuccess = true,
+                Result = totalPages
+            };
+        }
+
+        public virtual async Task<ActionResponse<T>> PostAsync(T entity)
         {
             _context.Add(entity);
             try
             {
                 await _context.SaveChangesAsync();
-                return new ActionResponses<T>
+                return new ActionResponse<T>
                 {
-                    WassSuccess = true,
+                    WasSuccess = true,
                     Result = entity,
                 };
             }
@@ -95,24 +123,24 @@ namespace LogisticoWebAPI.Backend.Repositories.Implementations
                     }
                 }
 
-                return new ActionResponses<T>
+                return new ActionResponse<T>
                 {
-                    WassSuccess = false,
+                    WasSuccess = false,
                     Message = $"Ocurrió un error al intentar crear el registro: {ex.Message}"
                 };
             }
             
         }
 
-        public virtual async Task<ActionResponses<T>> PutAsync(T entity)
+        public virtual async Task<ActionResponse<T>> PutAsync(T entity)
         {
             _context.Update(entity);
             try
             {
                 await _context.SaveChangesAsync();
-                return new ActionResponses<T>
+                return new ActionResponse<T>
                 {
-                    WassSuccess = true,
+                    WasSuccess = true,
                     Result = entity,
                 };
             }
@@ -126,9 +154,9 @@ namespace LogisticoWebAPI.Backend.Repositories.Implementations
                     }
                 }
 
-                return new ActionResponses<T>
+                return new ActionResponse<T>
                 {
-                    WassSuccess = false,
+                    WasSuccess = false,
                     Message = $"Ocurrió un error al intentar crear el registro: {ex.Message}"
                 };
             }
@@ -138,20 +166,20 @@ namespace LogisticoWebAPI.Backend.Repositories.Implementations
             }
         }
 
-        private ActionResponses<T> DbUpdateExceptionActionResponse()
+        private ActionResponse<T> DbUpdateExceptionActionResponse()
         {
-            return new ActionResponses<T>
+            return new ActionResponse<T>
             {
-                WassSuccess = false,
+                WasSuccess = false,
                 Message = "Ya existe el registro que intentas crear."
             };
         }
 
-        private ActionResponses<T> ExceptionActionResponse(Exception ex)
+        private ActionResponse<T> ExceptionActionResponse(Exception ex)
         {
-            return new ActionResponses<T>
+            return new ActionResponse<T>
             {
-                WassSuccess = false,
+                WasSuccess = false,
                 Message = $"Ocurrió un error al intentar crear el registro: {ex.Message}"
             };
         }
