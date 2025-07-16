@@ -1,13 +1,339 @@
 ﻿@page "/"
 
-<PageTitle>Inicio</PageTitle>
+@using Microsoft.AspNetCore.Components.Authorization
 
-<AuthorizeView Roles="Admin">
-    <Authorized>
-        <p>Estas autenticado y autorizado, @context.User.Identity!.Name</p>
-    </Authorized>
-    <NotAuthorized>
-        <p>No estas autorizado</p>
-    </NotAuthorized>
-</AuthorizeView>
+<PageTitle>EventosPlus - Gestión Integral de Eventos</PageTitle>
 
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="hero-background">
+        <div class="animated-bg"></div>
+    </div>
+    <div class="hero-content">
+        <div class="container-fluid px-4">
+            <div class="row align-items-center min-vh-100">
+                <div class="col-lg-6">
+                    <div class="hero-text">
+                        <h1 class="hero-title">
+                            <span class="text-gradient">EventosPlus</span>
+                            <br />
+                            <span class="text-white">Administración Inteligente</span>
+                            <br />
+                            <span class="text-accent">para Eventos Extraordinarios</span>
+                        </h1>
+                        <p class="hero-subtitle text-white-75 mb-4">
+                            Revoluciona la gestión de tus eventos musicales, recreativos y corporativos.
+                            Conecta talento excepcional, organiza experiencias inolvidables y administra
+                            cada detalle con la máxima eficiencia.
+                        </p>
+
+                        <AuthorizeView Context="mainAuth">
+                            <Authorized>
+                                <div class="hero-welcome mb-4">
+                                    <div class="welcome-card">
+                                        <div class="welcome-avatar">
+                                            <i class="fas fa-user-circle"></i>
+                                        </div>
+                                        <div class="welcome-info">
+                                            <h6 class="mb-1">¡Bienvenido de nuevo!</h6>
+                                            <p class="mb-0 text-white-75">@mainAuth.User.Identity!.Name</p>
+                                            <AuthorizeView Roles="Admin" Context="adminAuth">
+                                                <Authorized>
+                                                    <span class="role-badge admin">Administrador</span>
+                                                </Authorized>
+                                            </AuthorizeView>
+                                            <AuthorizeView Roles="User" Context="userAuth">
+                                                <Authorized>
+                                                    <span class="role-badge user">Usuario</span>
+                                                </Authorized>
+                                            </AuthorizeView>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="hero-buttons">
+                                    <AuthorizeView Roles="Admin" Context="adminButtons">
+                                        <Authorized>
+                                            <a href="/events/create" class="btn btn-primary btn-lg me-3">
+                                                <i class="fas fa-plus me-2"></i>Crear Evento
+                                            </a>
+                                            <a href="/users" class="btn btn-outline-light btn-lg">
+                                                <i class="fas fa-users me-2"></i>Gestionar Usuarios
+                                            </a>
+                                        </Authorized>
+                                    </AuthorizeView>
+                                    <AuthorizeView Roles="User" Context="userButtons">
+                                        <Authorized>
+                                            <a href="/events" class="btn btn-primary btn-lg me-3">
+                                                <i class="fas fa-calendar me-2"></i>Explorar Eventos
+                                            </a>
+                                            <a href="/myapplications" class="btn btn-outline-light btn-lg">
+                                                <i class="fas fa-list-check me-2"></i>Mis Aplicaciones
+                                            </a>
+                                        </Authorized>
+                                    </AuthorizeView>
+                                </div>
+                            </Authorized>
+                            <NotAuthorized>
+                                <div class="hero-buttons">
+                                    <a href="/Account/Login" class="btn btn-primary btn-lg me-3">
+                                        <i class="fas fa-sign-in-alt me-2"></i>Iniciar Sesión
+                                    </a>
+                                    <a href="/Account/Register" class="btn btn-outline-light btn-lg">
+                                        <i class="fas fa-user-plus me-2"></i>Registrarse Gratis
+                                    </a>
+                                </div>
+                                <div class="hero-info mt-4">
+                                    <div class="info-card">
+                                        <i class="fas fa-rocket"></i>
+                                        <span>Únete a más de 10,000 organizadores que confían en nosotros</span>
+                                    </div>
+                                </div>
+                            </NotAuthorized>
+                        </AuthorizeView>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="hero-visual">
+                        <div class="floating-elements">
+                            <div class="floating-card music-card">
+                                <div class="card-icon">
+                                    <i class="fas fa-music"></i>
+                                </div>
+                                <div class="card-content">
+                                    <h6>Eventos Musicales</h6>
+                                    <p>Conciertos, festivales, recitales</p>
+                                </div>
+                            </div>
+                            <div class="floating-card corporate-card">
+                                <div class="card-icon">
+                                    <i class="fas fa-building"></i>
+                                </div>
+                                <div class="card-content">
+                                    <h6>Eventos Corporativos</h6>
+                                    <p>Conferencias, seminarios, networking</p>
+                                </div>
+                            </div>
+                            <div class="floating-card fun-card">
+                                <div class="card-icon">
+                                    <i class="fas fa-gamepad"></i>
+                                </div>
+                                <div class="card-content">
+                                    <h6>Eventos Recreativos</h6>
+                                    <p>Fiestas, competencias, actividades</p>
+                                </div>
+                            </div>
+                            <div class="floating-card culture-card">
+                                <div class="card-icon">
+                                    <i class="fas fa-theater-masks"></i>
+                                </div>
+                                <div class="card-content">
+                                    <h6>Eventos Culturales</h6>
+                                    <p>Teatro, arte, exposiciones</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="hero-stats">
+                            <div class="stat-item">
+                                <h3>500+</h3>
+                                <p>Eventos Exitosos</p>
+                            </div>
+                            <div class="stat-item">
+                                <h3>10K+</h3>
+                                <p>Usuarios Activos</p>
+                            </div>
+                            <div class="stat-item">
+                                <h3>98%</h3>
+                                <p>Satisfacción</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="features-section">
+    <div class="container-fluid px-4">
+        <div class="row text-center mb-5">
+            <div class="col-12">
+                <div class="section-header">
+                    <h2 class="section-title">Potencia tu Gestión de Eventos</h2>
+                    <p class="section-subtitle">
+                        Herramientas profesionales diseñadas para organizadores exigentes
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-lg-4 col-md-6">
+                <div class="feature-card h-100">
+                    <div class="feature-header">
+                        <div class="feature-icon primary">
+                            <i class="fas fa-calendar-plus"></i>
+                        </div>
+                        <h4>Gestión Completa de Eventos</h4>
+                    </div>
+                    <p>Crea, planifica y administra eventos de cualquier escala con herramientas intuitivas y potentes.</p>
+                    <ul class="feature-list">
+                        <li><i class="fas fa-check"></i> Planificación detallada</li>
+                        <li><i class="fas fa-check"></i> Gestión de cronogramas</li>
+                        <li><i class="fas fa-check"></i> Control de presupuestos</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+                <div class="feature-card h-100">
+                    <div class="feature-header">
+                        <div class="feature-icon success">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <h4>Administración de Talento</h4>
+                    </div>
+                    <p>Conecta con los mejores artistas y profesionales, gestiona postulaciones y mantén comunicación directa.</p>
+                    <ul class="feature-list">
+                        <li><i class="fas fa-check"></i> Base de datos de talento</li>
+                        <li><i class="fas fa-check"></i> Sistema de aplicaciones</li>
+                        <li><i class="fas fa-check"></i> Evaluación y selección</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+                <div class="feature-card h-100">
+                    <div class="feature-header">
+                        <div class="feature-icon warning">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <h4>Analytics y Reportes</h4>
+                    </div>
+                    <p>Obtén insights valiosos sobre el rendimiento de tus eventos y toma decisiones basadas en datos.</p>
+                    <ul class="feature-list">
+                        <li><i class="fas fa-check"></i> Dashboard en tiempo real</li>
+                        <li><i class="fas fa-check"></i> Reportes personalizados</li>
+                        <li><i class="fas fa-check"></i> Métricas de participación</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+                <div class="feature-card h-100">
+                    <div class="feature-header">
+                        <div class="feature-icon info">
+                            <i class="fas fa-mobile-alt"></i>
+                        </div>
+                        <h4>Acceso Multiplataforma</h4>
+                    </div>
+                    <p>Gestiona tus eventos desde cualquier dispositivo con nuestra aplicación web responsive y moderna.</p>
+                    <ul class="feature-list">
+                        <li><i class="fas fa-check"></i> Diseño responsive</li>
+                        <li><i class="fas fa-check"></i> Sincronización en tiempo real</li>
+                        <li><i class="fas fa-check"></i> Funciona offline</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+                <div class="feature-card h-100">
+                    <div class="feature-header">
+                        <div class="feature-icon danger">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h4>Seguridad Enterprise</h4>
+                    </div>
+                    <p>Protección avanzada de datos con encriptación de grado militar y cumplimiento de estándares internacionales.</p>
+                    <ul class="feature-list">
+                        <li><i class="fas fa-check"></i> Encriptación SSL/TLS</li>
+                        <li><i class="fas fa-check"></i> Autenticación multifactor</li>
+                        <li><i class="fas fa-check"></i> Backups automáticos</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+                <div class="feature-card h-100">
+                    <div class="feature-header">
+                        <div class="feature-icon dark">
+                            <i class="fas fa-headset"></i>
+                        </div>
+                        <h4>Soporte Dedicado</h4>
+                    </div>
+                    <p>Nuestro equipo de expertos está disponible 24/7 para ayudarte a maximizar el éxito de tus eventos.</p>
+                    <ul class="feature-list">
+                        <li><i class="fas fa-check"></i> Soporte 24/7</li>
+                        <li><i class="fas fa-check"></i> Chat en vivo</li>
+                        <li><i class="fas fa-check"></i> Onboarding personalizado</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section">
+    <div class="container-fluid px-4">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 text-center">
+                <div class="cta-content">
+                    <h2 class="cta-title">¿Listo para Revolucionar tus Eventos?</h2>
+                    <p class="cta-subtitle">
+                        Únete a miles de organizadores exitosos que han transformado su gestión de eventos con EventosPlus
+                    </p>
+                    <AuthorizeView Context="ctaAuth">
+                        <NotAuthorized>
+                            <div class="cta-buttons">
+                                <a href="/Account/Register" class="btn btn-primary btn-lg me-3">
+                                    <i class="fas fa-rocket me-2"></i>Comenzar Gratis
+                                </a>
+                                <a href="/events" class="btn btn-outline-primary btn-lg">
+                                    <i class="fas fa-eye me-2"></i>Ver Demo
+                                </a>
+                            </div>
+                            <div class="cta-features mt-4">
+                                <div class="row justify-content-center">
+                                    <div class="col-auto">
+                                        <div class="mini-feature">
+                                            <i class="fas fa-check-circle"></i>
+                                            <span>Sin tarjeta de crédito</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="mini-feature">
+                                            <i class="fas fa-check-circle"></i>
+                                            <span>Setup en 5 minutos</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="mini-feature">
+                                            <i class="fas fa-check-circle"></i>
+                                            <span>Cancela cuando quieras</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </NotAuthorized>
+                        <Authorized>
+                            <div class="cta-buttons">
+                                <a href="/events" class="btn btn-primary btn-lg me-3">
+                                    <i class="fas fa-calendar me-2"></i>Explorar Eventos
+                                </a>
+                                <AuthorizeView Roles="Admin" Context="ctaAdminAuth">
+                                    <Authorized>
+                                        <a href="/events/create" class="btn btn-outline-primary btn-lg">
+                                            <i class="fas fa-plus me-2"></i>Crear Nuevo Evento
+                                        </a>
+                                    </Authorized>
+                                </AuthorizeView>
+                            </div>
+                        </Authorized>
+                    </AuthorizeView>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
