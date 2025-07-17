@@ -15,72 +15,81 @@ namespace LogisticoWebAPI.Frontend.Shared
 
         [Parameter] public EventCallback<int> OnPageChanged { get; set; }
 
-
         protected override void OnParametersSet()
         {
             links = [];
-            var previousLinkEnable = CurrentPage != 1;
-            var previousLinkPage = CurrentPage - 1;
 
+            // Botón anterior
             links.Add(new PageModel
             {
                 Text = "«",
-                Page = previousLinkPage,
-                IsEnable = previousLinkEnable
+                Page = CurrentPage - 1,
+                IsEnable = CurrentPage > 1,
+                IsCurrent = false
             });
 
-            for (int i = 1; i <= TotalPages; i++)
+            // Determinar el rango de páginas a mostrar
+            int startPage, endPage;
+
+            if (TotalPages <= Radio)
             {
-                if (TotalPages <= Radio)
-                {
-                    links.Add(new PageModel
-                    {
-                        Page = i,
-                        IsEnable = CurrentPage == i,
-                        Text = $"{i}"
-                    });
-                }
+                // Mostrar todas las páginas
+                startPage = 1;
+                endPage = TotalPages;
+            }
+            else
+            {
+                // Calcular rango basado en la página actual
+                int halfRadio = Radio / 2;
 
-                if (TotalPages > Radio && i <= Radio && CurrentPage <= Radio)
+                if (CurrentPage <= halfRadio)
                 {
-                    links.Add(new PageModel
-                    {
-                        Page = i,
-                        IsEnable = CurrentPage == i,
-                        Text = $"{i}"
-                    });
+                    startPage = 1;
+                    endPage = Radio;
                 }
-
-                if (CurrentPage > Radio && i > CurrentPage - Radio && i <= CurrentPage)
+                else if (CurrentPage + halfRadio >= TotalPages)
                 {
-                    links.Add(new PageModel
-                    {
-                        Page = i,
-                        IsEnable = CurrentPage == i,
-                        Text = $"{i}"
-                    });
+                    startPage = TotalPages - Radio + 1;
+                    endPage = TotalPages;
+                }
+                else
+                {
+                    startPage = CurrentPage - halfRadio;
+                    endPage = CurrentPage + halfRadio;
                 }
             }
 
-            var linkNextEnable = CurrentPage != TotalPages;
-            var linkNextPage = CurrentPage != TotalPages ? CurrentPage + 1 : CurrentPage;
+            // Agregar las páginas numéricas
+            for (int i = startPage; i <= endPage; i++)
+            {
+                links.Add(new PageModel
+                {
+                    Page = i,
+                    IsEnable = true, // Todas las páginas son clicables
+                    IsCurrent = i == CurrentPage,
+                    Text = $"{i}"
+                });
+            }
+
+            // Botón siguiente
             links.Add(new PageModel
             {
                 Text = "»",
-                Page = linkNextPage,
-                IsEnable = linkNextEnable
+                Page = CurrentPage + 1,
+                IsEnable = CurrentPage < TotalPages,
+                IsCurrent = false
             });
         }
 
-
         private async Task InternalSelectedPage(PageModel pageModel)
         {
-            if (pageModel.Page == CurrentPage || pageModel.Page == 0)
+            if (pageModel.Page == CurrentPage || pageModel.Page < 1 || pageModel.Page > TotalPages)
             {
                 return;
             }
             await OnPageChanged.InvokeAsync(pageModel.Page);
         }
+
         private class PageModel
         {
             public string Text { get; set; } = null!;

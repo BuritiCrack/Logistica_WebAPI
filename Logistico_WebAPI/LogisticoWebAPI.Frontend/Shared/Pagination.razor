@@ -4,10 +4,10 @@
         <ul class="pagination justify-content-center">
             @foreach (var link in links)
             {
-                <li class="page-item @(link.IsCurrent ? "active" : "") @(!link.IsEnable && !link.IsCurrent ? "disabled" : "")">
-                    @if (link.IsEnable || link.IsCurrent)
+                <li class="page-item @(link.IsCurrent ? "active" : "") @(!link.IsEnable ? "disabled" : "")">
+                    @if (link.IsEnable)
                     {
-                        <button class="page-link" @onclick="() => InternalSelectedPage(link)" disabled="@(!link.IsEnable && !link.IsCurrent)">
+                        <button class="page-link" @onclick="() => InternalSelectedPage(link)">
                             @link.Text
                         </button>
                     }
