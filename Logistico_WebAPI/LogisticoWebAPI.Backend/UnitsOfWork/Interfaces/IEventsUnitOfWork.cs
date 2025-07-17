@@ -7,5 +7,7 @@ namespace LogisticoWebAPI.Backend.UnitsOfWork.Interfaces
     public interface IEventsUnitOfWork
     {
         Task<ActionResponse<IEnumerable<Event>>> GetAsync(PaginationDTO pagination);
+
+        Task<ActionResponse<int>> GetTotalPagesAsync(PaginationDTO pagination);
     }
 }

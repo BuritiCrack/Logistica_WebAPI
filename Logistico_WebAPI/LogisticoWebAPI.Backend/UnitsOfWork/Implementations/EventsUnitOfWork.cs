@@ -10,12 +10,18 @@ namespace LogisticoWebAPI.Backend.UnitsOfWork.Implementations
     {
         private readonly IEventsRepository _eventsRepository;
 
-        public EventsUnitOfWork(IGenericRepository<Event> repository, IEventsRepository eventsRepository) : base(repository)
+        public EventsUnitOfWork(IGenericRepository<Event> repository, IEventsRepository
+            eventsRepository) : base(repository)
+
         {
             _eventsRepository = eventsRepository;
         }
 
         public override async Task<ActionResponse<IEnumerable<Event>>> GetAsync(PaginationDTO pagination)
             => await _eventsRepository.GetAsync(pagination);
+
+        public override async Task<ActionResponse<int>> GetTotalPagesAsync(PaginationDTO pagination)
+            => await _eventsRepository.GetTotalPagesAsync(pagination);
+
     }
 }

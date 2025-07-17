@@ -21,6 +21,10 @@ namespace LogisticoWebAPI.Backend.Repositories.Implementations
         {
             var query = _context.Events.AsQueryable();
 
+            if (!string.IsNullOrWhiteSpace(pagination.Filter))
+            {
+                query = query.Where(f => f.Name.ToLower().Contains(pagination.Filter.ToLower()));
+            }
             return new ActionResponse<IEnumerable<Event>>
             {
                 WasSuccess = true,
@@ -30,5 +34,21 @@ namespace LogisticoWebAPI.Backend.Repositories.Implementations
                     .ToListAsync()
             };
         }
+
+        public override async Task<ActionResponse<int>> GetTotalPagesAsync(PaginationDTO pagination)
+        {
+            var query = _context.Events.AsQueryable();
+            if (!string.IsNullOrWhiteSpace(pagination.Filter))
+            {
+                query = query.Where(f => f.Name.ToLower().Contains(pagination.Filter.ToLower()));
+            }
+            var count = await query.CountAsync();
+            int totalPages = (int)Math.Ceiling((double)count / pagination.RecordsNumber);
+            return new ActionResponse<int>
+            {
+                WasSuccess = true,
+                Result = totalPages
+            };
+        }
     }
-}
+} 
