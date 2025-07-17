@@ -10,6 +10,8 @@ namespace LogisticoWebAPI.Frontend.Pages.Events
     [Authorize(Roles = "User,Admin")]
     public partial class EventsIndex
     {
+        private int CurrentPage = 1;
+        private int TotalPages;
         public List<Event>? Events { get; set; }
         private HashSet<int> AppliedEventIds { get; set; } = new();
 
@@ -23,18 +25,45 @@ namespace LogisticoWebAPI.Frontend.Pages.Events
             await LoadUserApplicationsAsync();
         }
 
-        private async Task LoadAsycn()
+        private async Task OnPageCngedAsync(int page)
         {
-            var responseHttp = await Repository.GetAsync<List<Event>>("api/events");
+            CurrentPage = page;
+            await LoadAsycn(page);
+        }
+
+        private async Task LoadAsycn(int page = 1)
+        {
+            var ok = await LoadListAync(page);
+            if (ok)
+            {
+                await LoadPagesAsync();
+            }
+        }
+
+        private async Task<bool> LoadListAync(int page)
+        {
+            var responseHttp = await Repository.GetAsync<List<Event>>($"api/events?page={page}");
+            if (responseHttp.Error)
+            {
+                var message = await responseHttp.GetErrorMessageAsync();
+                await SweetAlertService.FireAsync("Error", message, SweetAlertIcon.Error);
+                return false;
+            }
+            Events = responseHttp.Response;
+            return true;
+        }
+
+        private async Task LoadPagesAsync()
+        {
+            var responseHttp = await Repository.GetAsync<int>("api/events/totalpages");
             if (responseHttp.Error)
             {
                 var message = await responseHttp.GetErrorMessageAsync();
                 await SweetAlertService.FireAsync("Error", message, SweetAlertIcon.Error);
                 return;
             }
-            Events = responseHttp.Response!.OrderByDescending(e => e.CreatedAt).ToList();
+            TotalPages = responseHttp.Response;
         }
-
         private async Task LoadUserApplicationsAsync()
         {
             var responseHttp = await Repository.GetAsync<List<EventUser>>("api/eventapplications/myapplications");

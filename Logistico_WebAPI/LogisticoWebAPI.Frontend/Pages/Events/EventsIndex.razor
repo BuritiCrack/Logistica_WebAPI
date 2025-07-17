@@ -1,16 +1,15 @@
 ﻿@page "/events"
 
-<h3>Eventos</h3>
-
-<AuthorizeView Roles="Admin">
-    <Authorized>
-        <div class="mb-3">
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h3>Eventos</h3>
+    <AuthorizeView Roles="Admin">
+        <Authorized>
             <a class="btn btn-primary" href="/events/create">
                 <i class="fa fa-plus"></i> Crear Evento
             </a>
-        </div>
-    </Authorized>
-</AuthorizeView>
+        </Authorized>
+    </AuthorizeView>
+</div>
 
 @if (Events == null)
 {
@@ -135,4 +134,9 @@ else
             </div>
         }
     </div>
+
+    <Pagination CurrentPage="CurrentPage"
+                TotalPages="TotalPages"
+                OnPageChanged="OnPageCngedAsync" />
+
 }
