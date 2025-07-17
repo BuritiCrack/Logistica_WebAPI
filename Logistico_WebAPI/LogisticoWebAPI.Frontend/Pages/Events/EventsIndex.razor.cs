@@ -18,7 +18,8 @@ namespace LogisticoWebAPI.Frontend.Pages.Events
         [Inject] private IRepository Repository { get; set; } = null!;
         [Inject] private NavigationManager NavigationManager { get; set; } = null!;
         [Inject] private SweetAlertService SweetAlertService { get; set; } = null!;
-
+        [Parameter, SupplyParameterFromQuery] public string Page { get; set; } = string.Empty;
+        [Parameter, SupplyParameterFromQuery] public string Filter { get; set; } = string.Empty;
         protected override async Task OnInitializedAsync()
         {
             await LoadAsycn();
@@ -33,6 +34,11 @@ namespace LogisticoWebAPI.Frontend.Pages.Events
 
         private async Task LoadAsycn(int page = 1)
         {
+            if (!string.IsNullOrWhiteSpace(Page))
+            {
+                page = Convert.ToInt32(Page);
+            }
+
             var ok = await LoadListAync(page);
             if (ok)
             {
@@ -42,7 +48,12 @@ namespace LogisticoWebAPI.Frontend.Pages.Events
 
         private async Task<bool> LoadListAync(int page)
         {
-            var responseHttp = await Repository.GetAsync<List<Event>>($"api/events?page={page}");
+            var url = $"api/events?page={page}";
+            if (!string.IsNullOrWhiteSpace(Filter))
+            {
+                url += $"&filter={Filter}";
+            }
+            var responseHttp = await Repository.GetAsync<List<Event>>(url);
             if (responseHttp.Error)
             {
                 var message = await responseHttp.GetErrorMessageAsync();
@@ -55,7 +66,12 @@ namespace LogisticoWebAPI.Frontend.Pages.Events
 
         private async Task LoadPagesAsync()
         {
-            var responseHttp = await Repository.GetAsync<int>("api/events/totalpages");
+            var url = $"api/events/totalpages";
+            if (!string.IsNullOrWhiteSpace(Filter))
+            {
+                url += $"?filter={Filter}";
+            }
+            var responseHttp = await Repository.GetAsync<int>(url);
             if (responseHttp.Error)
             {
                 var message = await responseHttp.GetErrorMessageAsync();
@@ -63,6 +79,19 @@ namespace LogisticoWebAPI.Frontend.Pages.Events
                 return;
             }
             TotalPages = responseHttp.Response;
+        }
+
+        private async Task CleanFilterAsync()
+        {
+            Filter = string.Empty;
+            await ApplyfilterAsync();
+        }
+
+        private async Task ApplyfilterAsync()
+        {
+            int page = 1;
+            await LoadAsycn(page);
+            await OnPageCngedAsync(page);
         }
 
         private async Task LoadUserApplicationsAsync()
