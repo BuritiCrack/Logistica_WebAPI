@@ -19,7 +19,7 @@ namespace LogisticoWebAPI.Frontend.Pages.Events
         [Inject] private NavigationManager NavigationManager { get; set; } = null!;
         [Inject] private SweetAlertService SweetAlertService { get; set; } = null!;
 
-        protected async override Task OnInitializedAsync()
+        protected override async Task OnInitializedAsync()
         {
             await LoadAsycn();
             await LoadUserApplicationsAsync();
@@ -64,16 +64,19 @@ namespace LogisticoWebAPI.Frontend.Pages.Events
             }
             TotalPages = responseHttp.Response;
         }
+
         private async Task LoadUserApplicationsAsync()
         {
             var responseHttp = await Repository.GetAsync<List<EventUser>>("api/eventapplications/myapplications");
-            if (!responseHttp.Error && responseHttp.Response != null)
+            if (responseHttp.Error)
             {
-                AppliedEventIds = responseHttp.Response
-                    .Where(eu => eu.Status != LogisticoWebAPI.Shared.Enums.ApplicationStatus.CancelledByUser)
+                var message = await responseHttp.GetErrorMessageAsync();
+                await SweetAlertService.FireAsync("Error", message, SweetAlertIcon.Error);
+                return;
+            }
+            AppliedEventIds = responseHttp.Response!
                     .Select(eu => eu.EventId)
                     .ToHashSet();
-            }
         }
 
         private async Task DeleteAsync(Event @event)
@@ -152,5 +155,4 @@ namespace LogisticoWebAPI.Frontend.Pages.Events
             return AppliedEventIds.Contains(eventId);
         }
     }
-    
 }
