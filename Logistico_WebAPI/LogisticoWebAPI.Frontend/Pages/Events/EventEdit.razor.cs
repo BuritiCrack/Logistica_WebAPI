@@ -11,7 +11,8 @@ namespace LogisticoWebAPI.Frontend.Pages.Events
     [Authorize(Roles = "Admin")]
     public partial class EventEdit
     {
-        private EventDTO? EventDTO;
+        private EventDTO EventDTO = new();
+        private Event? Event;
         private EventForm? eventForm;
         [Inject] public IRepository Repository { get; set; } = null!;
         [Inject] private NavigationManager NavigationManager { get; set; } = null!;
@@ -20,7 +21,7 @@ namespace LogisticoWebAPI.Frontend.Pages.Events
 
         protected override async Task OnParametersSetAsync()
         {
-            var responseHttp = await Repository.GetAsync<EventDTO>($"/api/events/{Id}");
+            var responseHttp = await Repository.GetAsync<Event>($"/api/events/{Id}");
             if (responseHttp.Error)
             {
                 if (responseHttp.HttpResponseMessage.StatusCode == HttpStatusCode.NotFound)
@@ -39,8 +40,26 @@ namespace LogisticoWebAPI.Frontend.Pages.Events
             }
             else
             {
-                EventDTO = responseHttp.Response;
+                Event = responseHttp.Response!;
+                EventDTO = ToEventDTO(Event);
+                StateHasChanged();
             }
+        }
+
+        private EventDTO ToEventDTO(Event newEvent)
+        {
+            return new EventDTO
+            {
+                Id = newEvent.Id,
+                Name = newEvent.Name,
+                Place = newEvent.Place,
+                Description = newEvent.Description,
+                StartDate = newEvent.StartDate,
+                EndDate = newEvent.EndDate,
+                MealType = newEvent.MealType,
+                Payment = newEvent.Payment,
+                Photo = newEvent.Photo
+            };
         }
 
         private async Task EditAsync()
