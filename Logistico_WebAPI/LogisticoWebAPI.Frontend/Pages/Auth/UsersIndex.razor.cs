@@ -24,7 +24,12 @@ namespace LogisticoWebAPI.Frontend.Pages.Auth
         {
             await LoadAsync();
         }
-
+        private async Task OnFilterChangedAsync(string filter)
+        {
+            Filter = filter;
+            await ApplyfilterAsync();
+            StateHasChanged(); // Forzar re-renderizado
+        }
         private async Task OnPageChangedAsync(int page)
         {
             CurrentPage = page;
@@ -79,11 +84,6 @@ namespace LogisticoWebAPI.Frontend.Pages.Auth
                 return;
             }
             TotalPages = responseHttp.Response;
-        }
-        private async Task CleanFilterAsync()
-        {
-            Filter = string.Empty;
-            await ApplyfilterAsync();
         }
 
         private async Task ApplyfilterAsync()

@@ -12,36 +12,11 @@
 </div>
 
 <!-- Sección de Filtro -->
-<div class="card mb-4">
-    <div class="card-body">
-        <div class="row align-items-end">
-            <div class="col-md-8">
-                <label for="filterInput" class="form-label">
-                    <i class="fa fa-search"></i> Buscar Eventos
-                </label>
-                <input type="text"
-                       class="form-control"
-                       id="filterInput"
-                       placeholder="Ingresa el nombre del evento..."
-                       @bind="Filter"
-                       @onkeypress="@((e) => { if (e.Key == "Enter") InvokeAsync(ApplyfilterAsync); })" />
-            </div>
-            <div class="col-md-4">
-                <div class="d-flex gap-2">
-                    <button class="btn btn-primary"
-                            @onclick="ApplyfilterAsync">
-                        <i class="fa fa-search"></i> Buscar
-                    </button>
-                    <button class="btn btn-secondary"
-                            @onclick="CleanFilterAsync">
-                        <i class="fa fa-times"></i> Limpiar
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
+<GenericFilter PlaceHolder="Buscar eventos por nombre..."
+               TexFromFilter="Buscar Eventos"
+               TexToFilter="@Filter"
+               Callback=@OnFilterChangedAsync />
+               
 @if (Events == null)
 {
     <Loading />

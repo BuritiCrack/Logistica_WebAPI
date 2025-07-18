@@ -1,0 +1,31 @@
+﻿<!-- Sección de Filtro -->
+<div class="card mb-4">
+    <div class="card-body">
+        <div class="row align-items-end">
+            <div class="col-md-8">
+                <label for="filterInput" class="form-label">
+                    <i class="fa fa-search"></i> @TexFromFilter
+                </label>
+                <input type="text"
+                       class="form-control"
+                       id="filterInput"
+                       placeholder="@PlaceHolder"
+                       value="@TexToFilter"
+                       @oninput="OnInputChanged"
+                       @onkeypress="OnKeyPress" />
+            </div>
+            <div class="col-md-4">
+                <div class="d-flex gap-2">
+                    <button class="btn btn-primary"
+                            @onclick="ApplyFilterAsync">
+                        <i class="fa fa-search"></i> Buscar
+                    </button>
+                    <button class="btn btn-secondary"
+                            @onclick="CleanFilter">
+                        <i class="fa fa-times"></i> Limpiar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -26,6 +26,13 @@ namespace LogisticoWebAPI.Frontend.Pages.Events
             await LoadUserApplicationsAsync();
         }
 
+        private async Task OnFilterChangedAsync(string filter)
+        {
+            Filter = filter;
+            await ApplyfilterAsync();
+            StateHasChanged(); // Forzar re-renderizado
+        }
+
         private async Task OnPageCngedAsync(int page)
         {
             CurrentPage = page;
