@@ -41,5 +41,27 @@ namespace LogisticoWebAPI.Backend.Controllers
             }
             return BadRequest();
         }
+
+        [HttpPost("full")]
+        public async Task<IActionResult> PostAsync(EventDTO eventDTO)
+        {
+            var action = await _eventsUnitOfWork.AddAsync(eventDTO);
+            if (action.WasSuccess)
+            {
+                return Ok(action.Result);
+            }
+            return BadRequest(action.Message);
+        }
+
+        [HttpPut("full")]
+        public async Task<IActionResult> PutAsync(EventDTO eventDTO)
+        {
+            var action = await _eventsUnitOfWork.UpdateAsync(eventDTO);
+            if(action.WasSuccess)
+            {
+                return Ok(action.Result);
+            }
+            return BadRequest(action.Message);
+        }
     }
 }

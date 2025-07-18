@@ -1,4 +1,5 @@
 using CurrieTechnologies.Razor.SweetAlert2;
+using LogisticoWebAPI.Shared.DTOs;
 using LogisticoWebAPI.Shared.Entities;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
@@ -9,8 +10,9 @@ namespace LogisticoWebAPI.Frontend.Pages.Events
     public partial class EventForm
     {
         private EditContext editContext = null!;
+        private string? imageUrl;
 
-        [EditorRequired, Parameter] public Event Event { get; set; } = null!;
+        [EditorRequired, Parameter] public EventDTO EventDTO { get; set; } = null!;
         [EditorRequired, Parameter] public EventCallback OnValidSubmit { get; set; }
         [EditorRequired, Parameter] public EventCallback ReturnAction { get; set; }
         [Inject] public SweetAlertService SweetAlertService { get; set; } = null!;
@@ -18,7 +20,13 @@ namespace LogisticoWebAPI.Frontend.Pages.Events
 
         protected override void OnInitialized()
         {
-            editContext = new EditContext(Event);
+            editContext = new EditContext(EventDTO);
+        }
+
+        private void ImageSelected(string imageBase64)
+        {
+            EventDTO.Photo = imageBase64;
+            imageUrl = null;
         }
         private async Task OnBeforeInternalNavigation(LocationChangingContext context)
         {

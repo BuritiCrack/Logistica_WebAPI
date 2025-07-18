@@ -1,12 +1,15 @@
 ﻿@page "/events/edit/{Id:int}"
 
-@if (Event == null)
+@if (EventDTO == null)
 {
     <Loading />
 }
 else
 {
-    <EventForm @ref="eventForm" Event="Event" OnValidSubmit="EditAsync" ReturnAction="Return" />
+    <EventForm @ref="eventForm" 
+               EventDTO="EventDTO" 
+               OnValidSubmit="EditAsync" 
+               ReturnAction="Return" />
 }
 
 

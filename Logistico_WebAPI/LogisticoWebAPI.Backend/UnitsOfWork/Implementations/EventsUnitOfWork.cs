@@ -17,11 +17,16 @@ namespace LogisticoWebAPI.Backend.UnitsOfWork.Implementations
             _eventsRepository = eventsRepository;
         }
 
+        public async Task<ActionResponse<Event>> AddAsync(EventDTO eventDTO)
+            => await _eventsRepository.AddAsync(eventDTO);
+
         public override async Task<ActionResponse<IEnumerable<Event>>> GetAsync(PaginationDTO pagination)
             => await _eventsRepository.GetAsync(pagination);
 
         public override async Task<ActionResponse<int>> GetTotalPagesAsync(PaginationDTO pagination)
             => await _eventsRepository.GetTotalPagesAsync(pagination);
 
+        public async Task<ActionResponse<Event>> UpdateAsync(EventDTO eventDTO)
+            => await _eventsRepository.UpdateAsync(eventDTO);
     }
 }

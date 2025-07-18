@@ -1,4 +1,7 @@
 ﻿@page "/events/create"
 
-<EventForm @ref="eventForm" Event="Event" OnValidSubmit="CreateAsync" ReturnAction="Return" />
+<EventForm @ref="eventForm" 
+            EventDTO="EventDTO" 
+            OnValidSubmit="CreateAsync" 
+            ReturnAction="Return" />
 

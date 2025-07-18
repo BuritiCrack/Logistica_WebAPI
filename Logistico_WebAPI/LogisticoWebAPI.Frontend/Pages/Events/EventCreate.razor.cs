@@ -1,5 +1,6 @@
 using CurrieTechnologies.Razor.SweetAlert2;
 using LogisticoWebAPI.Frontend.Repositories;
+using LogisticoWebAPI.Shared.DTOs;
 using LogisticoWebAPI.Shared.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
@@ -9,7 +10,7 @@ namespace LogisticoWebAPI.Frontend.Pages.Events
     [Authorize(Roles = "Admin")]
     public partial class EventCreate
     {
-        private Event Event { get; set; } = new Event();
+        private EventDTO EventDTO = new();
         private EventForm? eventForm;
 
         [Inject] public IRepository Repository { get; set; } = null!;
@@ -27,15 +28,15 @@ namespace LogisticoWebAPI.Frontend.Pages.Events
 
             // Establecer fecha y hora de inicio
             var startTime = new DateTime(now.Year, now.Month, now.Day, now.Hour, 0, 0).AddHours(1);
-            Event.StartDate = startTime;
+            EventDTO.StartDate = startTime;
 
             // Establecer fecha y hora de fin: 12 horas después del inicio
-            Event.EndDate = startTime.AddHours(12);
+            EventDTO.EndDate = startTime.AddHours(12);
         }
 
         private async Task CreateAsync()
         { 
-            var responseHttp = await Repository.PostAsync("api/events", Event);
+            var responseHttp = await Repository.PostAsync("api/events/full", EventDTO);
             if (responseHttp.Error)
             {
                 var message = await responseHttp.GetErrorMessageAsync();

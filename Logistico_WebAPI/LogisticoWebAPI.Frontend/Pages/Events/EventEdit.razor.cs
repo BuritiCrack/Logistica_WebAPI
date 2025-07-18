@@ -1,5 +1,6 @@
 using CurrieTechnologies.Razor.SweetAlert2;
 using LogisticoWebAPI.Frontend.Repositories;
+using LogisticoWebAPI.Shared.DTOs;
 using LogisticoWebAPI.Shared.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
@@ -10,7 +11,7 @@ namespace LogisticoWebAPI.Frontend.Pages.Events
     [Authorize(Roles = "Admin")]
     public partial class EventEdit
     {
-        private Event? Event;
+        private EventDTO? EventDTO;
         private EventForm? eventForm;
         [Inject] public IRepository Repository { get; set; } = null!;
         [Inject] private NavigationManager NavigationManager { get; set; } = null!;
@@ -19,7 +20,7 @@ namespace LogisticoWebAPI.Frontend.Pages.Events
 
         protected override async Task OnParametersSetAsync()
         {
-            var responseHttp = await Repository.GetAsync<Event>($"/api/events/{Id}");
+            var responseHttp = await Repository.GetAsync<EventDTO>($"/api/events/{Id}");
             if (responseHttp.Error)
             {
                 if (responseHttp.HttpResponseMessage.StatusCode == HttpStatusCode.NotFound)
@@ -38,13 +39,13 @@ namespace LogisticoWebAPI.Frontend.Pages.Events
             }
             else
             {
-                Event = responseHttp.Response;
+                EventDTO = responseHttp.Response;
             }
         }
 
         private async Task EditAsync()
         {
-            var responseHttp = await Repository.PutAsync($"/api/events", Event);
+            var responseHttp = await Repository.PutAsync($"/api/events/full", EventDTO);
             if (responseHttp.Error)
             {
                 var message = await responseHttp.GetErrorMessageAsync();

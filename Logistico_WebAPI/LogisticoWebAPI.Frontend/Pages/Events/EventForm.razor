@@ -7,7 +7,7 @@
         <div class="card-header">
             <h5 class="card-title mb-0">
                 <i class="fa fa-calendar-plus"></i>
-                @(Event.Id == 0 ? "Crear Evento" : $"Editar Evento: {Event.Name}")
+                @(EventDTO.Id == 0 ? "Crear Evento" : $"Editar Evento: {EventDTO.Name}")
             </h5>
         </div>
         
@@ -16,38 +16,38 @@
                 <!-- Nombre del Evento -->
                 <div class="col-md-6 mb-3">
                     <label class="form-label">Nombre del Evento:</label>
-                    <InputText class="form-control" @bind-Value="Event.Name" />
-                    <ValidationMessage For="@(() => Event.Name)" />
+                    <InputText class="form-control" @bind-Value="EventDTO.Name" />
+                    <ValidationMessage For="@(() => EventDTO.Name)" />
                 </div>
                 
                 <!-- Lugar del Evento -->
                 <div class="col-md-6 mb-3">
                     <label class="form-label">Lugar del Evento:</label>
-                    <InputText class="form-control" @bind-Value="Event.Place" />
-                    <ValidationMessage For="@(() => Event.Place)" />
+                    <InputText class="form-control" @bind-Value="EventDTO.Place" />
+                    <ValidationMessage For="@(() => EventDTO.Place)" />
                 </div>
             </div>
             
             <!-- Descripción del Evento -->
             <div class="mb-3">
                 <label class="form-label">Descripción del Evento:</label>
-                <InputTextArea class="form-control" rows="4" @bind-Value="Event.Description" />
-                <ValidationMessage For="@(() => Event.Description)" />
+                <InputTextArea class="form-control" rows="4" @bind-Value="EventDTO.Description" />
+                <ValidationMessage For="@(() => EventDTO.Description)" />
             </div>
             
             <div class="row">
                 <!-- Fecha y Hora de Inicio -->
                 <div class="col-md-6 mb-3">
                     <label class="form-label">Fecha y Hora de Inicio:</label>
-                    <InputDate Type="InputDateType.DateTimeLocal" class="form-control" @bind-Value="Event.StartDate" />
-                    <ValidationMessage For="@(() => Event.StartDate)" />
+                    <InputDate Type="InputDateType.DateTimeLocal" class="form-control" @bind-Value="EventDTO.StartDate" />
+                    <ValidationMessage For="@(() => EventDTO.StartDate)" />
                 </div>
                 
                 <!-- Fecha y Hora de Fin -->
                 <div class="col-md-6 mb-3">
                     <label class="form-label">Fecha y Hora de Fin:</label>
-                    <InputDate Type="InputDateType.DateTimeLocal" class="form-control" @bind-Value="Event.EndDate" />
-                    <ValidationMessage For="@(() => Event.EndDate)" />
+                    <InputDate Type="InputDateType.DateTimeLocal" class="form-control" @bind-Value="EventDTO.EndDate" />
+                    <ValidationMessage For="@(() => EventDTO.EndDate)" />
                 </div>
             </div>
             
@@ -55,8 +55,8 @@
                 <!-- Tipo de Comida -->
                 <div class="col-md-6 mb-3">
                     <label class="form-label">Tipo de Comida:</label>
-                    <InputText class="form-control" @bind-Value="Event.MealType" placeholder="Ej: Almuerzo, Cena, Refrigerio" />
-                    <ValidationMessage For="@(() => Event.MealType)" />
+                    <InputText class="form-control" @bind-Value="EventDTO.MealType" placeholder="Ej: Almuerzo, Cena, Refrigerio" />
+                    <ValidationMessage For="@(() => EventDTO.MealType)" />
                 </div>
                 
                 <!-- Pago por Persona -->
@@ -64,26 +64,47 @@
                     <label class="form-label">Pago por Persona:</label>
                     <div class="input-group">
                         <span class="input-group-text">$</span>
-                        <InputNumber class="form-control" @bind-Value="Event.Payment" step="0.01" />
+                        <InputNumber class="form-control" @bind-Value="EventDTO.Payment" step="0.01" />
                     </div>
-                    <ValidationMessage For="@(() => Event.Payment)" />
+                    <ValidationMessage For="@(() => EventDTO.Payment)" />
                 </div>
             </div>
-            
+
             <!-- Foto del Evento -->
             <div class="mb-3">
-                <label class="form-label">URL de la Foto del Evento:</label>
-                <InputText class="form-control" @bind-Value="Event.Photo" placeholder="https://ejemplo.com/foto-evento.jpg" />
-                <ValidationMessage For="@(() => Event.Photo)" />
-                @if (!string.IsNullOrEmpty(Event.Photo))
-                {
-                    <div class="mt-2">
-                        <small class="text-muted">Vista previa:</small>
-                        <div class="mt-1">
-                            <img src="@Event.Photo" alt="Vista previa" class="img-thumbnail" style="max-width: 200px; max-height: 150px;" />
+                <h5 class="text-primary border-bottom pb-2">
+                    <i class="fa fa-camera"></i> Foto del Evento
+                </h5>
+
+                <!-- Vista previa de la imagen -->
+                <div class="text-center mb-3">
+                    @if (!string.IsNullOrEmpty(imageUrl))
+                    {
+                        <img src="@imageUrl" alt="Foto actual" class="img-thumbnail mb-3" style="max-width: 300px; max-height: 200px; object-fit: cover;" />
+                    }
+                    else if (!string.IsNullOrEmpty(EventDTO.Photo))
+                    {
+                        <img src="data:image/jpeg;base64,@EventDTO.Photo" alt="Foto del evento" class="img-thumbnail mb-3" style="max-width: 300px; max-height: 200px; object-fit: cover;" />
+                    }
+                    else
+                    {
+                        <div class="photo-placeholder mb-3 mx-auto" style="width: 300px; height: 200px; background-color: #f8f9fa; border: 2px dashed #dee2e6; display: flex; align-items: center; justify-content: center;">
+                            <i class="fa fa-calendar-alt fa-3x text-muted"></i>
                         </div>
-                    </div>
-                }
+                    }
+                </div>
+
+                <!-- Componente para seleccionar imagen -->
+                <div class="text-center">
+                    <InputImg Label="Seleccionar Foto del Evento" ImageSelected="ImageSelected" ImageURL="@imageUrl" />
+                </div>
+
+                <!-- Campo alternativo para URL (opcional) -->
+                <div class="mt-3">
+                    <label class="form-label">O ingresa una URL de imagen:</label>
+                    <InputText class="form-control" @bind-Value="imageUrl" placeholder="https://ejemplo.com/foto-evento.jpg" />
+                    <small class="text-muted">Si ingresas una URL, esta tendrá preferencia sobre la imagen seleccionada</small>
+                </div>
             </div>
         </div>
         
@@ -94,7 +115,7 @@
                 </button>
                 <button type="submit" class="btn btn-primary">
                     <i class="fa fa-save"></i>
-                    @(Event.Id == 0 ? "Crear Evento" : "Actualizar Evento")
+                    @(EventDTO.Id == 0 ? "Crear Evento" : "Actualizar Evento")
                 </button>
             </div>
         </div>
