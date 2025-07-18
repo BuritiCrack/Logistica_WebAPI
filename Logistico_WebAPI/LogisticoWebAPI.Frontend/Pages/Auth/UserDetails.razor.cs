@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Components;
 using System.Net;
 using System.Threading.Tasks;
 
-namespace LogisticoWebAPI.Frontend.Pages.Users
+namespace LogisticoWebAPI.Frontend.Pages.Auth
 {
     [Authorize(Roles = "Admin")]
     public partial class UserDetails

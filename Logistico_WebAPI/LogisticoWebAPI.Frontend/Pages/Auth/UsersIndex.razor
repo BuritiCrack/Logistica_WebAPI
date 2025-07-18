@@ -5,16 +5,6 @@
         <h3>
             <i class="fa fa-users"></i> Gestión de Usuarios
         </h3>
-        
-        <AuthorizeView Roles="Admin">
-            <Authorized>
-                <div class="d-flex gap-2">
-                    <button class="btn btn-outline-secondary" @onclick="LoadAsync">
-                        <i class="fa fa-sync-alt"></i> Actualizar
-                    </button>
-                </div>
-            </Authorized>
-        </AuthorizeView>
     </div>
 
     <AuthorizeView Roles="Admin">
@@ -96,7 +86,36 @@
                         </div>
                     </div>
                 </div>
-
+                <!-- Sección de Filtro -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="row align-items-end">
+                            <div class="col-md-8">
+                                <label for="filterInput" class="form-label">
+                                    <i class="fa fa-search"></i> Buscar Usuarios
+                                </label>
+                                <input type="text"
+                                       class="form-control"
+                                       id="filterInput"
+                                       placeholder="Ingresa el nombre del usuario..."
+                                       @bind="Filter"
+                                       @onkeypress="@((e) => { if (e.Key == "Enter") InvokeAsync(ApplyfilterAsync); })" />
+                            </div>
+                            <div class="col-md-4">
+                                <div class="d-flex gap-2">
+                                    <button class="btn btn-primary"
+                                            @onclick="ApplyfilterAsync">
+                                        <i class="fa fa-search"></i> Buscar
+                                    </button>
+                                    <button class="btn btn-secondary"
+                                            @onclick="CleanFilterAsync">
+                                        <i class="fa fa-times"></i> Limpiar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <!-- Lista de usuarios -->
                 <div class="row">
                     @foreach (var user in Users!)
@@ -228,6 +247,9 @@
                         </div>
                     }
                 </div>
+                <Pagination CurrentPage="CurrentPage"
+                            TotalPages="TotalPages"
+                            OnPageChanged="OnPageChangedAsync" />
             }
         </Authorized>
         <NotAuthorized>

@@ -124,7 +124,12 @@ namespace LogisticoWebAPI.Backend.Repositories.Implementations
         {
             var query = _context.Users.AsQueryable();
 
-            //TODO: Implementar filtros de busqueda
+            if(!string.IsNullOrWhiteSpace(pagination.Filter))
+            {
+                query = query.Where(u => u.FirstName.ToLower().Contains(pagination.Filter.ToLower()) ||
+                                         u.LastName.ToLower().Contains(pagination.Filter.ToLower()) ||
+                                         u.Document.ToLower().Contains(pagination.Filter.ToLower()));
+            }
 
             return new ActionResponse<IEnumerable<User>>
             {
@@ -142,6 +147,13 @@ namespace LogisticoWebAPI.Backend.Repositories.Implementations
         public async Task<ActionResponse<int>> GetTotalPagesAsync(PaginationDTO pagination)
         {
             var query = _context.Users.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(pagination.Filter))
+            {
+                query = query.Where(u => u.FirstName.ToLower().Contains(pagination.Filter.ToLower()) ||
+                                         u.LastName.ToLower().Contains(pagination.Filter.ToLower()) ||
+                                         u.Document.ToLower().Contains(pagination.Filter.ToLower()));
+            }
 
             double count = await query.CountAsync();
             double totalPages = (int)Math.Ceiling(count / pagination.RecordsNumber);
