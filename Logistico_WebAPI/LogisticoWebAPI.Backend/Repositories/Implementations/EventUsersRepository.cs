@@ -20,12 +20,12 @@ namespace LogisticoWebAPI.Backend.Repositories.Implementations
             _usersRepository = usersRepository;
         }
 
-        public async Task<ActionResponse<ApplyToEventDTO>> ApplyToEventAsync(string email, ApplyToEventDTO applyToEventDTO)
+        public async Task<ActionResponse<EventUser>> ApplyToEventAsync(string email, int eventId)
         {
-            var eventEntity = await _context.Events.FirstOrDefaultAsync(e => e.Id == applyToEventDTO.EventId);
+            var eventEntity = await _context.Events.FirstOrDefaultAsync(e => e.Id == eventId);
             if (eventEntity == null)
             {
-                return new ActionResponse<ApplyToEventDTO>
+                return new ActionResponse<EventUser>
                 {
                     WasSuccess = false,
                     Message = "El evento especificado no existe."
@@ -35,7 +35,7 @@ namespace LogisticoWebAPI.Backend.Repositories.Implementations
             var user = await _usersRepository.GetUserAsync(email);
             if (user == null)
             {
-                return new ActionResponse<ApplyToEventDTO>
+                return new ActionResponse<EventUser>
                 {
                     WasSuccess = false,
                     Message = "El usuario especificado no existe."
@@ -43,7 +43,7 @@ namespace LogisticoWebAPI.Backend.Repositories.Implementations
             }
             else if (!user.IsActive)
             {
-                return new ActionResponse<ApplyToEventDTO>
+                return new ActionResponse<EventUser>
                 {
                     WasSuccess = false,
                     Message = "El usuario no está activo. No puede aplicar a eventos."
@@ -52,7 +52,7 @@ namespace LogisticoWebAPI.Backend.Repositories.Implementations
 
             if (eventEntity.StartDate <= DateTime.UtcNow)
             {
-                return new ActionResponse<ApplyToEventDTO>
+                return new ActionResponse<EventUser>
                 {
                     WasSuccess = false,
                     Message = "No puedes aplicar a un evento que ya ha comenzado."
@@ -61,10 +61,10 @@ namespace LogisticoWebAPI.Backend.Repositories.Implementations
 
             //verificar que el usuario no haya aplicado al evento
             var hasApplied = await _context.EventUsers
-                .AnyAsync(eu => eu.User!.Email == email && eu.EventId == eventEntity.Id);
+                .AnyAsync(eu => eu.User!.Email == email && eu.EventId == eventId);
             if (hasApplied)
             {
-                return new ActionResponse<ApplyToEventDTO>
+                return new ActionResponse<EventUser>
                 {
                     WasSuccess = false,
                     Message = "Ya has aplicado a este evento."
@@ -82,15 +82,15 @@ namespace LogisticoWebAPI.Backend.Repositories.Implementations
                 _context.Add(eventUser);
                 await _context.SaveChangesAsync();
 
-                return new ActionResponse<ApplyToEventDTO>
+                return new ActionResponse<EventUser>
                 {
                     WasSuccess = true,
-                    Result = applyToEventDTO
+                    Result = eventUser
                 };
             }
             catch (Exception ex)
             {
-                return new ActionResponse<ApplyToEventDTO>
+                return new ActionResponse<EventUser>
                 {
                     WasSuccess = false,
                     Message = ex.Message

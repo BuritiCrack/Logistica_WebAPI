@@ -19,6 +19,39 @@ namespace LogisticoWebAPI.Backend.Repositories.Implementations
             _fileStorage = fileStorage;
         }
 
+        public override async Task<ActionResponse<Event>> GetAsync(int id)
+        {
+            try
+            {
+                var eventEntity = await _context.Events
+                    .Include(e => e.EventUsers)
+                    .FirstOrDefaultAsync(e => e.Id == id);
+
+                if (eventEntity == null)
+                {
+                    return new ActionResponse<Event>
+                    {
+                        WasSuccess = false,
+                        Message = "El evento no fue encontrado."
+                    };
+                }
+
+                return new ActionResponse<Event>
+                {
+                    WasSuccess = true,
+                    Result = eventEntity
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ActionResponse<Event>
+                {
+                    WasSuccess = false,
+                    Message = ex.Message
+                };
+            }
+        }
+
         public async Task<ActionResponse<Event>> AddAsync(EventDTO eventDTO)
         {
             try

@@ -7,7 +7,7 @@ namespace LogisticoWebAPI.Backend.Repositories.Interfaces
 {
     public interface IEventUsersRepository
     {
-        Task<ActionResponse<ApplyToEventDTO>> ApplyToEventAsync(string email, ApplyToEventDTO applyToEventDTO);
+        Task<ActionResponse<EventUser>> ApplyToEventAsync(string email, int eventId);
         Task<ActionResponse<UpdateApplicationStatusDTO>> UpdateApplicationStatusAsync(string email,UpdateApplicationStatusDTO updateApplicationStatusDTO);
         Task<ActionResponse<EventUser>> CancelApplicationAsync(string email, int eventId);
         Task<ActionResponse<IEnumerable<EventUser>>> GetUserApplicationsAsync(string email);

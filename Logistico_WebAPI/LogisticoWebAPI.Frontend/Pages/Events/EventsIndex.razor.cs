@@ -13,6 +13,8 @@ namespace LogisticoWebAPI.Frontend.Pages.Events
         private int CurrentPage = 1;
         private int TotalPages;
         public List<Event>? Events { get; set; }
+
+        public EventUser EventUser { get; set; } = new EventUser();
         private HashSet<int> AppliedEventIds { get; set; } = new();
 
         [Inject] private IRepository Repository { get; set; } = null!;
@@ -88,12 +90,6 @@ namespace LogisticoWebAPI.Frontend.Pages.Events
             TotalPages = responseHttp.Response;
         }
 
-        private async Task CleanFilterAsync()
-        {
-            Filter = string.Empty;
-            await ApplyfilterAsync();
-        }
-
         private async Task ApplyfilterAsync()
         {
             int page = 1;
@@ -160,11 +156,7 @@ namespace LogisticoWebAPI.Frontend.Pages.Events
 
         private async Task AppyToEventAsync(int eventId)
         {
-            var ApplyToEventDTO = new ApplyToEventDTO
-            {
-                EventId = eventId
-            };
-            var responseHttp = await Repository.PostAsync("api/EventApplications/apply", ApplyToEventDTO);
+            var responseHttp = await Repository.PostAsync($"api/EventApplications/apply/{eventId}", EventUser);
             if (responseHttp.Error)
             {
                 var message = await responseHttp.GetErrorMessageAsync();

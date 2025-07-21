@@ -16,8 +16,8 @@ namespace LogisticoWebAPI.Backend.UnitsOfWork.Implementations
             _eventUsersRepository = eventUsersRepository;
         }
 
-        public async Task<ActionResponse<ApplyToEventDTO>> ApplyToEventAsync(string email, ApplyToEventDTO applyToEventDTO)
-            => await _eventUsersRepository.ApplyToEventAsync(email, applyToEventDTO);
+        public async Task<ActionResponse<EventUser>> ApplyToEventAsync(string email, int eventId)
+            => await _eventUsersRepository.ApplyToEventAsync(email, eventId);
         public async Task<ActionResponse<UpdateApplicationStatusDTO>> UpdateApplicationStatusAsync(string email, UpdateApplicationStatusDTO updateApplicationStatusDTO)
             => await _eventUsersRepository.UpdateApplicationStatusAsync(email,updateApplicationStatusDTO);
 
