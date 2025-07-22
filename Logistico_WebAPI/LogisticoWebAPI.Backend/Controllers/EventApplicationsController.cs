@@ -9,7 +9,7 @@ namespace LogisticoWebAPI.Backend.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class EventApplicationsController : GenericController<EventUser>
     {
         private readonly IEventUsersUnitOfWork _eventUsersUnitOfWork;
@@ -20,7 +20,28 @@ namespace LogisticoWebAPI.Backend.Controllers
             _eventUsersUnitOfWork = eventUsersUnitOfWork;
         }
 
-        
+        [HttpGet("event/{eventId:int}")]
+        public async Task<IActionResult> GetAsync(int eventId, [FromQuery] PaginationDTO pagination)
+        {
+            var action = await _eventUsersUnitOfWork.GetAsync(pagination, eventId);
+            if (action.WasSuccess)
+            {
+                return Ok(action.Result);
+            }
+            return BadRequest();
+        }
+
+        [HttpGet("totalPages/{eventId:int}")]
+        public async Task<IActionResult> GetPagesAsync(int eventId, [FromQuery] PaginationDTO pagination)
+        {
+            var action = await _eventUsersUnitOfWork.GetTotalPagesAsync(pagination, eventId);
+            if (action.WasSuccess)
+            {
+                return Ok(action.Result);
+            }
+            return BadRequest();
+        }
+
         [HttpPost("apply/{eventId:int}")]
         [Authorize(Roles = "User")]
         public async Task<IActionResult> ApplyToEventAsync(int eventId)

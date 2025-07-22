@@ -1,10 +1,12 @@
 using LogisticoWebAPI.Backend.Data;
+using LogisticoWebAPI.Backend.Helpers;
 using LogisticoWebAPI.Backend.Repositories.Interfaces;
 using LogisticoWebAPI.Shared.DTOs;
 using LogisticoWebAPI.Shared.Entities;
 using LogisticoWebAPI.Shared.Enums;
 using LogisticoWebAPI.Shared.Responses;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace LogisticoWebAPI.Backend.Repositories.Implementations
 {
@@ -46,7 +48,7 @@ namespace LogisticoWebAPI.Backend.Repositories.Implementations
                 return new ActionResponse<EventUser>
                 {
                     WasSuccess = false,
-                    Message = "El usuario no está activo. No puede aplicar a eventos."
+                    Message = "Estas inactivo. No puede aplicar a eventos."
                 };
             }
 
@@ -288,10 +290,50 @@ namespace LogisticoWebAPI.Backend.Repositories.Implementations
             }
         }
 
-        public async Task<bool> HasUserAppliedToEventAsync(string email, int eventId)
+        public async Task<ActionResponse<int>> GetTotalPagesAsync(PaginationDTO pagination,int eventId)
         {
-            return await _context.EventUsers
-                .AnyAsync(eu => eu.User!.Email == email && eu.EventId == eventId);
+            var query = _context.EventUsers
+                .Where(eu => eu.EventId == eventId)
+                .AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(pagination.Filter))
+            {
+                query = query.Where(f => f.User!.FirstName.ToLower().Contains(pagination.Filter.ToLower()) ||
+                                         f.User.LastName.ToLower().Contains(pagination.Filter.ToLower()) ||
+                                         f.User.Document.ToLower().Contains(pagination.Filter.ToLower()));
+            }
+            var count = await query.CountAsync();
+            int totalPages = (int)Math.Ceiling((double)count / pagination.RecordsNumber);
+            return new ActionResponse<int>
+            {
+                WasSuccess = true,
+                Result = totalPages
+            };
+        }
+
+        public async Task<ActionResponse<IEnumerable<EventUser>>> GetAsync(PaginationDTO pagination, int eventId)
+        {
+            var query = _context.EventUsers.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(pagination.Filter))
+            {
+                query = query.Where(f => f.User!.FirstName.ToLower().Contains(pagination.Filter.ToLower()) ||
+                                         f.User.LastName.ToLower().Contains(pagination.Filter.ToLower()) ||
+                                         f.User.Document.ToLower().Contains(pagination.Filter.ToLower()));
+            }
+
+            return new ActionResponse<IEnumerable<EventUser>>
+            {
+                WasSuccess = true,
+                Result = await query
+                    .Include(eu => eu.Event)
+                    .Include(eu => eu.User)
+                    .Where(eu => eu.EventId == eventId)
+                    .OrderBy(eu => eu.Status == ApplicationStatus.CancelledByUser)
+                    .ThenBy(eu => eu.RegistrationDate)
+                    .Paginate(pagination)
+                    .ToListAsync()
+            };
         }
     }
 }

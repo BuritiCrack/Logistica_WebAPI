@@ -10,6 +10,8 @@ namespace LogisticoWebAPI.Frontend.Pages.Events
 {
     public partial class UserApplications
     {
+        private int CurrentPage = 1;
+        private int TotalPages;
         private List<EventUser>? Applications { get; set; }
         public bool IsLoading { get; set; } = true;
 
@@ -17,10 +19,49 @@ namespace LogisticoWebAPI.Frontend.Pages.Events
         [Inject] private IRepository Repository { get; set; } = null!;
         [Inject] private SweetAlertService SweetAlertService { get; set; } = null!;
         [Inject] private NavigationManager NavigationManager { get; set; } = null!;
+        [Parameter, SupplyParameterFromQuery] public string Page { get; set; } = string.Empty;
+        [Parameter, SupplyParameterFromQuery] public string Filter { get; set; } = string.Empty;
 
         protected override async Task OnParametersSetAsync()
         {
-            var responseHttp = await Repository.GetAsync<List<EventUser>>($"api/eventapplications/applications/{Id}");
+            await LoadAsync();
+        }
+
+        private async Task OnFilterChangedAsync(string filter)
+        {
+            Filter = filter;
+            await ApplyfilterAsync();
+            StateHasChanged(); // Forzar re-renderizado
+        }
+
+        private async Task OnPageCngedAsync(int page)
+        {
+            CurrentPage = page;
+            await LoadAsync(page);
+        }
+
+        private async Task LoadAsync(int page = 1)
+        {
+            if (!string.IsNullOrWhiteSpace(Page))
+            {
+                page = Convert.ToInt32(Page);
+            }
+
+            var ok = await LoadListAsync(page);
+            if (ok)
+            {
+                await LoadPagesAsync();
+            }
+        }
+
+        private async Task<bool> LoadListAsync(int page)
+        {
+            var url = $"api/eventapplications/event/{Id}?page={page}";
+            if (!string.IsNullOrWhiteSpace(Filter))
+            {
+                url += $"&filter={Filter}";
+            }
+            var responseHttp = await Repository.GetAsync<List<EventUser>>(url);
             IsLoading = true;
             if (responseHttp.Error)
             {
@@ -32,14 +73,37 @@ namespace LogisticoWebAPI.Frontend.Pages.Events
                 {
                     var message = responseHttp.GetErrorMessageAsync().Result;
                     await SweetAlertService.FireAsync("Error", message, SweetAlertIcon.Error);
-                    return;
+                    return false;
                 }
             }
-            else
+
+            Applications = responseHttp.Response;
+            IsLoading = false;
+            return true;
+        }
+
+        private async Task LoadPagesAsync()
+        {
+            var url = $"api/eventapplications/totalpages/{Id}";
+            if (!string.IsNullOrWhiteSpace(Filter))
             {
-                Applications = responseHttp.Response;
-                IsLoading = false;
+                url += $"?filter={Filter}";
             }
+            var responseHttp = await Repository.GetAsync<int>(url);
+            if (responseHttp.Error)
+            {
+                var message = await responseHttp.GetErrorMessageAsync();
+                await SweetAlertService.FireAsync("Error", message, SweetAlertIcon.Error);
+                return;
+            }
+            TotalPages = responseHttp.Response;
+        }
+
+        private async Task ApplyfilterAsync()
+        {
+            int page = 1;
+            await LoadAsync(page);
+            await OnPageCngedAsync(page);
         }
 
         private async Task UpdateApplicationStatusAsync(int applicationId, ApplicationStatus newStatus)
@@ -71,7 +135,6 @@ namespace LogisticoWebAPI.Frontend.Pages.Events
             await toas.FireAsync(message: $"Persona {statusText} con éxito");
             await OnParametersSetAsync();
         }
-        
 
         private string GetStatusBadgeClass(ApplicationStatus status)
         {
