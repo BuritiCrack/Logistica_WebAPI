@@ -13,6 +13,7 @@ namespace LogisticoWebAPI.Frontend.Pages.Auth
         public List<User>? Users { get; set; }
         private int CurrentPage = 1;
         private int TotalPages;
+        private bool IsActive;
 
         [Inject] private IRepository Repository { get; set; } = null!;
         [Inject] private NavigationManager NavigationManager { get; set; } = null!;
@@ -57,7 +58,7 @@ namespace LogisticoWebAPI.Frontend.Pages.Auth
             {
                 url += $"&filter={Filter}";
             }
-
+            IsActive = true;
             var responseHttp = await Repository.GetAsync<List<User>>(url);
             if (responseHttp.Error)
             {
@@ -66,6 +67,7 @@ namespace LogisticoWebAPI.Frontend.Pages.Auth
                 return false;
             }
             Users = responseHttp.Response;
+            IsActive = false;
             return true;
         }
 

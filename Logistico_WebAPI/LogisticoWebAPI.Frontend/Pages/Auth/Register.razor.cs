@@ -1,6 +1,5 @@
 using CurrieTechnologies.Razor.SweetAlert2;
 using LogisticoWebAPI.Frontend.Repositories;
-using LogisticoWebAPI.Frontend.Services;
 using LogisticoWebAPI.Shared.DTOs;
 using LogisticoWebAPI.Shared.Entities;
 using LogisticoWebAPI.Shared.Enums;
@@ -19,7 +18,6 @@ namespace LogisticoWebAPI.Frontend.Pages.Auth
         [Inject] private NavigationManager NavigationManager { get; set; } = null!;
         [Inject] private SweetAlertService SweetAlertService { get; set; } = null!;
         [Inject] private IRepository Repository { get; set; } = null!;
-        [Inject] private ILoginService LoginService { get; set; } = null!;
 
         protected override async Task OnInitializedAsync()
         {
