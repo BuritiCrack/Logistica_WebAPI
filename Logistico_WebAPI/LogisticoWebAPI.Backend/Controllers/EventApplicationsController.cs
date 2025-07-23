@@ -9,7 +9,7 @@ namespace LogisticoWebAPI.Backend.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class EventApplicationsController : GenericController<EventUser>
     {
         private readonly IEventUsersUnitOfWork _eventUsersUnitOfWork;
@@ -103,6 +103,18 @@ namespace LogisticoWebAPI.Backend.Controllers
             }
             return BadRequest(action.Message);
 
+        }
+
+        [HttpGet("statistics/{eventId:int}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> GetEventStatisticsAsync(int eventId)
+        {
+            var result = await _eventUsersUnitOfWork.GetEventStatisticsAsync(eventId);
+            if (result.WasSuccess)
+            {
+                return Ok(result.Result);
+            }
+            return BadRequest(result);
         }
     }
 }

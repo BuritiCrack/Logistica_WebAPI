@@ -13,6 +13,7 @@ namespace LogisticoWebAPI.Frontend.Pages.Events
         private int CurrentPage = 1;
         private int TotalPages;
         private List<EventUser>? Applications { get; set; }
+        private EventStatisticsDTO? Statistics { get; set; }
         public bool IsLoading { get; set; } = true;
 
         [Parameter] public int Id { get; set; }
@@ -25,6 +26,7 @@ namespace LogisticoWebAPI.Frontend.Pages.Events
         protected override async Task OnParametersSetAsync()
         {
             await LoadAsync();
+            await LoadStatisticsAsync();
         }
 
         private async Task OnFilterChangedAsync(string filter)
@@ -51,6 +53,15 @@ namespace LogisticoWebAPI.Frontend.Pages.Events
             if (ok)
             {
                 await LoadPagesAsync();
+            }
+        }
+
+        private async Task LoadStatisticsAsync()
+        {
+            var responseHttp = await Repository.GetAsync<EventStatisticsDTO>($"api/eventapplications/statistics/{Id}");
+            if (!responseHttp.Error)
+            {
+                Statistics = responseHttp.Response;
             }
         }
 

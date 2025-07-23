@@ -335,5 +335,38 @@ namespace LogisticoWebAPI.Backend.Repositories.Implementations
                     .ToListAsync()
             };
         }
+
+        public async Task<ActionResponse<EventStatisticsDTO>> GetEventStatisticsAsync(int eventId)
+        {
+            try
+            {
+                var applications = await _context.EventUsers
+                    .Where(eu => eu.EventId == eventId)
+                    .ToListAsync();
+
+                var statistics = new EventStatisticsDTO
+                {
+                    TotalApplications = applications.Count,
+                    PendingApplications = applications.Count(a => a.Status == ApplicationStatus.Pending),
+                    AcceptedApplications = applications.Count(a => a.Status == ApplicationStatus.Accepted),
+                    RejectedApplications = applications.Count(a => a.Status == ApplicationStatus.Rejected),
+                    CancelledApplications = applications.Count(a => a.Status == ApplicationStatus.CancelledByUser)
+                };
+
+                return new ActionResponse<EventStatisticsDTO>
+                {
+                    WasSuccess = true,
+                    Result = statistics
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ActionResponse<EventStatisticsDTO>
+                {
+                    WasSuccess = false,
+                    Message = ex.Message
+                };
+            }
+        }
     }
 }

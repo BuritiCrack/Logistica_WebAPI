@@ -38,5 +38,8 @@ namespace LogisticoWebAPI.Backend.UnitsOfWork.Implementations
 
         public Task<ActionResponse<int>> GetTotalPagesAsync(PaginationDTO pagination, int eventId)
             => _eventUsersRepository.GetTotalPagesAsync(pagination, eventId);
+
+        public Task<ActionResponse<EventStatisticsDTO>> GetEventStatisticsAsync(int eventId)
+            => _eventUsersRepository.GetEventStatisticsAsync(eventId);
     }
 }

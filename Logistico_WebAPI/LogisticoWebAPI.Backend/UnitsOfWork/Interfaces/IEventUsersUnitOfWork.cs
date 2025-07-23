@@ -21,5 +21,7 @@ namespace LogisticoWebAPI.Backend.UnitsOfWork.Interfaces
         Task<ActionResponse<IEnumerable<EventUser>>> GetAsync(PaginationDTO pagination, int eventId);
 
         Task<ActionResponse<int>> GetTotalPagesAsync(PaginationDTO pagination, int eventId);
+
+        Task<ActionResponse<EventStatisticsDTO>> GetEventStatisticsAsync(int eventId);
     }
 }

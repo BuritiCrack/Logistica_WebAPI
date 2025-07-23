@@ -24,23 +24,24 @@ else
             </div>
         </div>
     }
-    <!-- Sección de Filtro -->
-    <GenericFilter PlaceHolder="Buscar usuarios..."
-                   TexFromFilter="Usuarios"
-                   TexToFilter="@Filter"
-                   Callback=@OnFilterChangedAsync />
-   
+
+
     <!-- Lista de aplicaciones -->
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
             <h5 class="mb-0">
-                <i class="fa fa-users"></i> Postulaciones (@Applications.Count)
+                <i class="fa fa-users"></i> Postulaciones (@(Statistics?.TotalApplications ?? 0))
             </h5>
             <button class="btn btn-secondary btn-sm" @onclick="GoBack">
                 <i class="fa fa-arrow-left"></i> Volver a Eventos
             </button>
         </div>
         <div class="card-body p-0">
+            <!-- Sección de Filtro -->
+            <GenericFilter PlaceHolder="Buscar usuarios..."
+                           TexFromFilter="Usuarios"
+                           TexToFilter="@Filter"
+                           Callback=@OnFilterChangedAsync />
             <div class="table-responsive">
                 <table class="table table-hover mb-0">
                     <thead class="table-dark">
@@ -62,12 +63,12 @@ else
                                     <div class="d-flex align-items-center">
                                         @if (!string.IsNullOrEmpty(application.User?.Photo))
                                         {
-                                            <img src="@application.User.Photo" alt="Foto" 
+                                            <img src="@application.User.Photo" alt="Foto"
                                                  class="rounded-circle me-3" style="width: 40px; height: 40px; object-fit: cover;">
                                         }
                                         else
                                         {
-                                            <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center me-3" 
+                                            <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center me-3"
                                                  style="width: 40px; height: 40px;">
                                                 <i class="fa fa-user text-white"></i>
                                             </div>
@@ -122,12 +123,12 @@ else
                                     @if (application.Status == ApplicationStatus.Pending)
                                     {
                                         <div class="btn-group" role="group">
-                                            <button class="btn btn-success btn-sm" 
+                                            <button class="btn btn-success btn-sm"
                                                     @onclick="() => UpdateApplicationStatusAsync(application.Id, ApplicationStatus.Accepted)"
                                                     title="Aceptar aplicación">
                                                 <i class="fa fa-check"></i> Aceptar
                                             </button>
-                                            <button class="btn btn-danger btn-sm" 
+                                            <button class="btn btn-danger btn-sm"
                                                     @onclick="() => UpdateApplicationStatusAsync(application.Id, ApplicationStatus.Rejected)"
                                                     title="Rechazar aplicación">
                                                 <i class="fa fa-times"></i> Rechazar
@@ -136,7 +137,7 @@ else
                                     }
                                     else if (application.Status == ApplicationStatus.Accepted)
                                     {
-                                        <button class="btn btn-warning btn-sm" 
+                                        <button class="btn btn-warning btn-sm"
                                                 @onclick="() => UpdateApplicationStatusAsync(application.Id, ApplicationStatus.Rejected)"
                                                 title="Cambiar a rechazado">
                                             <i class="fa fa-times"></i> Rechazar
@@ -144,7 +145,7 @@ else
                                     }
                                     else if (application.Status == ApplicationStatus.Rejected)
                                     {
-                                        <button class="btn btn-success btn-sm" 
+                                        <button class="btn btn-success btn-sm"
                                                 @onclick="() => UpdateApplicationStatusAsync(application.Id, ApplicationStatus.Accepted)"
                                                 title="Cambiar a aceptado">
                                             <i class="fa fa-check"></i> Aceptar
@@ -175,46 +176,50 @@ else
                     </tbody>
                 </table>
             </div>
+            <!-- Sección de paginacion -->
+            <Pagination CurrentPage="CurrentPage"
+                        TotalPages="TotalPages"
+                        OnPageChanged="OnPageCngedAsync" />
         </div>
     </div>
-    <!-- Sección de paginacion -->
-    <Pagination CurrentPage="CurrentPage"
-                TotalPages="TotalPages"
-                OnPageChanged="OnPageCngedAsync" />
+   
     <!-- Resumen de estadísticas -->
-    <div class="row mt-4">
-        <div class="col-md-3">
-            <div class="card text-center bg-primary text-white">
-                <div class="card-body">
-                    <h5>@Applications.Count(a => a.Status == ApplicationStatus.Pending)</h5>
-                    <small>Pendientes</small>
+    @if (Statistics != null)
+    {
+        <div class="row mt-4">
+            <div class="col-md-3">
+                <div class="card text-center bg-primary text-white">
+                    <div class="card-body">
+                        <h5>@Statistics.PendingApplications</h5>
+                        <small>Pendientes</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center bg-success text-white">
+                    <div class="card-body">
+                        <h5>@Statistics.AcceptedApplications</h5>
+                        <small>Aceptados</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center bg-danger text-white">
+                    <div class="card-body">
+                        <h5>@Statistics.RejectedApplications</h5>
+                        <small>Rechazados</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center bg-secondary text-white">
+                    <div class="card-body">
+                        <h5>@Statistics.CancelledApplications</h5>
+                        <small>Cancelados</small>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
-            <div class="card text-center bg-success text-white">
-                <div class="card-body">
-                    <h5>@Applications.Count(a => a.Status == ApplicationStatus.Accepted)</h5>
-                    <small>Aceptados</small>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card text-center bg-danger text-white">
-                <div class="card-body">
-                    <h5>@Applications.Count(a => a.Status == ApplicationStatus.Rejected)</h5>
-                    <small>Rechazados</small>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card text-center bg-secondary text-white">
-                <div class="card-body">
-                    <h5>@Applications.Count(a => a.Status == ApplicationStatus.CancelledByUser)</h5>
-                    <small>Cancelados</small>
-                </div>
-            </div>
-        </div>
-    </div>
+    }
 }
 
