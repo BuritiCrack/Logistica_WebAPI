@@ -16,15 +16,43 @@
                TexToFilter="@Filter"
                Callback=@OnFilterChangedAsync />
                
-@if (Events == null)
+@if (IsLoading)
 {
     <Loading />
 }
-else if (!Events.Any())
+else if (Events == null || !Events.Any())
 {
-    <div class="alert alert-info">
-        <h4>No hay eventos registrados</h4>
-        <p>Aún no se han creado eventos en el sistema.</p>
+    <div class="empty-state">
+        @if (!string.IsNullOrWhiteSpace(Filter))
+        {
+            <div class="empty-state-icon">
+                <i class="bi bi-calendar-x"></i> <!-- Icono de calendario con X -->
+            </div>
+            <h3 class="empty-state-title">Eventos no encontrados</h3>
+            <p class="empty-state-description">
+                Ningún evento coincide con: <span class="search-term">"@Filter"</span>.
+                <br>Prueba con otros términos de búsqueda.
+            </p>
+        }
+        else
+        {
+            <div class="empty-state-icon">
+                <i class="bi bi-calendar-plus"></i> <!-- Icono de calendario con + -->
+            </div>
+            <h3 class="empty-state-title">No hay eventos disponibles</h3>
+            <p class="empty-state-description">
+                El sistema no tiene eventos registrados actualmente.
+
+                <AuthorizeView Roles="Admin">
+                    <Authorized>
+                        <br>Comienza creando el primer evento ahora mismo.
+                        <a class="btn btn-primary" href="/events/create">
+                            <i class="fa fa-plus"></i> Crear Evento
+                        </a>
+                    </Authorized>
+                </AuthorizeView>
+            </p>
+        }
     </div>
 }
 else
@@ -143,5 +171,40 @@ else
     <Pagination CurrentPage="CurrentPage"
                 TotalPages="TotalPages"
                 OnPageChanged="OnPageCngedAsync" />
-
 }
+<style>
+    .empty-state {
+        text-align: center;
+        padding: 2rem;
+        margin: 2rem auto;
+        max-width: 500px;
+    }
+
+    .empty-state-icon {
+        font-size: 3rem;
+        color: #6c757d;
+        margin-bottom: 1rem;
+    }
+
+    .empty-state-title {
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+
+    .empty-state-description {
+        color: #6c757d;
+        margin-bottom: 1.5rem;
+    }
+
+    .search-term {
+        font-weight: 600;
+        color: #333;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 2rem;
+        margin: 2rem auto;
+        max-width: 500px;
+    }
+</style>

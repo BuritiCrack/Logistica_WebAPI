@@ -13,6 +13,7 @@ namespace LogisticoWebAPI.Frontend.Pages.Events
         private int CurrentPage = 1;
         private int TotalPages;
         public List<Event>? Events { get; set; }
+        private bool IsLoading { get; set; } = true;
 
         public EventUser EventUser { get; set; } = new EventUser();
         private HashSet<int> AppliedEventIds { get; set; } = new();
@@ -63,6 +64,7 @@ namespace LogisticoWebAPI.Frontend.Pages.Events
                 url += $"&filter={Filter}";
             }
             var responseHttp = await Repository.GetAsync<List<Event>>(url);
+            IsLoading = true;
             if (responseHttp.Error)
             {
                 var message = await responseHttp.GetErrorMessageAsync();
@@ -70,6 +72,7 @@ namespace LogisticoWebAPI.Frontend.Pages.Events
                 return false;
             }
             Events = responseHttp.Response;
+            IsLoading = false;
             return true;
         }
 
