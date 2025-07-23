@@ -11,6 +11,7 @@ namespace LogisticoWebAPI.Frontend.Pages.Auth
     public partial class UsersIndex
     {
         public List<User>? Users { get; set; }
+        private List<User>? AllUsers { get; set; } // Lista completa sin filtro para estadísticas
         private int CurrentPage = 1;
         private int TotalPages;
         private bool IsActive;
@@ -23,14 +24,17 @@ namespace LogisticoWebAPI.Frontend.Pages.Auth
 
         protected override async Task OnInitializedAsync()
         {
+            await LoadStatisticsAsync(); 
             await LoadAsync();
         }
+
         private async Task OnFilterChangedAsync(string filter)
         {
             Filter = filter;
             await ApplyfilterAsync();
             StateHasChanged(); // Forzar re-renderizado
         }
+
         private async Task OnPageChangedAsync(int page)
         {
             CurrentPage = page;
@@ -48,6 +52,17 @@ namespace LogisticoWebAPI.Frontend.Pages.Auth
             if (ok)
             {
                 await LoadPagesAsync();
+            }
+        }
+
+        private async Task LoadStatisticsAsync()
+        {
+            IsActive = true;
+            var responseHttp = await Repository.GetAsync<List<User>>("api/accounts/all?page=1&recordsNumber=1000");
+            if (!responseHttp.Error)
+            {
+                AllUsers = responseHttp.Response;
+                IsActive = false;
             }
         }
 
@@ -127,6 +142,7 @@ namespace LogisticoWebAPI.Frontend.Pages.Auth
                 return;
             }
 
+            await LoadStatisticsAsync();
             await LoadAsync();
             var toas = SweetAlertService.Mixin(new SweetAlertOptions
             {
