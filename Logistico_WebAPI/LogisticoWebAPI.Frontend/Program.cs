@@ -1,3 +1,4 @@
+using Blazored.Modal;
 using CurrieTechnologies.Razor.SweetAlert2;
 using LogisticoWebAPI.Frontend.AuthenticationProviders;
 using LogisticoWebAPI.Frontend.Repositories;
@@ -24,6 +25,8 @@ public class Program
         builder.Services.AddScoped<AuthenticationProviderJWT>();
         builder.Services.AddScoped<AuthenticationStateProvider, AuthenticationProviderJWT>(x => x.GetRequiredService<AuthenticationProviderJWT>());
         builder.Services.AddScoped<ILoginService, AuthenticationProviderJWT>(x => x.GetRequiredService<AuthenticationProviderJWT>());
+
+        builder.Services.AddBlazoredModal();
 
 
         await builder.Build().RunAsync();

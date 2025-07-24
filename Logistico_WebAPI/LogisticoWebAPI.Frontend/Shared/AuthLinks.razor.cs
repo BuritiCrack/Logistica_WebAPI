@@ -1,3 +1,5 @@
+using Blazored.Modal.Services;
+using LogisticoWebAPI.Frontend.Pages.Auth;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 
@@ -9,7 +11,7 @@ namespace LogisticoWebAPI.Frontend.Shared
 
         [CascadingParameter]
         private Task<AuthenticationState> AuthenticationState { get; set; } = null!;
-
+        [CascadingParameter] IModalService Modal { get; set; } = default!;
         protected override async Task OnParametersSetAsync()
         {
             var authenticationState = await AuthenticationState;
@@ -20,6 +22,11 @@ namespace LogisticoWebAPI.Frontend.Shared
             {
                 photoUser = photoClaim.Value;
             }
+        }
+
+        private void ShowModal()
+        {
+            Modal.Show<Login>();
         }
     }
 }

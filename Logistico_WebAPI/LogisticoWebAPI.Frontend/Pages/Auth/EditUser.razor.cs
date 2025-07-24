@@ -1,3 +1,4 @@
+using Blazored.Modal.Services;
 using CurrieTechnologies.Razor.SweetAlert2;
 using LogisticoWebAPI.Frontend.Repositories;
 using LogisticoWebAPI.Frontend.Services;
@@ -19,7 +20,7 @@ namespace LogisticoWebAPI.Frontend.Pages.Auth
         [Inject] private SweetAlertService SweetAlertService { get; set; } = null!;
         [Inject] private IRepository Repository { get; set; } = null!;
         [Inject] private ILoginService LoginService { get; set; } = null!;
-
+        [CascadingParameter] private IModalService Modal { get; set; } = default!;
         protected override async Task OnInitializedAsync()
         {
             await LoadUserAsync();
@@ -32,7 +33,11 @@ namespace LogisticoWebAPI.Frontend.Pages.Auth
                 user.Photo = null;
             }
         }
-
+        
+        private void ShowModal()
+        {
+            Modal.Show<ChangePassword>();
+        }
         private void ImageSelected(string imagenBase64)
         {
             user!.Photo = imagenBase64;

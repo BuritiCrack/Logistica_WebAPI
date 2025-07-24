@@ -1,3 +1,4 @@
+using Blazored.Modal.Services;
 using CurrieTechnologies.Razor.SweetAlert2;
 using LogisticoWebAPI.Frontend.Repositories;
 using Microsoft.AspNetCore.Components;
@@ -14,6 +15,7 @@ namespace LogisticoWebAPI.Frontend.Pages.Auth
 
         [Parameter, SupplyParameterFromQuery] public string UserId { get; set; } = string.Empty;
         [Parameter, SupplyParameterFromQuery] public string Token { get; set; } = string.Empty;
+        [CascadingParameter] private IModalService Modal { get; set; } = default!;
 
         protected async Task ConfirmAccountAsync()
         {
@@ -27,7 +29,7 @@ namespace LogisticoWebAPI.Frontend.Pages.Auth
             }
 
             await SweetAlertService.FireAsync("Éxito", "Cuenta confirmada exitosamente.", SweetAlertIcon.Success);
-            NavigationManager.NavigateTo("/login");
+            Modal.Show<Login>();
         }
     }
 }
