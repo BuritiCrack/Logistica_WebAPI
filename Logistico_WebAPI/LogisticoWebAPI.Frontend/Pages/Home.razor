@@ -1,5 +1,6 @@
 ﻿@page "/"
 
+@using LogisticoWebAPI.Frontend.Pages.Auth
 @using Microsoft.AspNetCore.Components.Authorization
 
 <PageTitle>EventosPlus - Gestión Integral de Eventos</PageTitle>
@@ -68,7 +69,7 @@
                                                 <i class="fas fa-calendar me-2"></i>Explorar Eventos
                                             </a>
                                             <a href="/myapplications" class="btn btn-outline-light btn-lg">
-                                                <i class="fas fa-list-check me-2"></i>Mis Aplicaciones
+                                                <i class="fas fa-list-check me-2"></i>Mis Postulaciones
                                             </a>
                                         </Authorized>
                                     </AuthorizeView>
@@ -76,10 +77,10 @@
                             </Authorized>
                             <NotAuthorized>
                                 <div class="hero-buttons">
-                                    <a href="/Account/Login" class="btn btn-primary btn-lg me-3">
+                                    <a @onclick="(() => ShowLogin())" class="btn btn-primary btn-lg me-3">
                                         <i class="fas fa-sign-in-alt me-2"></i>Iniciar Sesión
                                     </a>
-                                    <a href="/Account/Register" class="btn btn-outline-light btn-lg">
+                                    <a href="/Register" class="btn btn-outline-light btn-lg">
                                         <i class="fas fa-user-plus me-2"></i>Registrarse Gratis
                                     </a>
                                 </div>
@@ -287,7 +288,7 @@
                     <AuthorizeView Context="ctaAuth">
                         <NotAuthorized>
                             <div class="cta-buttons">
-                                <a href="/Account/Register" class="btn btn-primary btn-lg me-3">
+                                <a href="/Register" class="btn btn-primary btn-lg me-3">
                                     <i class="fas fa-rocket me-2"></i>Comenzar Gratis
                                 </a>
                                 <a href="/events" class="btn btn-outline-primary btn-lg">
@@ -337,3 +338,13 @@
         </div>
     </div>
 </section>
+@code{
+    [CascadingParameter] private IModalService Modal { get; set; } = default!;
+
+
+    private void ShowLogin()
+    {
+        Modal.Show<Login>("Iniciar Sesión");
+    }
+    
+}

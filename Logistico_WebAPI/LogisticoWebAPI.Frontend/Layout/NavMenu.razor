@@ -14,22 +14,27 @@
                 <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Inicio
             </NavLink>
         </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="/events">
-                <span class="bi bi-calendar2-event-fill-nav-menu" aria-hidden="true"></span> Eventos
-            </NavLink>
-        </div>
         <AuthorizeView Roles="User">
             <Authorized>
                 <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="/events">
+                        <span class="bi bi-calendar2-event-fill-nav-menu" aria-hidden="true"></span> Eventos
+                    </NavLink>
+                </div>
+                <div class="nav-item px-3">
                     <NavLink class="nav-link" href="/myapplications">
-                        <span class="bi bi-list-check-nav-menu" aria-hidden="true"></span> Mis Aplicaciones
+                        <span class="bi bi-list-check-nav-menu" aria-hidden="true"></span> Mis Postulaciones
                     </NavLink>
                 </div>
             </Authorized>
         </AuthorizeView>
         <AuthorizeView Roles="Admin">
             <Authorized>
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="/events">
+                        <span class="bi bi-calendar2-event-fill-nav-menu" aria-hidden="true"></span> Eventos
+                    </NavLink>
+                </div>
                 <div class="nav-item px-3">
                     <NavLink class="nav-link" href="/users">
                         <span class="bi bi-people-fill-nav-menu" aria-hidden="true"></span> Usuarios
