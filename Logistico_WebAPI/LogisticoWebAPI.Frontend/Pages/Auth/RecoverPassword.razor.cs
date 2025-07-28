@@ -1,3 +1,4 @@
+using Blazored.Modal.Services;
 using CurrieTechnologies.Razor.SweetAlert2;
 using LogisticoWebAPI.Frontend.Repositories;
 using LogisticoWebAPI.Shared.DTOs;
@@ -13,7 +14,12 @@ namespace LogisticoWebAPI.Frontend.Pages.Auth
         [Inject] private NavigationManager NavigationManager { get; set; } = null!;
         [Inject] private SweetAlertService SweetAlertService { get; set; } = null!;
         [Inject] private IRepository Repository { get; set; } = null!;
+        [CascadingParameter] private IModalService Modal { get; set; } = default!;
 
+        private void ShowLogin()
+        {
+            Modal.Show<Login>();
+        }
         private async Task SendRecoverPasswordEmailTokenAsync()
         {
             loading = true;

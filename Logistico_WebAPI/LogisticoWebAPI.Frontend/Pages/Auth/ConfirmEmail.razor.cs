@@ -17,6 +17,10 @@ namespace LogisticoWebAPI.Frontend.Pages.Auth
         [Parameter, SupplyParameterFromQuery] public string Token { get; set; } = string.Empty;
         [CascadingParameter] private IModalService Modal { get; set; } = default!;
 
+        private void ShowLogin()
+        {
+            Modal.Show<Login>();
+        }
         protected async Task ConfirmAccountAsync()
         {
             var responseHttp = await Repository.GetAsync($"/api/accounts/ConfirmEmail/?userId={UserId}&token={Token}");

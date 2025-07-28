@@ -16,7 +16,7 @@ namespace LogisticoWebAPI.Frontend.Pages.Auth
         [Inject] private NavigationManager NavigationManager { get; set; } = null!;
         [Inject] private SweetAlertService SweetAlertService { get; set; } = null!;
         [Inject] private IRepository Repository { get; set; } = null!;
-        [CascadingParameter] BlazoredModalInstance BlazoredModal { get; set; } = default!;
+        [CascadingParameter] private BlazoredModalInstance BlazoredModal { get; set; } = default!;
 
         private async Task CloseModalAsync()
         {

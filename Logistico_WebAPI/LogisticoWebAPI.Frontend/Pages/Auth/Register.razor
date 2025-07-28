@@ -1,7 +1,7 @@
 ﻿@page "/Register"
 
 <div class="row justify-content-center">
-    <div class="col-md-8">
+    <div class="col-md-12">
         <div class="card">
             <div class="card-header">
                 <h4 class="card-title mb-0">
@@ -267,6 +267,10 @@
                         </a>
                         <button type="submit" class="btn btn-primary">
                             <i class="fa fa-user-plus"></i> Registrarse
+                            @if (isLoading)
+                            {
+                                <span class="spinner-border spinner-border-sm ms-2" role="status" aria-hidden="true"></span>
+                            }
                         </button>
                     </div>
                 </EditForm>

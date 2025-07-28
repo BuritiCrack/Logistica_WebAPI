@@ -16,6 +16,11 @@ namespace LogisticoWebAPI.Frontend.Pages.Auth
         [Inject] private IRepository Repository { get; set; } = null!;
         [Parameter, SupplyParameterFromQuery] public string Token { get; set; } = string.Empty;
         [CascadingParameter] private IModalService Modal { get; set; } = default!;
+
+        private void ShowLogin()
+        {
+            Modal.Show<Login>();
+        }
         private async Task ChangePasswordAsync()
         {
             resetPasswordDTO.Token = Token;
