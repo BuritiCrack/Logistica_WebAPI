@@ -1,0 +1,450 @@
+﻿@page "/user/edituser/{Id:guid}"
+
+
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h4 class="card-title mb-0">
+                            <i class="fa fa-user-edit"></i> Editar Usuario (Administrador)
+                        </h4>
+                        <a href="/users" class="btn btn-outline-secondary btn-sm">
+                            <i class="fa fa-arrow-left me-1"></i>
+                            Volver a la lista
+                        </a>
+                    </div>
+                    @if (user is not null)
+                    {
+                        <div class="user-status mt-2">
+                            <div class="d-flex align-items-center gap-2">
+                                @if (user.UserType == UserType.Admin)
+                                {
+                                    <span class="badge bg-info">
+                                        <i class="fa fa-shield-alt me-1"></i>
+                                        Administrador
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary">
+                                        <i class="fa fa-user me-1"></i>
+                                        Usuario
+                                    </span>
+                                }
+
+                                @if (user.IsActive == true)
+                                {
+                                    <span class="badge bg-success">
+                                        <i class="fa fa-check-circle me-1"></i>
+                                        Activo
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger">
+                                        <i class="fa fa-times-circle me-1"></i>
+                                        Inactivo
+                                    </span>
+                                }
+
+                                @if (user.EmailConfirmed)
+                                {
+                                    <span class="badge bg-success">
+                                        <i class="fa fa-envelope-check me-1"></i>
+                                        Email verificado
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-warning text-dark">
+                                        <i class="fa fa-envelope-open me-1"></i>
+                                        Email pendiente
+                                    </span>
+                                }
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                <div class="card-body">
+                    @if (user is null)
+                    {
+                        <Loading />
+                    }
+                    else
+                    {
+                        <EditForm Model="user" OnValidSubmit="SaveUserAsync">
+                            <DataAnnotationsValidator />
+
+                            <!-- Foto de perfil -->
+                            <div class="row mb-4">
+                                <div class="col-12">
+                                    <h5 class="text-primary border-bottom pb-2">
+                                        <i class="fa fa-camera"></i> Foto de Perfil
+                                    </h5>
+                                    <div class="text-center">
+                                        @if (!string.IsNullOrEmpty(imageUrl))
+                                        {
+                                            <img src="@imageUrl" alt="Foto actual" class="img-thumbnail mb-3" style="width: 150px; height: 150px; object-fit: cover;" />
+                                        }
+                                        else if (!string.IsNullOrEmpty(user.Photo))
+                                        {
+                                            <img src="data:image/jpeg;base64,@user.Photo" alt="Foto seleccionada" class="img-thumbnail mb-3" style="width: 150px; height: 150px; object-fit: cover;" />
+                                        }
+                                        else
+                                        {
+                                            <div class="photo-placeholder mb-3 mx-auto" style="width: 150px; height: 150px; background-color: #f8f9fa; border: 2px dashed #dee2e6; display: flex; align-items: center; justify-content: center; border-radius: 8px;">
+                                                <i class="fa fa-user fa-3x text-muted"></i>
+                                            </div>
+                                        }
+                                        <br />
+                                        <InputImg Label="Seleccionar Foto" ImageSelected="ImageSelected" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Información Personal -->
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    <h5 class="text-primary border-bottom pb-2">
+                                        <i class="fa fa-user"></i> Información Personal
+                                    </h5>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <!-- Documento -->
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Documento:</label>
+                                    <InputText class="form-control" @bind-Value="user.Document" />
+                                    <ValidationMessage For="@(() => user.Document)" />
+                                </div>
+
+                                <!-- Email -->
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Email:</label>
+                                    <div class="input-group">
+                                        <InputText class="form-control" @bind-Value="user.Email" />
+                                        @if (user.EmailConfirmed)
+                                        {
+                                            <span class="input-group-text bg-success text-white">
+                                                <i class="fa fa-check"></i>
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="input-group-text bg-warning text-dark">
+                                                <i class="fa fa-exclamation-triangle"></i>
+                                            </span>
+                                        }
+                                    </div>
+                                    <ValidationMessage For="@(() => user.Email)" />
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <!-- Nombres -->
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Nombres:</label>
+                                    <InputText class="form-control" @bind-Value="user.FirstName" />
+                                    <ValidationMessage For="@(() => user.FirstName)" />
+                                </div>
+
+                                <!-- Apellidos -->
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Apellidos:</label>
+                                    <InputText class="form-control" @bind-Value="user.LastName" />
+                                    <ValidationMessage For="@(() => user.LastName)" />
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <!-- Teléfono -->
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Teléfono:</label>
+                                    <InputText class="form-control" @bind-Value="user.PhoneNumber" />
+                                    <ValidationMessage For="@(() => user.PhoneNumber)" />
+                                </div>
+
+                                <!-- Dirección -->
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Dirección:</label>
+                                    <InputText class="form-control" @bind-Value="user.Address" />
+                                    <ValidationMessage For="@(() => user.Address)" />
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <!-- Género -->
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Género:</label>
+                                    <InputSelect class="form-select" @bind-Value="user.Gender">
+                                        <option value="">Seleccionar género...</option>
+                                        @foreach (var gender in Enum.GetValues<GenderEnum>())
+                                        {
+                                            <option value="@gender">@gender.GetDescription()</option>
+                                        }
+                                    </InputSelect>
+                                    <ValidationMessage For="@(() => user.Gender)" />
+                                </div>
+
+                                <!-- Altura -->
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Altura (cm):</label>
+                                    <InputText class="form-control" @bind-Value="user.Height" />
+                                    <ValidationMessage For="@(() => user.Height)" />
+                                </div>
+
+                                <!-- Edad -->
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Edad:</label>
+                                    <InputText class="form-control" @bind-Value="user.Age" />
+                                    <ValidationMessage For="@(() => user.Age)" />
+                                </div>
+                            </div>
+
+                            <!-- Configuración de Usuario (Solo Admin) -->
+                            <div class="row mb-3 mt-4">
+                                <div class="col-12">
+                                    <h5 class="text-danger border-bottom pb-2">
+                                        <i class="fa fa-user-shield"></i> Configuración de Usuario (Administrador)
+                                    </h5>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <!-- Tipo de Usuario -->
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Tipo de Usuario:</label>
+                                    <InputSelect class="form-select" @bind-Value="user.UserType">
+                                        @foreach (var userType in Enum.GetValues<UserType>())
+                                        {
+                                            <option value="@userType">@userType.GetDescription()</option>
+                                        }
+                                    </InputSelect>
+                                    <ValidationMessage For="@(() => user.UserType)" />
+                                </div>
+
+                                <!-- Estado del Usuario -->
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Estado del Usuario:</label>
+                                    <div class="form-check form-switch mt-2">
+                                        <InputCheckbox class="form-check-input" @bind-Value="user.IsActive" id="isActiveSwitch" />
+                                        <label class="form-check-label" for="isActiveSwitch">
+                                            @if (user.IsActive)
+                                            {
+                                                <span class="text-success">Usuario Activo</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="text-danger">Usuario Inactivo</span>
+                                            }
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Información Profesional -->
+                            <div class="row mb-3 mt-4">
+                                <div class="col-12">
+                                    <h5 class="text-primary border-bottom pb-2">
+                                        <i class="fa fa-briefcase"></i> Información Profesional
+                                    </h5>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <!-- Experiencia -->
+                                <div class="col-12 mb-3">
+                                    <label class="form-label">Experiencia:</label>
+                                    <InputTextArea class="form-control" rows="3" @bind-Value="user.Experience" />
+                                    <ValidationMessage For="@(() => user.Experience)" />
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <!-- Habilidades -->
+                                <div class="col-12 mb-3">
+                                    <label class="form-label">Habilidades:</label>
+                                    <InputTextArea class="form-control" rows="3" @bind-Value="user.Skills" />
+                                    <ValidationMessage For="@(() => user.Skills)" />
+                                </div>
+                            </div>
+
+                            <!-- Información Bancaria -->
+                            <div class="row mb-3 mt-4">
+                                <div class="col-12">
+                                    <h5 class="text-primary border-bottom pb-2">
+                                        <i class="fa fa-university"></i> Información Bancaria
+                                    </h5>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <!-- Banco -->
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Banco:</label>
+                                    <InputSelect class="form-select" @bind-Value="user.Bank">
+                                        <option value="">Seleccionar banco...</option>
+                                        @foreach (var bank in Enum.GetValues<BankName>())
+                                        {
+                                            <option value="@bank">@bank.ToString()</option>
+                                        }
+                                    </InputSelect>
+                                    <ValidationMessage For="@(() => user.Bank)" />
+                                </div>
+
+                                <!-- Tipo de cuenta -->
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Tipo de cuenta:</label>
+                                    <InputSelect class="form-select" @bind-Value="user.AccountType">
+                                        <option value="">Seleccionar tipo...</option>
+                                        @foreach (var accountType in Enum.GetValues<AccountType>())
+                                        {
+                                            <option value="@accountType">@accountType.GetDisplayName()</option>
+                                        }
+                                    </InputSelect>
+                                    <ValidationMessage For="@(() => user.AccountType)" />
+                                </div>
+
+                                <!-- Número de cuenta -->
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Número de cuenta:</label>
+                                    <InputText class="form-control" @bind-Value="user.AccountNumber" />
+                                    <ValidationMessage For="@(() => user.AccountNumber)" />
+                                </div>
+                            </div>
+
+                            <!-- Información de Salud -->
+                            <div class="row mb-3 mt-4">
+                                <div class="col-12">
+                                    <h5 class="text-primary border-bottom pb-2">
+                                        <i class="fa fa-medkit"></i> Información de Salud y Seguridad Social
+                                    </h5>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <!-- EPS -->
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">EPS:</label>
+                                    <InputText class="form-control" @bind-Value="user.Eps" />
+                                    <ValidationMessage For="@(() => user.Eps)" />
+                                </div>
+
+                                <!-- Fondo de pensiones -->
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Fondo de pensiones:</label>
+                                    <InputText class="form-control" @bind-Value="user.PensionFund" />
+                                    <ValidationMessage For="@(() => user.PensionFund)" />
+                                </div>
+                            </div>
+
+                            <!-- Ubicación -->
+                            <div class="row mb-3 mt-4">
+                                <div class="col-12">
+                                    <h5 class="text-primary border-bottom pb-2">
+                                        <i class="fa fa-map-marker-alt"></i> Ubicación
+                                    </h5>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <!-- Departamento -->
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Departamento:</label>
+                                    <select class="form-select" @onchange="StateChangedAsync">
+                                        <option value="0">Seleccionar departamento...</option>
+                                        @if (states is not null)
+                                        {
+                                            @foreach (var state in states)
+                                            {
+                                                <option value="@state.Id" selected="@(state.Id == (user.City?.State?.Id ?? 0))">@state.Name</option>
+                                            }
+                                        }
+                                    </select>
+                                </div>
+
+                                <!-- Ciudad -->
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Ciudad:</label>
+                                    <InputSelect class="form-select" @bind-Value="user.CityId">
+                                        <option value="0">Seleccionar ciudad...</option>
+                                        @if (cities is not null)
+                                        {
+                                            @foreach (var city in cities)
+                                            {
+                                                <option value="@city.Id">@city.Name</option>
+                                            }
+                                        }
+                                    </InputSelect>
+                                    <ValidationMessage For="@(() => user.CityId)" />
+                                </div>
+                            </div>
+
+                            <!-- Botones de acción -->
+                            <div class="row mt-4">
+                                <div class="col-12">
+                                    <div class="d-flex justify-content-between">
+                                        <a href="/users" class="btn btn-secondary">
+                                            <i class="fa fa-arrow-left me-1"></i>
+                                            Cancelar
+                                        </a>
+                                        <div class="d-flex gap-2">
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="fa fa-save me-1"></i>
+                                                Guardar Cambios
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </EditForm>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .photo-placeholder {
+        border-radius: 8px;
+    }
+
+    .user-status .badge {
+        font-size: 0.85rem;
+    }
+
+    .form-check-input:checked {
+        background-color: #198754;
+        border-color: #198754;
+    }
+
+    .border-bottom {
+        border-bottom: 2px solid #dee2e6 !important;
+    }
+
+    .text-primary {
+        color: #0d6efd !important;
+    }
+
+    .text-danger {
+        color: #dc3545 !important;
+    }
+
+    .card-header {
+        background-color: #f8f9fa;
+        border-bottom: 1px solid #dee2e6;
+    }
+
+    .input-group-text {
+        border: 1px solid #ced4da;
+    }
+
+    .btn-group .btn + .btn {
+        margin-left: 0.5rem;
+    }
+</style>

@@ -99,43 +99,7 @@ namespace LogisticoWebAPI.Backend.Controllers
                 return NotFound();
             }
 
-            var userDTO = new
-            {
-                user.Document,
-                user.FirstName,
-                user.LastName,
-                user.FullName,
-                user.PhoneNumber,
-                user.Email,
-                user.EmailConfirmed,
-                user.Photo,
-                user.Height,
-                user.Gender,
-                user.Skills,
-                user.Experience,
-                user.Eps,
-                user.Address,
-                user.Age,
-                user.Bank,
-                user.AccountType,
-                user.AccountNumber,
-                user.PensionFund,
-                user.LockoutEnd,
-                user.UserType,
-                user.IsActive,
-                City = user.City != null ? new
-                {
-                    user.City.Id,
-                    user.City.Name,
-                    State = user.City.State != null ? new
-                    {
-                        user.City.State.Id,
-                        user.City.State.Name
-                    } : null
-                } : null
-            };
-
-            return Ok(userDTO);
+            return Ok(user);
         }
 
         [HttpPost("RecoverPassword")]
@@ -316,6 +280,61 @@ namespace LogisticoWebAPI.Backend.Controllers
                 {
                     return NoContent();
                 }
+                return BadRequest(result.Errors.FirstOrDefault());
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPut("edituser/{id:guid}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> PutAsync(string id, User user)
+        {
+            try
+            {
+                var currentUser = await _usersUnitOfWork.GetUserAsync(new Guid(id));
+                if (currentUser == null)
+                {
+                    return NotFound();
+                }
+
+                if (!string.IsNullOrEmpty(user.Photo))
+                {
+                    var photoUser = Convert.FromBase64String(user.Photo);
+                    user.Photo = await _fileStorage.SaveFileAsync(photoUser, ".jpg", _container);
+                }
+
+                currentUser.Document = user.Document;
+                currentUser.FirstName = user.FirstName;
+                currentUser.LastName = user.LastName;
+                currentUser.Gender = user.Gender;
+                currentUser.Height = user.Height;
+                currentUser.Age = user.Age;
+                currentUser.Experience = user.Experience;
+                currentUser.Skills = user.Skills;
+                currentUser.Bank = user.Bank;
+                currentUser.AccountType = user.AccountType;
+                currentUser.Eps = user.Eps;
+                currentUser.PensionFund = user.PensionFund;
+                currentUser.Address = user.Address;
+                currentUser.PhoneNumber = user.PhoneNumber;
+                currentUser.UserType = user.UserType;
+                currentUser.IsActive = user.IsActive;
+                currentUser.Photo = !string.IsNullOrEmpty(user.Photo) && user.Photo != currentUser.Photo ? user.Photo : currentUser.Photo;
+                currentUser.CityId = user.CityId;
+
+                var result = await _usersUnitOfWork.UpdateUserAsync(currentUser);
+                if (result.Succeeded)
+                {
+                    if (currentUser.UserType != user.UserType)
+                    {
+                        await _usersUnitOfWork.AddUserToRoleAsync(currentUser, currentUser.UserType.ToString());
+                    }
+                    return NoContent(); 
+                }
+
                 return BadRequest(result.Errors.FirstOrDefault());
             }
             catch (Exception ex)
