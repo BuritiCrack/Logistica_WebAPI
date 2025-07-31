@@ -186,7 +186,14 @@
                                         </div>
                                         <div class="row text-sm mb-2">
                                             <div class="col-4"><strong>Teléfono:</strong></div>
-                                            <div class="col-8">@(user.PhoneNumber ?? "No especificado")</div>
+                                            <div class="col-8">
+                                                <a href="https://wa.me/@(user.PhoneNumber?.Replace("+", "").Replace("-", "").Replace(" ", ""))"
+                                                   target="_blank"
+                                                   title="Enviar WhatsApp">
+                                                    <i class="fab fa-whatsapp text-success" style="font-size: 1.2em;"></i>
+                                                </a>
+                                                <span class="text-dark">@user.PhoneNumber</span>
+                                            </div>
                                         </div>
                                         <div class="row text-sm mb-2">
                                             <div class="col-4"><strong>Género:</strong></div>
