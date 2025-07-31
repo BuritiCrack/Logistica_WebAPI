@@ -63,7 +63,7 @@ else
                                 <th>Usuario</th>
                                 <th>Documento</th>
                                 <th>Teléfono</th>
-                                <th>Fecha de Postulacion</th>
+                                <th>Edad</th>
                                 <th>Estado</th>
                                 <th>Acciones</th>
                             </tr>
@@ -105,9 +105,20 @@ else
                                     <td>
                                         @if (!string.IsNullOrEmpty(application.User?.PhoneNumber))
                                         {
-                                            <a href="tel:@application.User.PhoneNumber" class="text-decoration-none">
-                                                <i class="fa fa-phone"></i> @application.User.PhoneNumber
-                                            </a>
+                                            <div class="d-flex align-items-center gap-2">
+                                                <a href="tel:@application.User.PhoneNumber"
+                                                   class="text-decoration-none me-2"
+                                                   title="Llamar">
+                                                    <i class="fa fa-phone text-primary"></i>
+                                                </a>
+                                                <a href="https://wa.me/@(application.User.PhoneNumber.Replace("+", "").Replace("-", "").Replace(" ", ""))"
+                                                   target="_blank"
+                                                   class="text-decoration-none me-2"
+                                                   title="Enviar WhatsApp">
+                                                    <i class="fab fa-whatsapp text-success" style="font-size: 1.2em;"></i>
+                                                </a>
+                                                <span class="text-dark">@application.User.PhoneNumber</span>
+                                            </div>
                                         }
                                         else
                                         {
@@ -115,13 +126,11 @@ else
                                         }
                                     </td>
 
-                                    <!-- Fecha de Aplicación -->
+                                    <!-- Edad -->
                                     <td>
-                                        <small>
-                                            @application.RegistrationDate.ToString("dd/MM/yyyy")
-                                            <br />
-                                            @application.RegistrationDate.ToString("hh:mm tt")
-                                        </small>
+                                        <span class="badge bg-info text-white">
+                                            <i class="fa fa-birthday-cake"></i> @application.User?.Age años
+                                        </span>
                                     </td>
 
                                     <!-- Estado -->
