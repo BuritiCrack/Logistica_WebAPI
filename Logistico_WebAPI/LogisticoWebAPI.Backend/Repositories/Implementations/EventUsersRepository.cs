@@ -7,6 +7,7 @@ using LogisticoWebAPI.Shared.Enums;
 using LogisticoWebAPI.Shared.Responses;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using System.Linq;
 
 namespace LogisticoWebAPI.Backend.Repositories.Implementations
 {
@@ -245,8 +246,8 @@ namespace LogisticoWebAPI.Backend.Repositories.Implementations
                 .Include(eu => eu.Event)
                 .Include(eu => eu.User)
                 .Where(eu => eu.EventId == eventId)
-                .OrderBy(eu => eu.Status == ApplicationStatus.CancelledByUser)
-                .ThenBy(eu => eu.RegistrationDate)
+                .OrderBy(eu => eu.RegistrationDate)
+                .ThenBy(eu => eu.Status == ApplicationStatus.CancelledByUser)
                 .ToListAsync();
 
             return new ActionResponse<IEnumerable<EventUser>>

@@ -15,7 +15,7 @@ namespace LogisticoWebAPI.Frontend.Repositories
         public bool Error { get; }
         public HttpResponseMessage HttpResponseMessage { get; }
 
-        public async Task<string> GetErrorMessageAsync()
+        public async Task<string?> GetErrorMessageAsync()
         {
             if (!Error)
             {
