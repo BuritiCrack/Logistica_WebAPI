@@ -143,7 +143,7 @@ namespace LogisticoWebAPI.Frontend.Pages.Auth
             }
 
             await LoadStatisticsAsync();
-            await LoadAsync();
+            await LoadListAync(CurrentPage);
             var toas = SweetAlertService.Mixin(new SweetAlertOptions
             {
                 Icon = SweetAlertIcon.Success,

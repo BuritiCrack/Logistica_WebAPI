@@ -144,7 +144,8 @@ namespace LogisticoWebAPI.Frontend.Pages.Events
             });
 
             await toas.FireAsync(message: $"Persona {statusText} con éxito");
-            await OnParametersSetAsync();
+            await LoadStatisticsAsync();
+            await LoadListAsync(CurrentPage);
         }
 
         private string GetStatusBadgeClass(ApplicationStatus status)
