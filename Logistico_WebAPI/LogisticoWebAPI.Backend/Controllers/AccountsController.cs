@@ -300,6 +300,12 @@ namespace LogisticoWebAPI.Backend.Controllers
                     return NotFound();
                 }
 
+                var userMaster = await _usersUnitOfWork.GetUserAsync(User.Identity!.Name!);
+                if (userMaster == null)
+                {
+                    return NotFound();
+                }
+                bool isEqual = userMaster.Email == "jose@yopmail.com";
                 if (!string.IsNullOrEmpty(user.Photo))
                 {
                     var photoUser = Convert.FromBase64String(user.Photo);
@@ -320,11 +326,14 @@ namespace LogisticoWebAPI.Backend.Controllers
                 currentUser.PensionFund = user.PensionFund;
                 currentUser.Address = user.Address;
                 currentUser.PhoneNumber = user.PhoneNumber;
-                currentUser.UserType = user.UserType;
                 currentUser.IsActive = user.IsActive;
                 currentUser.Photo = !string.IsNullOrEmpty(user.Photo) && user.Photo != currentUser.Photo ? user.Photo : currentUser.Photo;
                 currentUser.CityId = user.CityId;
 
+                if (isEqual)
+                {
+                    currentUser.UserType = user.UserType;
+                }
                 var result = await _usersUnitOfWork.UpdateUserAsync(currentUser);
                 if (result.Succeeded)
                 {
@@ -332,7 +341,7 @@ namespace LogisticoWebAPI.Backend.Controllers
                     {
                         await _usersUnitOfWork.AddUserToRoleAsync(currentUser, currentUser.UserType.ToString());
                     }
-                    return NoContent(); 
+                    return NoContent();
                 }
 
                 return BadRequest(result.Errors.FirstOrDefault());
