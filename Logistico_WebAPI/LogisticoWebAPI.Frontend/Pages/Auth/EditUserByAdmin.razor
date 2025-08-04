@@ -84,23 +84,10 @@
                                     <h5 class="text-primary border-bottom pb-2">
                                         <i class="fa fa-camera"></i> Foto de Perfil
                                     </h5>
+
+                                    <!-- Componente para seleccionar imagen -->
                                     <div class="text-center">
-                                        @if (!string.IsNullOrEmpty(imageUrl))
-                                        {
-                                            <img src="@imageUrl" alt="Foto actual" class="img-thumbnail mb-3" style="width: 150px; height: 150px; object-fit: cover;" />
-                                        }
-                                        else if (!string.IsNullOrEmpty(user.Photo))
-                                        {
-                                            <img src="data:image/jpeg;base64,@user.Photo" alt="Foto seleccionada" class="img-thumbnail mb-3" style="width: 150px; height: 150px; object-fit: cover;" />
-                                        }
-                                        else
-                                        {
-                                            <div class="photo-placeholder mb-3 mx-auto" style="width: 150px; height: 150px; background-color: #f8f9fa; border: 2px dashed #dee2e6; display: flex; align-items: center; justify-content: center; border-radius: 8px;">
-                                                <i class="fa fa-user fa-3x text-muted"></i>
-                                            </div>
-                                        }
-                                        <br />
-                                        <InputImg Label="Seleccionar Foto" ImageSelected="ImageSelected" />
+                                        <InputImg Label="Seleccionar Foto de Perfil" ImageSelected="ImageSelected" ImageURL="@imageUrl" />
                                     </div>
                                 </div>
                             </div>

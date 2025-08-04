@@ -76,24 +76,6 @@
                     <i class="fa fa-camera"></i> Foto del Evento
                 </h5>
 
-                <!-- Vista previa de la imagen -->
-                <div class="text-center mb-3">
-                    @if (!string.IsNullOrEmpty(imageUrl))
-                    {
-                        <img src="@imageUrl" alt="Foto actual" class="img-thumbnail mb-3" style="max-width: 300px; max-height: 200px; object-fit: cover;" />
-                    }
-                    else if (!string.IsNullOrEmpty(EventDTO.Photo))
-                    {
-                        <img src="data:image/jpeg;base64,@EventDTO.Photo" alt="Foto del evento" class="img-thumbnail mb-3" style="max-width: 300px; max-height: 200px; object-fit: cover;" />
-                    }
-                    else
-                    {
-                        <div class="photo-placeholder mb-3 mx-auto" style="width: 300px; height: 200px; background-color: #f8f9fa; border: 2px dashed #dee2e6; display: flex; align-items: center; justify-content: center;">
-                            <i class="fa fa-calendar-alt fa-3x text-muted"></i>
-                        </div>
-                    }
-                </div>
-
                 <!-- Componente para seleccionar imagen -->
                 <div class="text-center">
                     <InputImg Label="Seleccionar Foto del Evento" ImageSelected="ImageSelected" ImageURL="@imageUrl" />

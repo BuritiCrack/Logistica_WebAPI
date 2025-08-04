@@ -1,26 +1,174 @@
-﻿<div>
-    <label>@Label</label>
-    <div>
-        <InputFile OnChange="OnChange" accept=".jpg,.jpeg,.png" />
+﻿<div class="image-selector">
+    <!-- Zona de drop y selección -->
+    <div class="image-drop-zone @(isDragOver ? "drag-over" : "")" 
+         @ondragenter="HandleDragEnter" 
+         @ondragleave="HandleDragLeave" 
+         @ondragover:preventDefault="true" 
+         @ondrop="HandleDrop" 
+         @ondrop:preventDefault="true">
+        
+        <!-- Vista previa de imagen existente -->
+        @if (!string.IsNullOrEmpty(imageBase64))
+        {
+            <div class="image-preview-container">
+                <img src="data:image/jpeg;base64,@imageBase64" alt="Vista previa" class="preview-image" />
+                <div class="image-overlay">
+                    <button type="button" class="btn btn-sm btn-danger" @onclick="RemoveImage">
+                        <i class="fa fa-times"></i>
+                    </button>
+                    <button type="button" class="btn btn-sm btn-primary" @onclick="TriggerFileInput">
+                        <i class="fa fa-edit"></i>
+                    </button>
+                </div>
+            </div>
+        }
+        else if (!string.IsNullOrEmpty(ImageURL))
+        {
+            <div class="image-preview-container">
+                <img src="@ImageURL" alt="Vista previa" class="preview-image" />
+                <div class="image-overlay">
+                    <button type="button" class="btn btn-sm btn-danger" @onclick="RemoveImage">
+                        <i class="fa fa-times"></i>
+                    </button>
+                    <button type="button" class="btn btn-sm btn-primary" @onclick="TriggerFileInput">
+                        <i class="fa fa-edit"></i>
+                    </button>
+                </div>
+            </div>
+        }
+        else
+        {
+            <!-- Zona vacía para subir imagen -->
+            <div class="upload-placeholder" @onclick="TriggerFileInput">
+                <div class="upload-icon">
+                    <i class="fa fa-cloud-upload-alt fa-3x"></i>
+                </div>
+                <h5 class="upload-title">@Label</h5>
+                <p class="upload-description">
+                    Arrastra y suelta una imagen aquí<br>
+                    o <span class="text-primary">haz clic para seleccionar</span>
+                </p>
+                <div class="upload-formats">
+                    <small class="text-muted">Formatos soportados: JPG, JPEG, PNG</small>
+                </div>
+            </div>
+        }
+    </div>
+
+    <!-- Input file oculto -->
+    <InputFile @ref="fileInput" OnChange="OnChange" accept=".jpg,.jpeg,.png" style="display: none;" />
+    
+    <!-- Información adicional -->
+    <div class="upload-info mt-2">
+        <small class="text-muted">
+            <i class="fa fa-info-circle"></i>
+            Tamaño máximo: 5MB. Resolución recomendada: 1200x800px
+        </small>
     </div>
 </div>
 
-<div>
-    @if (imageBase64 is not null)
-    {
-        <div>
-            <div style="margin: 10px">
-                <img src="data:image/jpeg;base64, @imageBase64" style="width:400px" />
-            </div>
-        </div>
+<style>
+    .image-selector {
+        width: 100%;
     }
 
-    @if (ImageURL is not null)
-    {
-        <div>
-            <div style="margin: 10px">
-                <img src="@ImageURL" style="width:400px" />
-            </div>
-        </div>
+    .image-drop-zone {
+        border: 2px dashed #dee2e6;
+        border-radius: 8px;
+        padding: 20px;
+        text-align: center;
+        background-color: #f8f9fa;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        position: relative;
+        min-height: 200px;
     }
-</div>
+
+    .image-drop-zone:hover {
+        border-color: #007bff;
+        background-color: #e3f2fd;
+    }
+
+    .image-drop-zone.drag-over {
+        border-color: #28a745;
+        background-color: #d4edda;
+        transform: scale(1.02);
+    }
+
+    .upload-placeholder {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        min-height: 160px;
+    }
+
+    .upload-icon {
+        color: #6c757d;
+        margin-bottom: 15px;
+        transition: color 0.3s ease;
+    }
+
+    .image-drop-zone:hover .upload-icon {
+        color: #007bff;
+    }
+
+    .upload-title {
+        font-weight: 600;
+        color: #495057;
+        margin-bottom: 10px;
+    }
+
+    .upload-description {
+        color: #6c757d;
+        margin-bottom: 15px;
+        line-height: 1.5;
+    }
+
+    .upload-formats {
+        padding: 8px 16px;
+        background-color: #e9ecef;
+        border-radius: 20px;
+        display: inline-block;
+    }
+
+    .image-preview-container {
+        position: relative;
+        display: inline-block;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    .preview-image {
+        max-width: 100%;
+        max-height: 200px;
+        object-fit: cover;
+        display: block;
+    }
+
+    .image-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0,0,0,0.7);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .image-preview-container:hover .image-overlay {
+        opacity: 1;
+    }
+
+    .upload-info {
+        text-align: center;
+    }
+</style>
+
