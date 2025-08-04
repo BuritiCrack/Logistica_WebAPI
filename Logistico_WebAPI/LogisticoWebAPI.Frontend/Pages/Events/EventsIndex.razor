@@ -15,7 +15,7 @@
                TexFromFilter="Buscar Eventos"
                TexToFilter="@Filter"
                Callback=@OnFilterChangedAsync />
-               
+
 @if (IsLoading)
 {
     <Loading />
@@ -64,7 +64,9 @@ else
                 <div class="card h-100">
                     @if (!string.IsNullOrEmpty(eventItem.Photo))
                     {
-                        <img src="@eventItem.Photo" class="card-img-top" alt="@eventItem.Name" style="height: 200px; object-fit: cover;">
+                        <div class="card-img-top d-flex align-items-center justify-content-center" style="height: 200px; background-color: #f8f9fa; overflow: hidden;">
+                            <img src="@eventItem.Photo" alt="@eventItem.Name" style="max-width: 100%; max-height: 100%; object-fit: contain;">
+                        </div>
                     }
                     else
                     {
