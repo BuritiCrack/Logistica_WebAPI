@@ -8,8 +8,8 @@
                     @if (!string.IsNullOrEmpty(photoUser))
                     {
                         <div class="user-photo-container">
-                            <img src="@photoUser" 
-                                 alt="Foto de perfil de @context.User.Identity!.Name" 
+                            <img src="@photoUser"
+                                 alt="Foto de perfil de @context.User.Identity!.Name"
                                  class="user-photo"
                                  onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
                             <div class="user-photo-fallback" style="display: none;">
@@ -24,18 +24,20 @@
                         </div>
                     }
                 </div>
-                
+
                 <!-- Detalles del usuario -->
                 <div class="user-details">
-                    <span class="user-greeting">Hola,</span>
                     <span class="user-name">
-                        <a href="EditUser" class="nav-link btn btn-link" title="@context.User.Identity!.Name">
-                            @context.User.Identity!.Name
+                        @{
+                            var userName = context.User.FindFirst("FirstName")?.Value;
+                        }
+                        <a href="EditUser" class="nav-link btn btn-link" title="@userName">
+                            @userName
                         </a>
                     </span>
                 </div>
             </div>
-            
+
             <!-- Botón de cerrar sesión mejorado -->
             <a href="Logout" class="btn btn-logout">
                 <i class="fa fa-sign-out-alt me-1"></i>
@@ -50,7 +52,7 @@
                 <i class="fa fa-user-plus me-1"></i>
                 Registro
             </a>
-            
+
             <!-- Botón de iniciar sesión -->
             <a @onclick="@(() => ShowModal())" class="btn btn-primary btn-sm">
                 <i class="fa fa-sign-in-alt me-1"></i>

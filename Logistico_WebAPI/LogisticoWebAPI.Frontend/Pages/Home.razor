@@ -37,7 +37,10 @@
                                         </div>
                                         <div class="welcome-info">
                                             <h6 class="mb-1">¡Bienvenido de nuevo!</h6>
-                                            <p class="mb-0 text-white-75">@mainAuth.User.Identity!.Name</p>
+                                            @{
+                                                var userName = mainAuth.User.FindFirst("FirstName")?.Value;
+                                            }
+                                            <p class="mb-0 text-white-75">@userName</p>
                                             <AuthorizeView Roles="Admin" Context="adminAuth">
                                                 <Authorized>
                                                     <span class="role-badge admin">Administrador</span>
