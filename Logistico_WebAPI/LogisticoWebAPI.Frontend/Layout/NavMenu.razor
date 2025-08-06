@@ -8,37 +8,48 @@
 </div>
 
 <div class="@NavMenuCssClass nav-scrollable" @onclick="ToggleNavMenu">
-    <nav class="flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="/" Match="NavLinkMatch.All">
-                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Inicio
-            </NavLink>
+    <nav class="flex-column d-flex h-100">
+        <div class="flex-grow-1">
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="/" Match="NavLinkMatch.All">
+                    <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Inicio
+                </NavLink>
+            </div>
+            <AuthorizeView Roles="User">
+                <Authorized>
+                    <div class="nav-item px-3">
+                        <NavLink class="nav-link" href="/events">
+                            <span class="bi bi-calendar2-event-fill-nav-menu" aria-hidden="true"></span> Eventos
+                        </NavLink>
+                    </div>
+                    <div class="nav-item px-3">
+                        <NavLink class="nav-link" href="/myapplications">
+                            <span class="bi bi-list-check-nav-menu" aria-hidden="true"></span> Mis Postulaciones
+                        </NavLink>
+                    </div>
+                </Authorized>
+            </AuthorizeView>
+            <AuthorizeView Roles="Admin">
+                <Authorized>
+                    <div class="nav-item px-3">
+                        <NavLink class="nav-link" href="/events">
+                            <span class="bi bi-calendar2-event-fill-nav-menu" aria-hidden="true"></span> Eventos
+                        </NavLink>
+                    </div>
+                    <div class="nav-item px-3">
+                        <NavLink class="nav-link" href="/users">
+                            <span class="bi bi-people-fill-nav-menu" aria-hidden="true"></span> Usuarios
+                        </NavLink>
+                    </div>
+                </Authorized>
+            </AuthorizeView>
         </div>
-        <AuthorizeView Roles="User">
+        <AuthorizeView>
             <Authorized>
-                <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="/events">
-                        <span class="bi bi-calendar2-event-fill-nav-menu" aria-hidden="true"></span> Eventos
-                    </NavLink>
-                </div>
-                <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="/myapplications">
-                        <span class="bi bi-list-check-nav-menu" aria-hidden="true"></span> Mis Postulaciones
-                    </NavLink>
-                </div>
-            </Authorized>
-        </AuthorizeView>
-        <AuthorizeView Roles="Admin">
-            <Authorized>
-                <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="/events">
-                        <span class="bi bi-calendar2-event-fill-nav-menu" aria-hidden="true"></span> Eventos
-                    </NavLink>
-                </div>
-                <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="/users">
-                        <span class="bi bi-people-fill-nav-menu" aria-hidden="true"></span> Usuarios
-                    </NavLink>
+                <div class="nav-item px-3 mt-auto mb-3">
+                    <a class="nav-link logout-btn" href="Logout">
+                        <span class="bi bi-box-arrow-right" aria-hidden="true"></span> Cerrar Sesión
+                    </a>
                 </div>
             </Authorized>
         </AuthorizeView>

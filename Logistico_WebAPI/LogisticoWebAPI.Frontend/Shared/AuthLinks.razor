@@ -1,48 +1,39 @@
 ﻿<AuthorizeView>
     <Authorized>
-        <div class="d-flex align-items-center">
-            <!-- Información del usuario mejorada -->
-            <div class="user-profile-container me-3">
-                <!-- Avatar del usuario con foto o icono por defecto -->
-                <div class="user-avatar">
-                    @if (!string.IsNullOrEmpty(photoUser))
-                    {
-                        <div class="user-photo-container">
-                            <img src="@photoUser"
-                                 alt="Foto de perfil de @context.User.Identity!.Name"
-                                 class="user-photo"
-                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
-                            <div class="user-photo-fallback" style="display: none;">
-                                <i class="fa fa-user"></i>
-                            </div>
-                        </div>
-                    }
-                    else
-                    {
-                        <div class="user-photo-placeholder">
+        <div class="user-card">
+            <!-- Contenedor del avatar -->
+            <div class="user-avatar-wrapper">
+                @if (!string.IsNullOrEmpty(photoUser))
+                {
+                    <div class="avatar-container">
+                        <img src="@photoUser"
+                        alt="Foto de perfil de @context.User.Identity!.Name"
+                        class="avatar-image"
+                        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+                        <div class="avatar-fallback" style="display: none;">
                             <i class="fa fa-user-circle"></i>
                         </div>
-                    }
-                </div>
-
-                <!-- Detalles del usuario -->
-                <div class="user-details">
-                    <span class="user-name">
-                        @{
-                            var userName = context.User.FindFirst("FirstName")?.Value;
-                        }
-                        <a href="EditUser" class="nav-link btn btn-link" title="@userName">
-                            @userName
-                        </a>
-                    </span>
-                </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="avatar-default">
+                        <i class="fa fa-user-circle"></i>
+                    </div>
+                }
             </div>
 
-            <!-- Botón de cerrar sesión mejorado -->
-            <a href="Logout" class="btn btn-logout">
-                <i class="fa fa-sign-out-alt me-1"></i>
-                <span>Cerrar Sesión</span>
-            </a>
+            <!-- Información del usuario -->
+            <div class="user-info">
+                @{
+                    var userName = context.User.FindFirst("FirstName")?.Value;
+                    
+                }
+                <h3 class="user-name">Hola, @userName</h3>
+                <a href="EditUser" class="edit-profile-btn">
+                    <i class="fa fa-pencil-alt"></i> Editar perfil
+                </a>
+            </div>
         </div>
     </Authorized>
     <NotAuthorized>

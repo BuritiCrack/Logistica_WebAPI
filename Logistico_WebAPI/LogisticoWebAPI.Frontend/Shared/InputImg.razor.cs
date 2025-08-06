@@ -10,7 +10,6 @@ namespace LogisticoWebAPI.Frontend.Shared
         private string? imageBase64;
         private bool isDragOver = false;
         private InputFile? fileInput;
-        private bool showUrlInput = false;
 
         [Parameter] public string Label { get; set; } = "Seleccionar Imagen";
         [Parameter] public string? ImageURL { get; set; }
@@ -39,10 +38,6 @@ namespace LogisticoWebAPI.Frontend.Shared
             }
         }
 
-        private void ToggleUrlInput()
-        {
-            showUrlInput = !showUrlInput;
-        }
         private async Task TriggerFileInput()
         {
             if (fileInput?.Element != null)
