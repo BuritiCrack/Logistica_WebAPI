@@ -163,7 +163,7 @@ namespace LogisticoWebAPI.Frontend.Pages.Events
             if (responseHttp.Error)
             {
                 var message = await responseHttp.GetErrorMessageAsync();
-                await SweetAlertService.FireAsync("Error", message, SweetAlertIcon.Error);
+                await SweetAlertService.FireAsync("Ups!", message, SweetAlertIcon.Warning);
                 return;
             }
 

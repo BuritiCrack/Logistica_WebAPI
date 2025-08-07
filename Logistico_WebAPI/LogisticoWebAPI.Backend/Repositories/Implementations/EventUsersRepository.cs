@@ -58,7 +58,7 @@ namespace LogisticoWebAPI.Backend.Repositories.Implementations
                 return new ActionResponse<EventUser>
                 {
                     WasSuccess = false,
-                    Message = "No puedes aplicar a un evento que ya ha comenzado."
+                    Message = "No puedes aplicar a un evento que ya ha comenzado o finalizado."
                 };
             }
 
