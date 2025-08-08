@@ -49,7 +49,7 @@ namespace LogisticoWebAPI.Backend.Repositories.Implementations
                 return new ActionResponse<EventUser>
                 {
                     WasSuccess = false,
-                    Message = "Estas inactivo. No puede aplicar a eventos."
+                    Message = "Tu cuenta está inactiva; no puedes postularte a eventos."
                 };
             }
 

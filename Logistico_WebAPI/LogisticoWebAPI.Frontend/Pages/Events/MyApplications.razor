@@ -1,16 +1,25 @@
 @page "/myapplications"
 
-<h3>Mis Aplicaciones a Eventos</h3>
-
 @if (Applications == null)
 {
     <Loading />
 }
 else if (!Applications.Any())
 {
-    <div class="alert alert-info">
-        <h4>No tienes aplicaciones registradas</h4>
-        <p>Aún no te has aplicado a ningún evento. <a href="/events">Ver eventos disponibles</a></p>
+    <div class="empty-state">
+        <div class="empty-state-icon">
+            <i class="bi bi-person-x"></i> <!-- Icono de persona con X -->
+        </div>
+        <h3 class="empty-state-title">No tienes postulaciones registradas</h3>
+        <p class="empty-state-description">
+            Aún no te has postulado a ningún evento.
+            <br>¡Explora los eventos y encuentra oportunidades perfectas para ti!
+        </p>
+        <div class="empty-state-actions">
+            <a class="btn btn-primary btn-lg" href="/events">
+                <i class="fa fa-search"></i> Explorar Eventos
+            </a>
+        </div>
     </div>
 }
 else
@@ -131,3 +140,47 @@ else
     </div>
 }
 
+<style>
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        margin: 2rem auto;
+        max-width: 600px;
+    }
+
+    .empty-state-icon {
+        font-size: 4rem;
+        color: #6c757d;
+        margin-bottom: 1.5rem;
+    }
+
+    .empty-state-title {
+        font-weight: 600;
+        font-size: 1.75rem;
+        margin-bottom: 1rem;
+        color: #495057;
+    }
+
+    .empty-state-description {
+        color: #6c757d;
+        font-size: 1.1rem;
+        line-height: 1.6;
+        margin-bottom: 2rem;
+    }
+
+    .empty-state-actions {
+        margin-top: 1.5rem;
+    }
+
+    .empty-state .btn-lg {
+        padding: 12px 30px;
+        font-weight: 500;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+
+        .empty-state .btn-lg:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+        }
+</style>
