@@ -32,7 +32,16 @@ namespace LogisticoWebAPI.Frontend.Pages.Auth
                 return;
             }
 
-            await SweetAlertService.FireAsync("Éxito", "Cuenta confirmada exitosamente.", SweetAlertIcon.Success);
+            NavigationManager.NavigateTo("/");
+            var toas = SweetAlertService.Mixin(new SweetAlertOptions
+            {
+                Icon = SweetAlertIcon.Success,
+                Toast = true,
+                Position = SweetAlertPosition.Bottom,
+                ShowConfirmButton = false,
+                Timer = 3500
+            });
+            await toas.FireAsync(message: "Cuenta confirmada exitosamente.");
             Modal.Show<Login>();
         }
     }

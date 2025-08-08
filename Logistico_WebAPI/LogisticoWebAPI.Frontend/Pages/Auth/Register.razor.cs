@@ -76,7 +76,7 @@ namespace LogisticoWebAPI.Frontend.Pages.Auth
                 return;
             }
 
-            await SweetAlertService.FireAsync("Éxito", "Usuario creado exitosamente. Por favor, confirme " +
+            await SweetAlertService.FireAsync("¡Antención!", "Su usuario ha sido creado exitosamente. Por favor, confirme " +
                 "su cuenta a través del correo electrónico.", SweetAlertIcon.Info);
             NavigationManager.NavigateTo("/");
         }

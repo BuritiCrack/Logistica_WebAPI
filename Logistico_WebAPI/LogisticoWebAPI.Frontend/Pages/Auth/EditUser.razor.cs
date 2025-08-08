@@ -15,6 +15,7 @@ namespace LogisticoWebAPI.Frontend.Pages.Auth
         private List<State>? states;
         private List<City>? cities;
         private string? imageUrl;
+        private bool isLoading;
 
         [Inject] private NavigationManager NavigationManager { get; set; } = null!;
         [Inject] private SweetAlertService SweetAlertService { get; set; } = null!;
@@ -98,7 +99,9 @@ namespace LogisticoWebAPI.Frontend.Pages.Auth
 
         private async Task SaveUserAsync()
         {
+            isLoading = true;
             var responseHttp = await Repository.PutAsync<User, TokenDTO>("/api/accounts", user!);
+            isLoading = false;
             if (responseHttp.Error)
             {
                 var message = await responseHttp.GetErrorMessageAsync();
@@ -108,6 +111,16 @@ namespace LogisticoWebAPI.Frontend.Pages.Auth
 
             await LoginService.LoginAsync(responseHttp.Response!.Token);
             NavigationManager.NavigateTo("/");
+
+            var toas = SweetAlertService.Mixin(new SweetAlertOptions
+            {
+                Icon = SweetAlertIcon.Success,
+                Toast = true,
+                Position = SweetAlertPosition.BottomRight,
+                ShowConfirmButton = false,
+                Timer = 3000
+            });
+            await toas.FireAsync(message: "Usuario actualizado con éxito");
         }
     }
 }
