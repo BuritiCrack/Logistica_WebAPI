@@ -28,12 +28,13 @@ namespace LogisticoWebAPI.Frontend.Pages.Auth
             if (wasClose)
             {
                 NavigationManager.NavigateTo("/");
+                return;
             }
             var responseHttp = await Repository.PostAsync<LoginDTO, TokenDTO>("/api/accounts/Login", loginDTO);
             if (responseHttp.Error)
             {
                 var message = await responseHttp.GetErrorMessageAsync();
-                await SweetAlertService.FireAsync("Error", message, SweetAlertIcon.Error);
+                await SweetAlertService.FireAsync("Error", message, SweetAlertIcon.Warning);
                 return;
             }
             await LoginService.LoginAsync(responseHttp.Response!.Token);

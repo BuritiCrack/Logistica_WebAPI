@@ -893,7 +893,7 @@ namespace LogisticoWebAPI.Backend.Controllers
             }
             if (result.IsNotAllowed)
             {
-                return BadRequest("Usuario no permitido, verifique su correo electrónico");
+                return BadRequest("Tu cuenta aún no ha sido activada. Por favor revisa tu correo electrónico y sigue el enlace de confirmación para completar el registro.");
             }
             return BadRequest("Email o contraseña incorrectos");
         }
