@@ -44,16 +44,55 @@ else
     {
         <!-- Lista de aplicaciones -->
         <div class="card">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">
-                    <i class="fa fa-users"></i> Postulaciones (@(Statistics?.TotalApplications ?? 0))
-                </h5>
-                <h5 class="mb-6">
-                    <i class="fa fa-calendar-alt"></i> @Applications.First().Event!.Name
-                </h5>
-                <button class="btn btn-secondary btn-sm" @onclick="GoBack">
-                    <i class="fa fa-arrow-left"></i> Volver a Eventos
-                </button>
+            <div class="card-header">
+                <!-- Fila superior con título y botón -->
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="mb-0">
+                        <i class="fa fa-calendar-alt"></i> @Applications.First().Event!.Name
+                    </h5>
+                    <button class="btn btn-secondary btn-sm" @onclick="GoBack">
+                        <i class="fa fa-arrow-left"></i> Volver a Eventos
+                    </button>
+                </div>
+
+                <!-- Contador destacado de asistentes -->
+                <div class="attendance-counter-section mb-3">
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <div class="attendance-counter-card">
+                                <div class="counter-icon">
+                                    <i class="fa fa-check-circle"></i>
+                                </div>
+                                <div class="counter-content">
+                                    <div class="counter-number">@(Statistics?.AttendedApplications ?? 0)</div>
+                                    <div class="counter-label">Asistentes Confirmados</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="stats-card">
+                                <div class="stats-icon">
+                                    <i class="fa fa-users"></i>
+                                </div>
+                                <div class="stats-content">
+                                    <div class="stats-number">@(Statistics?.AcceptedApplications ?? 0)</div>
+                                    <div class="stats-label">Aceptados</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="stats-card">
+                                <div class="stats-icon">
+                                    <i class="fa fa-list"></i>
+                                </div>
+                                <div class="stats-content">
+                                    <div class="stats-number">@(Statistics?.TotalApplications ?? 0)</div>
+                                    <div class="stats-label">Total Postulaciones</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="card-body p-0">
                 <div class="table-responsive">
@@ -63,9 +102,9 @@ else
                                 <th>Usuario</th>
                                 <th>Documento</th>
                                 <th>Teléfono</th>
-                                <th>Edad</th>
                                 <th>Estado</th>
                                 <th>Acciones</th>
+                                <th>Asistió?</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -126,13 +165,6 @@ else
                                         }
                                     </td>
 
-                                    <!-- Edad -->
-                                    <td>
-                                        <span class="badge bg-info text-white">
-                                            <i class="fa fa-birthday-cake"></i> @application.User?.Age años
-                                        </span>
-                                    </td>
-
                                     <!-- Estado -->
                                     <td>
                                         <span class="badge @GetStatusBadgeClass(application.Status) fs-6">
@@ -181,6 +213,56 @@ else
                                             </span>
                                         }
                                     </td>
+
+                                    <!-- Asistió? -->
+                                    <td>
+                                        @if (application.Status == ApplicationStatus.Accepted)
+                                        {
+                                            <div class="form-check form-switch d-flex align-items-center justify-content-center">
+                                                <input class="form-check-input"
+                                                       type="checkbox"
+                                                       role="switch"
+                                                       id="attendance-@application.Id"
+                                                       checked="@application.DidAttend"
+                                                       @onchange="@((args) => UpdateAttendanceAsync(application.Id, (bool)args.Value!))"
+                                                       style="transform: scale(1.2);">
+                                                <label class="form-check-label ms-2"
+                                                       for="attendance-@application.Id">
+                                                    @if (application.DidAttend)
+                                                    {
+                                                        <span class="badge bg-success">
+                                                            <i class="fa fa-check"></i> Asistió
+                                                        </span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="badge bg-warning text-dark">
+                                                            <i class="fa fa-clock"></i> Pendiente
+                                                        </span>
+                                                    }
+                                                </label>
+                                            </div>
+                                        }
+                                        else if (application.Status == ApplicationStatus.Pending)
+                                        {
+                                            <span class="badge bg-secondary">
+                                                <i class="fa fa-hourglass-half"></i> En revisión
+                                            </span>
+                                        }
+                                        else if (application.Status == ApplicationStatus.Rejected)
+                                        {
+                                            <span class="badge bg-danger">
+                                                <i class="fa fa-times"></i> No aplica
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-muted">
+                                                <i class="fa fa-ban"></i> Cancelado
+                                            </span>
+                                        }
+                                    </td>
+
                                 </tr>
 
                                 <!-- Fila expandible para comentarios (si existen) -->
@@ -206,72 +288,5 @@ else
             </div>
         </div>
     }
-    <!-- Resumen de estadísticas -->
-    @if (Statistics != null)
-    {
-        <div class="row mt-4">
-            <div class="col-md-3">
-                <div class="card text-center bg-primary text-white">
-                    <div class="card-body">
-                        <h5>@Statistics.PendingApplications</h5>
-                        <small>Pendientes</small>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card text-center bg-success text-white">
-                    <div class="card-body">
-                        <h5>@Statistics.AcceptedApplications</h5>
-                        <small>Aceptados</small>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card text-center bg-danger text-white">
-                    <div class="card-body">
-                        <h5>@Statistics.RejectedApplications</h5>
-                        <small>Rechazados</small>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card text-center bg-secondary text-white">
-                    <div class="card-body">
-                        <h5>@Statistics.CancelledApplications</h5>
-                        <small>Cancelados</small>
-                    </div>
-                </div>
-            </div>
-        </div>
-    }
 }
 
-<style>
-    .empty-state {
-        text-align: center;
-        padding: 2rem;
-        margin: 2rem auto;
-        max-width: 500px;
-    }
-
-    .empty-state-icon {
-        font-size: 3rem;
-        color: #6c757d;
-        margin-bottom: 1rem;
-    }
-
-    .empty-state-title {
-        font-weight: 600;
-        margin-bottom: 0.5rem;
-    }
-
-    .empty-state-description {
-        color: #6c757d;
-        margin-bottom: 1.5rem;
-    }
-
-    .search-term {
-        font-weight: 600;
-        color: #333;
-    }
-</style>

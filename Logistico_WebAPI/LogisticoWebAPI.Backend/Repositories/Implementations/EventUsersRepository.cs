@@ -6,8 +6,6 @@ using LogisticoWebAPI.Shared.Entities;
 using LogisticoWebAPI.Shared.Enums;
 using LogisticoWebAPI.Shared.Responses;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using System.Linq;
 
 namespace LogisticoWebAPI.Backend.Repositories.Implementations
 {
@@ -155,6 +153,60 @@ namespace LogisticoWebAPI.Backend.Repositories.Implementations
             }
         }
 
+        public async Task<ActionResponse<AttendDTO>> DidUserAttend(string email, AttendDTO attendDTO)
+        {
+            var application = await _context.EventUsers
+                .FirstOrDefaultAsync(eu => eu.Id == attendDTO.EventUserId);
+            if (application == null)
+            {
+                return new ActionResponse<AttendDTO>
+                {
+                    WasSuccess = false,
+                    Message = "La postulación especificada no existe."
+                };
+            }
+
+            var user = await _usersRepository.GetUserAsync(email);
+            if (user == null)
+            {
+                return new ActionResponse<AttendDTO>
+                {
+                    WasSuccess = false,
+                    Message = "El usuario especificado no existe."
+                };
+            }
+
+            if (application.Status != ApplicationStatus.Accepted)
+            {
+                return new ActionResponse<AttendDTO>
+                {
+                    WasSuccess = false,
+                    Message = "Solo se puede marcar asistencia para aplicaciones aceptadas."
+                };
+            }
+
+            try
+            {
+                application.DidAttend = attendDTO.DidAttend;
+                application.LastUpdated = DateTime.UtcNow;
+
+                await _context.SaveChangesAsync();
+                return new ActionResponse<AttendDTO>
+                {
+                    WasSuccess = true,
+                    Result = attendDTO
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ActionResponse<AttendDTO>
+                {
+                    WasSuccess = false,
+                    Message = ex.Message
+                };
+            }
+        }
+
         public async Task<ActionResponse<EventUser>> CancelApplicationAsync(string email, int eventId)
         {
             var user = await _usersRepository.GetUserAsync(email);
@@ -223,6 +275,8 @@ namespace LogisticoWebAPI.Backend.Repositories.Implementations
             }
         }
 
+        // <summary>
+        /// Obtiene las postulaciones de un usuario específico, ordenadas por fecha de última actualización.
         public async Task<ActionResponse<IEnumerable<EventUser>>> GetUserApplicationsAsync(string email)
         {
             var applications = await _context.EventUsers
@@ -240,6 +294,8 @@ namespace LogisticoWebAPI.Backend.Repositories.Implementations
             };
         }
 
+        /// <summary>
+        /// Obtiene todas las postulaciones de un evento específico, ordenadas por fecha de registro y estado.
         public async Task<ActionResponse<IEnumerable<EventUser>>> GetEventApplicationsAsync(int eventId)
         {
             var applications = await _context.EventUsers
@@ -257,6 +313,8 @@ namespace LogisticoWebAPI.Backend.Repositories.Implementations
             };
         }
 
+        /// <summary>
+        /// Obtiene una postulacion específica por su ID, incluyendo detalles del evento y del usuario.
         public async Task<ActionResponse<EventUser>> GetApplicationAsync(int applicationId)
         {
             try
@@ -291,7 +349,7 @@ namespace LogisticoWebAPI.Backend.Repositories.Implementations
             }
         }
 
-        public async Task<ActionResponse<int>> GetTotalPagesAsync(PaginationDTO pagination,int eventId)
+        public async Task<ActionResponse<int>> GetTotalPagesAsync(PaginationDTO pagination, int eventId)
         {
             var query = _context.EventUsers
                 .Where(eu => eu.EventId == eventId)
@@ -351,7 +409,8 @@ namespace LogisticoWebAPI.Backend.Repositories.Implementations
                     PendingApplications = applications.Count(a => a.Status == ApplicationStatus.Pending),
                     AcceptedApplications = applications.Count(a => a.Status == ApplicationStatus.Accepted),
                     RejectedApplications = applications.Count(a => a.Status == ApplicationStatus.Rejected),
-                    CancelledApplications = applications.Count(a => a.Status == ApplicationStatus.CancelledByUser)
+                    CancelledApplications = applications.Count(a => a.Status == ApplicationStatus.CancelledByUser),
+                    AttendedApplications = applications.Count(a => a.DidAttend && a.Status == ApplicationStatus.Accepted)
                 };
 
                 return new ActionResponse<EventStatisticsDTO>

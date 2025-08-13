@@ -7,5 +7,6 @@ namespace LogisticoWebAPI.Shared.DTOs
         public int AcceptedApplications { get; set; }
         public int RejectedApplications { get; set; }
         public int CancelledApplications { get; set; }
+        public int AttendedApplications { get; set; }
     }
 }

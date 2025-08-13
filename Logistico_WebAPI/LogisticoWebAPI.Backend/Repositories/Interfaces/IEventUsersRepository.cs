@@ -10,6 +10,8 @@ namespace LogisticoWebAPI.Backend.Repositories.Interfaces
 
         Task<ActionResponse<UpdateApplicationStatusDTO>> UpdateApplicationStatusAsync(string email, UpdateApplicationStatusDTO updateApplicationStatusDTO);
 
+        Task<ActionResponse<AttendDTO>> DidUserAttend(string email, AttendDTO attendDTO);
+
         Task<ActionResponse<EventUser>> CancelApplicationAsync(string email, int eventId);
 
         Task<ActionResponse<IEnumerable<EventUser>>> GetUserApplicationsAsync(string email);

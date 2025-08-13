@@ -148,6 +148,66 @@ namespace LogisticoWebAPI.Frontend.Pages.Events
             await LoadListAsync(CurrentPage);
         }
 
+        private async Task UpdateAttendanceAsync(int applicationId, bool didAttend)
+        {
+            try
+            {
+                var attendDTO = new AttendDTO
+                {
+                    EventUserId = applicationId,
+                    DidAttend = didAttend
+                };
+
+                var httpResponse = await Repository.PutAsync($"/api/eventApplications/attendance", attendDTO);
+
+                if (httpResponse.Error)
+                {
+                    var message = await httpResponse.GetErrorMessageAsync();
+                    await SweetAlertService.FireAsync("Error", message, SweetAlertIcon.Error);
+
+                    // Revertir el cambio en la UI si hay error
+                    await LoadAsync();
+                    return;
+                }
+
+                // Actualizar localmente para feedback inmediato
+                var application = Applications?.FirstOrDefault(a => a.Id == applicationId);
+                if (application != null)
+                {
+                    application.DidAttend = didAttend;
+                }
+
+                var successMessage = didAttend
+                    ? "Asistencia confirmada exitosamente"
+                    : "Asistencia marcada como no confirmada";
+
+                var toas = SweetAlertService.Mixin(new SweetAlertOptions
+                {
+                    Icon = SweetAlertIcon.Success,
+                    Toast = true,
+                    Position = SweetAlertPosition.TopEnd,
+                    ShowConfirmButton = false,
+                    Timer = 3000
+                });
+
+                await toas.FireAsync(message: successMessage);
+                await LoadStatisticsAsync();
+               // await LoadListAsync(CurrentPage);
+            }
+            catch (Exception ex)
+            {
+                await SweetAlertService.FireAsync("Error", $"Error al actualizar asistencia: {ex.Message}", SweetAlertIcon.Error);
+                await LoadAsync(); // Recargar datos en caso de error
+            }
+        }
+
+        //private int GetAttendeesCount()
+        //{
+        //    if (Applications == null) return 0;
+
+        //    return Applications.Count(a => a.Status == ApplicationStatus.Accepted && a.DidAttend);
+        //}
+
         private string GetStatusBadgeClass(ApplicationStatus status)
         {
             return status switch
@@ -156,7 +216,7 @@ namespace LogisticoWebAPI.Frontend.Pages.Events
                 ApplicationStatus.Accepted => "bg-success",
                 ApplicationStatus.Rejected => "bg-danger",
                 ApplicationStatus.CancelledByUser => "bg-secondary",
-                _ => "bg-light text-dark"
+                _ => "bg-light text-dark",
             };
         }
 

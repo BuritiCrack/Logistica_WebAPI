@@ -1,0 +1,180 @@
+﻿.empty-state {
+    text-align: center;
+    padding: 2rem;
+    margin: 2rem auto;
+    max-width: 500px;
+}
+
+.empty-state-icon {
+    font-size: 3rem;
+    color: #6c757d;
+    margin-bottom: 1rem;
+}
+
+.empty-state-title {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.empty-state-description {
+    color: #6c757d;
+    margin-bottom: 1.5rem;
+}
+
+.search-term {
+    font-weight: 600;
+    color: #333;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 2rem;
+    margin: 2rem auto;
+    max-width: 500px;
+}
+
+.empty-state-icon {
+    font-size: 3rem;
+    color: #6c757d;
+    margin-bottom: 1rem;
+}
+
+.empty-state-title {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.empty-state-description {
+    color: #6c757d;
+    margin-bottom: 1.5rem;
+}
+
+.search-term {
+    font-weight: 600;
+    color: #333;
+}
+
+/* Estilos adicionales para el switch de asistencia */
+.form-check-input:checked {
+    background-color: #198754;
+    border-color: #198754;
+}
+
+.form-check-input:focus {
+    border-color: #86b7fe;
+    outline: 0;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+.form-switch .form-check-input {
+    cursor: pointer;
+}
+
+.attendance-switch {
+    min-width: 150px;
+}
+/* Contador de asistentes destacado */
+.attendance-counter-section {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid #dee2e6;
+}
+
+.attendance-counter-card {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    color: white;
+    padding: 20px;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 8px 25px rgba(40, 167, 69, 0.3);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+    .attendance-counter-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 30px rgba(40, 167, 69, 0.4);
+    }
+
+.counter-icon {
+    font-size: 2.5rem;
+    margin-right: 15px;
+    opacity: 0.9;
+}
+
+.counter-content {
+    flex: 1;
+}
+
+.counter-number {
+    font-size: 2.5rem;
+    font-weight: 800;
+    line-height: 1;
+    margin-bottom: 5px;
+}
+
+.counter-label {
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    opacity: 0.9;
+}
+
+.stats-card {
+    background: white;
+    border: 2px solid #e9ecef;
+    padding: 15px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    transition: border-color 0.3s ease;
+}
+
+    .stats-card:hover {
+        border-color: #6c757d;
+    }
+
+.stats-icon {
+    font-size: 1.8rem;
+    color: #6c757d;
+    margin-right: 12px;
+}
+
+.stats-content {
+    flex: 1;
+}
+
+.stats-number {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #495057;
+    line-height: 1;
+    margin-bottom: 3px;
+}
+
+.stats-label {
+    font-size: 0.8rem;
+    color: #6c757d;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+/* Responsive design para el contador */
+@media (max-width: 768px) {
+    .attendance-counter-card {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .counter-icon {
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+
+    .counter-number {
+        font-size: 2rem;
+    }
+}

@@ -105,6 +105,18 @@ namespace LogisticoWebAPI.Backend.Controllers
 
         }
 
+        [HttpPut("attendance")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DidUserAttendAsync(AttendDTO attendDTO)
+        {
+            var action = await _eventUsersUnitOfWork.DidUserAttend(User.Identity!.Name!, attendDTO);
+            if (action.WasSuccess)
+            {
+                return Ok(action.Result);
+            }
+            return BadRequest(action.Message);
+        }
+
         [HttpGet("statistics/{eventId:int}")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetEventStatisticsAsync(int eventId)

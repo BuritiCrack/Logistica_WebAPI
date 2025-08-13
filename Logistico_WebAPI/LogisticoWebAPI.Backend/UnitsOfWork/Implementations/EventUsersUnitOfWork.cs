@@ -41,5 +41,8 @@ namespace LogisticoWebAPI.Backend.UnitsOfWork.Implementations
 
         public Task<ActionResponse<EventStatisticsDTO>> GetEventStatisticsAsync(int eventId)
             => _eventUsersRepository.GetEventStatisticsAsync(eventId);
+
+        public Task<ActionResponse<AttendDTO>> DidUserAttend(string email, AttendDTO attendDTO)
+            => _eventUsersRepository.DidUserAttend(email, attendDTO);
     }
 }
