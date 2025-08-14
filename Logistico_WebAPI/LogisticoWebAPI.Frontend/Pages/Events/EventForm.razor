@@ -98,6 +98,10 @@
                 <button type="submit" class="btn btn-primary">
                     <i class="fa fa-save"></i>
                     @(EventDTO.Id == 0 ? "Crear Evento" : "Actualizar Evento")
+                    @if(IsLoading)
+                    {
+                        <LoadingButton/>
+                    }
                 </button>
             </div>
         </div>

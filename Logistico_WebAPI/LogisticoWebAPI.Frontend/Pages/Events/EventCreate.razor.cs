@@ -12,7 +12,7 @@ namespace LogisticoWebAPI.Frontend.Pages.Events
     {
         private EventDTO EventDTO = new();
         private EventForm? eventForm;
-
+        private bool IsLoading;
         [Inject] public IRepository Repository { get; set; } = null!;
         [Inject] private NavigationManager NavigationManager { get; set; } = null!;
         [Inject] private SweetAlertService SweetAlertService { get; set; } = null!;
@@ -35,8 +35,10 @@ namespace LogisticoWebAPI.Frontend.Pages.Events
         }
 
         private async Task CreateAsync()
-        { 
+        {
+            IsLoading = true;
             var responseHttp = await Repository.PostAsync("api/events/full", EventDTO);
+            IsLoading = false;
             if (responseHttp.Error)
             {
                 var message = await responseHttp.GetErrorMessageAsync();

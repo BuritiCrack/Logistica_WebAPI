@@ -1,10 +1,8 @@
 using CurrieTechnologies.Razor.SweetAlert2;
 using LogisticoWebAPI.Frontend.Repositories;
-using LogisticoWebAPI.Frontend.Services;
-using LogisticoWebAPI.Shared.DTOs;
+using LogisticoWebAPI.Frontend.Shared;
 using LogisticoWebAPI.Shared.Entities;
 using Microsoft.AspNetCore.Components;
-using System;
 using System.Net;
 
 namespace LogisticoWebAPI.Frontend.Pages.Auth
@@ -15,6 +13,7 @@ namespace LogisticoWebAPI.Frontend.Pages.Auth
         private List<State>? states;
         private List<City>? cities;
         private string? imageUrl;
+        private bool IsLoading;
 
         [Inject] private NavigationManager NavigationManager { get; set; } = null!;
         [Inject] private SweetAlertService SweetAlertService { get; set; } = null!;
@@ -89,6 +88,7 @@ namespace LogisticoWebAPI.Frontend.Pages.Auth
 
             user = responseHttp.Response;
         }
+
         private async Task StateChangedAsync(ChangeEventArgs change)
         {
             var selectedState = Convert.ToInt32(change.Value);
@@ -96,9 +96,12 @@ namespace LogisticoWebAPI.Frontend.Pages.Auth
             user!.CityId = 0;
             await LoadCitiesAsync(selectedState);
         }
+
         private async Task SaveUserAsync()
         {
+            IsLoading = true;
             var responseHttp = await Repository.PutAsync<User>($"/api/accounts/edituser/{Id}", user!);
+            IsLoading = false;
             if (responseHttp.Error)
             {
                 var message = await responseHttp.GetErrorMessageAsync();

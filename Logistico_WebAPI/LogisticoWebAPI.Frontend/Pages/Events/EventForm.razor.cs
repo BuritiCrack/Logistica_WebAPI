@@ -14,6 +14,7 @@ namespace LogisticoWebAPI.Frontend.Pages.Events
         [EditorRequired, Parameter] public EventDTO EventDTO { get; set; } = null!;
         [EditorRequired, Parameter] public EventCallback OnValidSubmit { get; set; }
         [EditorRequired, Parameter] public EventCallback ReturnAction { get; set; }
+        [EditorRequired, Parameter] public bool IsLoading { get; set; }
         [Inject] public SweetAlertService SweetAlertService { get; set; } = null!;
         public bool FormPostedSuccessfully { get; set; } = false;
 
