@@ -53,7 +53,7 @@ namespace LogisticoWebAPI.Frontend.Repositories
                 return new HttpResponseWrapper<TActionResponse>(response, false, responseHttp);
             }
 
-            return new HttpResponseWrapper<TActionResponse>(default, !responseHttp.IsSuccessStatusCode, responseHttp);
+            return new HttpResponseWrapper<TActionResponse>(default, true, responseHttp);
         }
         
         public async Task<HttpResponseWrapper<object>> DeleteAsync<T>(string url)

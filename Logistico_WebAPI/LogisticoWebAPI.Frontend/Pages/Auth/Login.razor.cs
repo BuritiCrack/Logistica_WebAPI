@@ -12,6 +12,7 @@ namespace LogisticoWebAPI.Frontend.Pages.Auth
     {
         private LoginDTO loginDTO = new();
         private bool wasClose;
+        private bool isLoading;
         [Inject] private ILoginService LoginService { get; set; } = null!;
         [Inject] private NavigationManager NavigationManager { get; set; } = null!;
         [Inject] private SweetAlertService SweetAlertService { get; set; } = null!;
@@ -21,7 +22,7 @@ namespace LogisticoWebAPI.Frontend.Pages.Auth
         private async Task CloseModalAsync()
         {
             wasClose = true;
-            await BlazoredModal.CloseAsync(ModalResult.Ok(true));
+            await BlazoredModal.CloseAsync(ModalResult.Ok());
         }
         private async Task LoginAsync()
         {
@@ -30,13 +31,16 @@ namespace LogisticoWebAPI.Frontend.Pages.Auth
                 NavigationManager.NavigateTo("/");
                 return;
             }
+            isLoading = true;
             var responseHttp = await Repository.PostAsync<LoginDTO, TokenDTO>("/api/accounts/Login", loginDTO);
             if (responseHttp.Error)
             {
+                isLoading = false;
                 var message = await responseHttp.GetErrorMessageAsync();
-                await SweetAlertService.FireAsync("Error", message, SweetAlertIcon.Warning);
+                await SweetAlertService.FireAsync("Ups!", message, SweetAlertIcon.Error);
                 return;
             }
+            isLoading = false;
             await LoginService.LoginAsync(responseHttp.Response!.Token);
             NavigationManager.NavigateTo("/");
         }

@@ -5,18 +5,11 @@ using LogisticoWebAPI.Shared.Entities;
 using LogisticoWebAPI.Shared.Responses;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Components.Routing;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
-using MimeKit;
-using System.ComponentModel;
-using System.Drawing;
 using System.IdentityModel.Tokens.Jwt;
-using System.Runtime.InteropServices;
 using System.Security.Claims;
 using System.Text;
-using System.Xml.Linq;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace LogisticoWebAPI.Backend.Controllers
 {
@@ -236,7 +229,7 @@ namespace LogisticoWebAPI.Backend.Controllers
                     border-bottom-left-radius: 15px;
                     border-bottom-right-radius: 15px;
                 }}
-                
+
                 .footer::before {{
                     content: '';
                     position: absolute;
@@ -249,29 +242,29 @@ namespace LogisticoWebAPI.Backend.Controllers
                     border-bottom-left-radius: 15px;
                     border-bottom-right-radius: 15px;
                 }}
-                
+
                 .footer > * {{
                     position: relative;
                     z-index: 1;
                 }}
-                
+
                 .footer-title {{
                     font-size: 24px;
                     font-weight: 700;
                     color: #ffffff;
                     margin: 0 0 12px 0;
                 }}
-                
+
                 .footer-description {{
                     font-size: 16px;
                     margin: 0 0 35px 0;
                     opacity: 0.9;
                 }}
-                
+
                 .footer-links {{
                     margin-bottom: 35px;
                 }}
-                
+
                 .footer-link {{
                     color: #94a3b8;
                     text-decoration: none;
@@ -280,20 +273,20 @@ namespace LogisticoWebAPI.Backend.Controllers
                     transition: all 0.3s ease;
                     padding: 8px 0;
                 }}
-                
+
                 .footer-link:hover {{
                     color: #ffffff;
                     text-decoration: none;
                     text-shadow: 0 2px 4px rgba(255, 255, 255, 0.2);
                 }}
-                
+
                 .footer-bottom {{
                     border-top: 1px solid #475569;
                     padding-top: 30px;
                     font-size: 14px;
                     opacity: 0.8;
                 }}
-                
+
                 @media only screen and (max-width: 600px) {{
                     .container {{
                         width: 100% !important;
@@ -318,51 +311,51 @@ namespace LogisticoWebAPI.Backend.Controllers
                     <h1>Recuperación de Contraseña</h1>
                     <p>Sistema Logístico</p>
                 </div>
-                
+
                 <div class='content'>
                     <h2 class='greeting'>¡Hola {user.FirstName}!</h2>
-                    
+
                     <p class='message'>
                         Hemos recibido una solicitud para restablecer la contraseña de tu cuenta en nuestro sistema logístico.
                         Si no realizaste esta solicitud, puedes ignorar este correo de forma segura.
                     </p>
-                    
+
                     <div class='warning-note'>
                         <strong>⚠️ Importante:</strong><br>
-                        Este enlace expirará en 24 horas por razones de seguridad. Si necesitas más tiempo, 
+                        Este enlace expirará en 24 horas por razones de seguridad. Si necesitas más tiempo,
                         puedes solicitar un nuevo enlace de recuperación.
                     </div>
-                    
+
                     <a href='{tokenLink}' class='cta-button'>
                         🔓 Restablecer mi contraseña
                     </a>
-                    
+
                     <div class='security-note'>
                         <strong>🚨 Medidas de seguridad:</strong><br>
                         • Solo tú puedes usar este enlace<br>
                         • El enlace es válido por 24 horas únicamente<br>
                         • Si no solicitaste este cambio, contacta a soporte inmediatamente
                     </div>
-                    
+
                     <p style='color: #666; font-size: 14px; margin-top: 30px;'>
                         <strong>¿Problemas con el botón?</strong><br>
                         Copia y pega este enlace en tu navegador:<br>
                         <span style='word-break: break-all; color: #dc3545; font-family: monospace;'>{tokenLink}</span>
                     </p>
                 </div>
-                
+
                 <!-- Footer -->
                 <div class='footer'>
                     <h4 class='footer-title'>Sistema Logístico Empresarial</h4>
                     <p class='footer-description'>Soluciones tecnológicas para la gestión logística moderna</p>
-                    
+
                     <div class='footer-links'>
                         <a href='#' class='footer-link'>Centro de Ayuda</a>
                         <a href='#' class='footer-link'>Términos de Servicio</a>
                         <a href='#' class='footer-link'>Política de Privacidad</a>
                         <a href='#' class='footer-link'>Contacto</a>
                     </div>
-                    
+
                     <div class='footer-bottom'>
                         <p>&copy; {DateTime.Now.Year} Sistema Logístico. Todos los derechos reservados.</p>
                         <p>Este es un correo automático, por favor no respondas a este mensaje.</p>
@@ -372,7 +365,6 @@ namespace LogisticoWebAPI.Backend.Controllers
         </body>
         </html>";
         }
-
 
         [HttpPost("ResetPassword")]
         public async Task<IActionResult> ResetPasswordAsync([FromBody] ResetPasswordDTO model)
@@ -642,7 +634,6 @@ namespace LogisticoWebAPI.Backend.Controllers
                 "Sistema Logístico - Confirma tu correo electrónico", htmlBody);
         }
 
-
         private string GenerateEmailConfirmationTemplate(User user, string tokenLink)
         {
             return $@"
@@ -724,7 +715,7 @@ namespace LogisticoWebAPI.Backend.Controllers
                     border-bottom-left-radius: 15px;
                     border-bottom-right-radius: 15px;
                 }}
-                
+
                 .footer::before {{
                     content: '';
                     position: absolute;
@@ -737,29 +728,29 @@ namespace LogisticoWebAPI.Backend.Controllers
                     border-bottom-left-radius: 15px;
                     border-bottom-right-radius: 15px;
                 }}
-                
+
                 .footer > * {{
                     position: relative;
                     z-index: 1;
                 }}
-                
+
                 .footer-title {{
                     font-size: 24px;
                     font-weight: 700;
                     color: #ffffff;
                     margin: 0 0 12px 0;
                 }}
-                
+
                 .footer-description {{
                     font-size: 16px;
                     margin: 0 0 35px 0;
                     opacity: 0.9;
                 }}
-                
+
                 .footer-links {{
                     margin-bottom: 35px;
                 }}
-                
+
                 .footer-link {{
                     color: #94a3b8;
                     text-decoration: none;
@@ -768,13 +759,13 @@ namespace LogisticoWebAPI.Backend.Controllers
                     transition: all 0.3s ease;
                     padding: 8px 0;
                 }}
-                
+
                 .footer-link:hover {{
                     color: #ffffff;
                     text-decoration: none;
                     text-shadow: 0 2px 4px rgba(255, 255, 255, 0.2);
                 }}
-                
+
                 .footer-bottom {{
                     border-top: 1px solid #475569;
                     padding-top: 30px;
@@ -816,38 +807,38 @@ namespace LogisticoWebAPI.Backend.Controllers
                     <h1>Confirmación de Correo</h1>
                     <p>Sistema Logístico</p>
                 </div>
-                
+
                 <div class='content'>
                     <h2 class='greeting'>¡Hola {user.FirstName}!</h2>
-                    
+
                     <p class='message'>
-                        Gracias por registrarte en nuestro sistema logístico. 
-                        Para completar tu registro y activar tu cuenta, necesitamos 
+                        Gracias por registrarte en nuestro sistema logístico.
+                        Para completar tu registro y activar tu cuenta, necesitamos
                         verificar tu dirección de correo electrónico.
                     </p>
-                    
+
                     <a href='{tokenLink}' class='cta-button'>
                         ✓ Confirmar mi correo electrónico
                     </a>
-                    
+
                     <div class='security-note'>
                         <strong>🔒 Nota de seguridad:</strong><br>
                         Si no te registraste en nuestro sistema, puedes ignorar este correo de forma segura.
                     </div>
                 </div>
-                
+
                 <!-- Footer -->
                 <div class='footer'>
                     <h4 class='footer-title'>Sistema Logístico Empresarial</h4>
                     <p class='footer-description'>Soluciones tecnológicas para la gestión logística moderna</p>
-                    
+
                     <div class='footer-links'>
                         <a href='#' class='footer-link'>Centro de Ayuda</a>
                         <a href='#' class='footer-link'>Términos de Servicio</a>
                         <a href='#' class='footer-link'>Política de Privacidad</a>
                         <a href='#' class='footer-link'>Contacto</a>
                     </div>
-                    
+
                     <div class='footer-bottom'>
                         <p>&copy; {DateTime.Now.Year} Sistema Logístico. Todos los derechos reservados.</p>
                         <p>Este es un correo automático, por favor no respondas a este mensaje.</p>
@@ -857,7 +848,6 @@ namespace LogisticoWebAPI.Backend.Controllers
         </body>
         </html>";
         }
-
 
         [HttpGet("ConfirmEmail")]
         public async Task<IActionResult> ConfirmEmailAsync(string userId, string token)
@@ -895,6 +885,7 @@ namespace LogisticoWebAPI.Backend.Controllers
             {
                 return BadRequest("Tu cuenta aún no ha sido activada. Por favor revisa tu correo electrónico y sigue el enlace de confirmación para completar el registro.");
             }
+            
             return BadRequest("Email o contraseña incorrectos");
         }
 

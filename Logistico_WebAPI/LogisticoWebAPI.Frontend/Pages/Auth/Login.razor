@@ -39,11 +39,15 @@
 
                     <!-- Botón de Login -->
                     <div class="d-grid mb-3">
-                        <button @onclick="@(() => LoginAsync())" class="btn btn-primary">
+                        <button type="submit" class="btn btn-primary">
                             <i class="fa fa-sign-in-alt"></i> Iniciar Sesión
+                            @if(isLoading)
+                            {
+                                <span class="spinner-border spinner-border-sm ms-2" role="status" aria-hidden="true"></span>
+                            }
                         </button>
                         <!--Boton de CloseModalAsync para que el usuario pueda cancelar-->
-                        <button class="btn btn-gradient-secondary" @onclick="@(() => CloseModalAsync())">
+                        <button type="button" class="btn btn-gradient-secondary" @onclick="@(() => CloseModalAsync())">
                             <i class="fa fa-times"></i> Cancelar
                         </button>
                     </div>
