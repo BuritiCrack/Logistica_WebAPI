@@ -82,6 +82,8 @@ namespace LogisticoWebAPI.Shared.Entities
         [Display(Name = "Foto")]
         public string? Photo { get; set; }
 
+        public string QrCode { get; set; } = null!;
+
         [Display(Name = "Tipo de usuario")]
         public UserType UserType { get; set; }
         public City? City { get; set; }

@@ -7,9 +7,12 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using Org.BouncyCastle.Tls;
+using QRCoder;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using System.Text.Json;
 
 namespace LogisticoWebAPI.Backend.Controllers
 {
@@ -22,6 +25,7 @@ namespace LogisticoWebAPI.Backend.Controllers
         private readonly IFileStorage _fileStorage;
         private readonly IMailHelper _mailHelper;
         private readonly string _container;
+        private readonly string _containerQr;
 
         public AccountsController(IUsersUnitOfWork usersUnitOfWork, IConfiguration configuration,
             IFileStorage fileStorage, IMailHelper mailHelper)
@@ -31,6 +35,7 @@ namespace LogisticoWebAPI.Backend.Controllers
             _fileStorage = fileStorage;
             _mailHelper = mailHelper;
             _container = "users";
+            _containerQr = "qrcodes";
         }
 
         [HttpGet("all")]
@@ -596,12 +601,16 @@ namespace LogisticoWebAPI.Backend.Controllers
         [HttpPost("CreateUser")]
         public async Task<IActionResult> CreateUser([FromBody] UserDTO model)
         {
+
             User user = model;
             if (!string.IsNullOrEmpty(model.Photo))
             {
                 var phothoUser = Convert.FromBase64String(model.Photo);
                 model.Photo = await _fileStorage.SaveFileAsync(phothoUser, ".jpg", _container);
             }
+
+            var qrCodeBase64 = GenerateUserQrCode(user);
+            user.QrCode = await _fileStorage.SaveFileAsync(Convert.FromBase64String(qrCodeBase64), ".png", _containerQr);
 
             var result = await _usersUnitOfWork.AddUserAsync(user, model.Password);
             if (result.Succeeded)
@@ -617,6 +626,46 @@ namespace LogisticoWebAPI.Backend.Controllers
             }
 
             return BadRequest(result.Errors.FirstOrDefault());
+        }
+
+        private string GenerateUserQrCode(User user)
+        {
+            var userQrData = new
+            {
+                Id = user.Id,
+                Name = user.FullName,
+                Email = user.Email,
+                Phone = user.PhoneNumber,
+                Document = user.Document,
+                Address = user.Address,
+                UserType = user.UserType.ToString(),
+                GeneratedAt = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss UTC")
+            };
+
+            var qrCodeInfo = JsonSerializer.Serialize(userQrData, new JsonSerializerOptions
+            {
+                WriteIndented = false,
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            });
+
+            try
+            {
+                var qrGenerator = new QRCodeGenerator();
+                var qrCodeData = qrGenerator.CreateQrCode(qrCodeInfo, QRCodeGenerator.ECCLevel.Q);
+                var qrCode = new BitmapByteQRCode(qrCodeData);
+
+                string qrCodeImage = Convert.ToBase64String(qrCode.GetGraphic(10));
+                return qrCodeImage;
+            }
+            catch (Exception)
+            {
+                var basicInfo = $"User: {user.Document} - {user.FullName}";
+                var qrGenerator = new QRCodeGenerator();
+                var qrCodeData = qrGenerator.CreateQrCode(basicInfo, QRCodeGenerator.ECCLevel.L);
+                var qrCode = new BitmapByteQRCode(qrCodeData);
+
+                return Convert.ToBase64String(qrCode.GetGraphic(10));
+            }
         }
 
         private async Task<ActionResponse<string>> SendConfirmationEmailAsync(User user)
@@ -885,7 +934,7 @@ namespace LogisticoWebAPI.Backend.Controllers
             {
                 return BadRequest("Tu cuenta aún no ha sido activada. Por favor revisa tu correo electrónico y sigue el enlace de confirmación para completar el registro.");
             }
-            
+
             return BadRequest("Email o contraseña incorrectos");
         }
 
