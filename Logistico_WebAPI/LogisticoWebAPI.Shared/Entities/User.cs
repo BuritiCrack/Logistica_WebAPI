@@ -1,8 +1,6 @@
 ﻿using LogisticoWebAPI.Shared.Enums;
 using Microsoft.AspNetCore.Identity;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Runtime;
 
 namespace LogisticoWebAPI.Shared.Entities
 {
@@ -82,10 +80,12 @@ namespace LogisticoWebAPI.Shared.Entities
         [Display(Name = "Foto")]
         public string? Photo { get; set; }
 
-        public string QrCode { get; set; } = null!;
+        [Display(Name = "Código QR")]
+        public string? QrCode { get; set; }
 
         [Display(Name = "Tipo de usuario")]
         public UserType UserType { get; set; }
+
         public City? City { get; set; }
 
         [Display(Name = "Ciudad")]
@@ -96,6 +96,5 @@ namespace LogisticoWebAPI.Shared.Entities
         public string FullName => $"{FirstName} {LastName}";
 
         public ICollection<EventUser>? EventUsers { get; set; }
-
     }
 }
