@@ -1,13 +1,13 @@
 using CurrieTechnologies.Razor.SweetAlert2;
 using LogisticoWebAPI.Frontend.Repositories;
-using LogisticoWebAPI.Shared.DTOs;
 using LogisticoWebAPI.Shared.Entities;
 using LogisticoWebAPI.Shared.Enums;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
-using System.Diagnostics.Tracing;
 
 namespace LogisticoWebAPI.Frontend.Pages.Events
 {
+    [Authorize(Roles = "User")]
     public partial class MyApplications
     {
         private List<EventUser>? Applications { get; set; }
@@ -31,7 +31,7 @@ namespace LogisticoWebAPI.Frontend.Pages.Events
                     await SweetAlertService.FireAsync("Error", message, SweetAlertIcon.Error);
                     return;
                 }
-                Applications = responseHttp.Response; 
+                Applications = responseHttp.Response;
                 //!.OrderByDescending(a => a.RegistrationDate).ToList();
             }
             catch (Exception ex)

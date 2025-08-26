@@ -8,7 +8,7 @@ using System.Net;
 
 namespace LogisticoWebAPI.Frontend.Pages.Events
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,SuperAdmin")]
     public partial class EventEdit
     {
         private EventDTO EventDTO = new();

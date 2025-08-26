@@ -2,6 +2,7 @@
 using LogisticoWebAPI.Backend.UnitsOfWork.Interfaces;
 using LogisticoWebAPI.Shared.DTOs;
 using LogisticoWebAPI.Shared.Entities;
+using LogisticoWebAPI.Shared.Enums;
 using LogisticoWebAPI.Shared.Responses;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -544,7 +545,6 @@ namespace LogisticoWebAPI.Backend.Controllers
                 {
                     return NotFound();
                 }
-                bool isEqual = userMaster.Email == "jose@yopmail.com";
                 if (!string.IsNullOrEmpty(user.Photo))
                 {
                     var photoUser = Convert.FromBase64String(user.Photo);
@@ -569,7 +569,7 @@ namespace LogisticoWebAPI.Backend.Controllers
                 currentUser.Photo = !string.IsNullOrEmpty(user.Photo) && user.Photo != currentUser.Photo ? user.Photo : currentUser.Photo;
                 currentUser.CityId = user.CityId;
 
-                if (isEqual)
+                if (userMaster.UserType == UserType.SuperAdmin)
                 {
                     currentUser.UserType = user.UserType;
                 }

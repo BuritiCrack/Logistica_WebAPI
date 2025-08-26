@@ -3,11 +3,13 @@ using LogisticoWebAPI.Frontend.Repositories;
 using LogisticoWebAPI.Shared.DTOs;
 using LogisticoWebAPI.Shared.Entities;
 using LogisticoWebAPI.Shared.Enums;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
 using System.Net;
 
 namespace LogisticoWebAPI.Frontend.Pages.Events
 {
+    [Authorize(Roles = "Admin,SuperAdmin")]
     public partial class UserApplications
     {
         private int CurrentPage = 1;
@@ -192,7 +194,7 @@ namespace LogisticoWebAPI.Frontend.Pages.Events
 
                 await toas.FireAsync(message: successMessage);
                 await LoadStatisticsAsync();
-               // await LoadListAsync(CurrentPage);
+                // await LoadListAsync(CurrentPage);
             }
             catch (Exception ex)
             {

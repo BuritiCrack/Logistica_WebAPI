@@ -7,7 +7,7 @@ using System.Net;
 
 namespace LogisticoWebAPI.Frontend.Pages.Auth
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,SuperAdmin")]
     public partial class UsersIndex
     {
         public List<User>? Users { get; set; }

@@ -48,6 +48,20 @@
                     </div>
                 </Authorized>
             </AuthorizeView>
+            <AuthorizeView Roles="SuperAdmin">
+                <Authorized>
+                    <div class="nav-item px-3">
+                        <NavLink class="nav-link" href="/events">
+                            <span class="bi bi-calendar2-event-fill-nav-menu" aria-hidden="true"></span> Eventos
+                        </NavLink>
+                    </div>
+                    <div class="nav-item px-3">
+                        <NavLink class="nav-link" href="/users">
+                            <span class="bi bi-people-fill-nav-menu" aria-hidden="true"></span> Usuarios
+                        </NavLink>
+                    </div>
+                </Authorized>
+            </AuthorizeView>
         </div>
         <AuthorizeView>
             <Authorized>

@@ -192,46 +192,53 @@
                                 </div>
                             </div>
 
-                            <!-- Configuración de Usuario (Solo Admin) -->
-                            <div class="row mb-3 mt-4">
-                                <div class="col-12">
-                                    <h5 class="text-danger border-bottom pb-2">
-                                        <i class="fa fa-user-shield"></i> Configuración de Usuario (Administrador)
-                                    </h5>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <!-- Tipo de Usuario -->
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">Tipo de Usuario:</label>
-                                    <InputSelect class="form-select" @bind-Value="user.UserType">
-                                        @foreach (var userType in Enum.GetValues<UserType>())
-                                        {
-                                            <option value="@userType">@userType.GetDescription()</option>
-                                        }
-                                    </InputSelect>
-                                    <ValidationMessage For="@(() => user.UserType)" />
-                                </div>
-
-                                <!-- Estado del Usuario -->
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">Estado del Usuario:</label>
-                                    <div class="form-check form-switch mt-2">
-                                        <InputCheckbox class="form-check-input" @bind-Value="user.IsActive" id="isActiveSwitch" />
-                                        <label class="form-check-label" for="isActiveSwitch">
-                                            @if (user.IsActive)
-                                            {
-                                                <span class="text-success">Usuario Activo</span>
-                                            }
-                                            else
-                                            {
-                                                <span class="text-danger">Usuario Inactivo</span>
-                                            }
-                                        </label>
+                            <AuthorizeView Roles="SuperAdmin">
+                                <Authorized Context="superAdminContext">
+                                    <!-- Configuración de Usuario (Solo Admin) -->
+                                    <div class="row mb-3 mt-4">
+                                        <div class="col-12">
+                                            <h5 class="text-danger border-bottom pb-2">
+                                                <i class="fa fa-user-shield"></i> Configuración de Usuario (Administrador)
+                                            </h5>
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
+
+                                    <div class="row">
+                                        <!-- Tipo de Usuario -->
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Tipo de Usuario:</label>
+
+                                            <!-- SuperAdmin: Puede editar todos los tipos -->
+                                            <InputSelect class="form-select" @bind-Value="user.UserType">
+                                                @foreach (var userType in Enum.GetValues<UserType>())
+                                                {
+                                                    <option value="@userType">@userType.GetDescription()</option>
+                                                }
+                                            </InputSelect>
+                                            <ValidationMessage For="@(() => user.UserType)" />
+                                        </div>
+
+                                        <!-- Estado del Usuario -->
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Estado del Usuario:</label>
+                                            <div class="form-check form-switch mt-2">
+                                                <InputCheckbox class="form-check-input" @bind-Value="user.IsActive" id="isActiveSwitch" />
+                                                <label class="form-check-label" for="isActiveSwitch">
+                                                    @if (user.IsActive)
+                                                    {
+                                                        <span class="text-success">Usuario Activo</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="text-danger">Usuario Inactivo</span>
+                                                    }
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </Authorized>
+                            </AuthorizeView>
+
 
                             <!-- Información Profesional -->
                             <div class="row mb-3 mt-4">
@@ -383,9 +390,9 @@
                                             <button type="submit" class="btn btn-primary">
                                                 <i class="fa fa-save me-1"></i>
                                                 Guardar Cambios
-                                                @if(IsLoading)
+                                                @if (IsLoading)
                                                 {
-                                                    <LoadingButton/>
+                                                    <LoadingButton />
                                                 }
                                             </button>
                                         </div>

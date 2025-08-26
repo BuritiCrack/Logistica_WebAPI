@@ -1,13 +1,12 @@
 using CurrieTechnologies.Razor.SweetAlert2;
 using LogisticoWebAPI.Frontend.Repositories;
 using LogisticoWebAPI.Shared.DTOs;
-using LogisticoWebAPI.Shared.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
 
 namespace LogisticoWebAPI.Frontend.Pages.Events
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,SuperAdmin")]
     public partial class EventCreate
     {
         private EventDTO EventDTO = new();
@@ -55,7 +54,7 @@ namespace LogisticoWebAPI.Frontend.Pages.Events
                 ShowConfirmButton = false,
                 Timer = 3000
             });
-            await toas.FireAsync(message:"Registro creado con éxito");
+            await toas.FireAsync(message: "Registro creado con éxito");
         }
 
         private void Return()

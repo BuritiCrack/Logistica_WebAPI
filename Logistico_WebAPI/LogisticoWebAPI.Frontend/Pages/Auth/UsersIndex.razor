@@ -7,7 +7,7 @@
         </h3>
     </div>
 
-    <AuthorizeView Roles="Admin">
+    <AuthorizeView Roles="Admin,SuperAdmin">
         <Authorized>
             @if (AllUsers != null)
             {

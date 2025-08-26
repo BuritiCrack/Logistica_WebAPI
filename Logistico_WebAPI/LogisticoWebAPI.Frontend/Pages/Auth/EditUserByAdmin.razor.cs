@@ -1,12 +1,13 @@
 using CurrieTechnologies.Razor.SweetAlert2;
 using LogisticoWebAPI.Frontend.Repositories;
-using LogisticoWebAPI.Frontend.Shared;
 using LogisticoWebAPI.Shared.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
 using System.Net;
 
 namespace LogisticoWebAPI.Frontend.Pages.Auth
 {
+    [Authorize(Roles = "Admin,SuperAdmin")]
     public partial class EditUserByAdmin
     {
         private User? user;

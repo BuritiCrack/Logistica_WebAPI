@@ -4,11 +4,10 @@ using LogisticoWebAPI.Shared.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
 using System.Net;
-using System.Threading.Tasks;
 
 namespace LogisticoWebAPI.Frontend.Pages.Auth
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,SuperAdmin")]
     public partial class UserDetails
     {
         public User? User { get; set; }

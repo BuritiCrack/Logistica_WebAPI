@@ -80,7 +80,7 @@ namespace LogisticoWebAPI.Backend.Controllers
 
         
         [HttpGet("applications/{eventId:int}")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,SuperAdmin")]
         public async Task<IActionResult> GetAsync(int eventId)
         {
             var action = await _eventUsersUnitOfWork.GetEventApplicationsAsync(eventId);
@@ -93,7 +93,7 @@ namespace LogisticoWebAPI.Backend.Controllers
 
         
         [HttpPut("updatestatus")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,SuperAdmin")]
         public async Task<IActionResult> UpdateApplicationStatusAsync(UpdateApplicationStatusDTO statusDto)
         {
             var action = await _eventUsersUnitOfWork.UpdateApplicationStatusAsync(User.Identity!.Name!, statusDto);
@@ -106,7 +106,7 @@ namespace LogisticoWebAPI.Backend.Controllers
         }
 
         [HttpPut("attendance")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,SuperAdmin")]
         public async Task<IActionResult> DidUserAttendAsync(AttendDTO attendDTO)
         {
             var action = await _eventUsersUnitOfWork.DidUserAttend(User.Identity!.Name!, attendDTO);
@@ -118,7 +118,7 @@ namespace LogisticoWebAPI.Backend.Controllers
         }
 
         [HttpGet("statistics/{eventId:int}")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,SuperAdmin")]
         public async Task<IActionResult> GetEventStatisticsAsync(int eventId)
         {
             var result = await _eventUsersUnitOfWork.GetEventStatisticsAsync(eventId);
