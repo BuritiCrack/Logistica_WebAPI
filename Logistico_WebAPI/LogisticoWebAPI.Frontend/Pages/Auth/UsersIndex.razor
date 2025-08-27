@@ -144,6 +144,18 @@
                                                         <i class="fa fa-shield-alt"></i> Admin
                                                     </span>
                                                 }
+                                                else if (user.UserType == UserType.SuperAdmin)
+                                                {
+                                                    <span class="badge bg-super">
+                                                        <i class="fa fa-user-shield me-1"></i>Super Administrador
+                                                    </span>
+                                                }
+                                                else if (user.UserType == UserType.Coordinator)
+                                                {
+                                                    <span class="badge bg-coordinator">
+                                                        <i class="fa fa-user-cog me-1"></i>Coordinador
+                                                    </span>
+                                                }
                                                 else
                                                 {
                                                     <span class="badge bg-secondary">
@@ -266,65 +278,4 @@
         </NotAuthorized>
     </AuthorizeView>
 </div>
-
-<style>
-    .user-card {
-        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-    }
-
-        .user-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-
-    .avatar-placeholder {
-        border: 2px dashed #dee2e6;
-    }
-
-    .text-sm {
-        font-size: 0.875rem;
-    }
-
-    .user-info .row {
-        border-bottom: 1px solid #f8f9fa;
-        padding: 0.25rem 0;
-    }
-
-        .user-info .row:last-child {
-            border-bottom: none;
-        }
-
-    .btn-group .btn {
-        border-radius: 0.25rem !important;
-        margin-left: 2px;
-    }
-
-    .empty-state {
-        text-align: center;
-        padding: 2rem;
-        margin: 2rem auto;
-        max-width: 500px;
-    }
-
-    .empty-state-icon {
-        font-size: 3rem;
-        color: #6c757d;
-        margin-bottom: 1rem;
-    }
-
-    .empty-state-title {
-        font-weight: 600;
-        margin-bottom: 0.5rem;
-    }
-
-    .empty-state-description {
-        color: #6c757d;
-        margin-bottom: 1.5rem;
-    }
-
-    .search-term {
-        font-weight: 600;
-        color: #333;
-    }
-</style>
 

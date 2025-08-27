@@ -26,6 +26,18 @@
                                         Administrador
                                     </span>
                                 }
+                                else if (user.UserType == UserType.SuperAdmin)
+                                {
+                                    <span class="badge bg-super">
+                                        <i class="fa fa-user-shield me-1"></i>Super Administrador
+                                    </span>
+                                }
+                                else if (user.UserType == UserType.Coordinator)
+                                {
+                                    <span class="badge bg-coordinator">
+                                        <i class="fa fa-user-cog me-1"></i>Coordinador
+                                    </span>
+                                }
                                 else
                                 {
                                     <span class="badge bg-secondary">
@@ -406,43 +418,3 @@
         </div>
     </div>
 </div>
-
-<style>
-    .photo-placeholder {
-        border-radius: 8px;
-    }
-
-    .user-status .badge {
-        font-size: 0.85rem;
-    }
-
-    .form-check-input:checked {
-        background-color: #198754;
-        border-color: #198754;
-    }
-
-    .border-bottom {
-        border-bottom: 2px solid #dee2e6 !important;
-    }
-
-    .text-primary {
-        color: #0d6efd !important;
-    }
-
-    .text-danger {
-        color: #dc3545 !important;
-    }
-
-    .card-header {
-        background-color: #f8f9fa;
-        border-bottom: 1px solid #dee2e6;
-    }
-
-    .input-group-text {
-        border: 1px solid #ced4da;
-    }
-
-    .btn-group .btn + .btn {
-        margin-left: 0.5rem;
-    }
-</style>
