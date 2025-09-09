@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
-using Org.BouncyCastle.Tls;
 using QRCoder;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -444,6 +443,10 @@ namespace LogisticoWebAPI.Backend.Controllers
                     return NotFound();
                 }
 
+                var oldQrCodePath = currentUser.QrCode;
+
+                bool needsQrCodeUpdate = ShouldUpdateQrCode(currentUser, user);
+
                 if (!string.IsNullOrEmpty(user.Photo))
                 {
                     var photoUser = Convert.FromBase64String(user.Photo);
@@ -467,6 +470,11 @@ namespace LogisticoWebAPI.Backend.Controllers
                 currentUser.Photo = !string.IsNullOrEmpty(user.Photo) && user.Photo != currentUser.Photo ? user.Photo : currentUser.Photo;
                 currentUser.CityId = user.CityId;
 
+                if (needsQrCodeUpdate)
+                {
+                    await UpdateUserQrCodeAsync(currentUser, oldQrCodePath);
+                }
+
                 var result = await _usersUnitOfWork.UpdateUserAsync(currentUser);
                 if (result.Succeeded)
                 {
@@ -478,6 +486,45 @@ namespace LogisticoWebAPI.Backend.Controllers
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
+            }
+        }
+
+        private bool ShouldUpdateQrCode(User currentUser, User user)
+        {
+            return currentUser.Document != user.Document ||
+                   currentUser.FirstName != user.FirstName ||
+                   currentUser.LastName != user.LastName ||
+                   currentUser.Email != user.Email ||
+                   currentUser.UserType != user.UserType;
+        }
+
+        private async Task UpdateUserQrCodeAsync(User currentUser, string? oldQrCodePath = null)
+        {
+            try
+            {
+                var qrCodeBase64 = GenerateUserQrCode(currentUser);
+                currentUser.QrCode = await _fileStorage.SaveFileAsync(Convert.FromBase64String(qrCodeBase64), ".png", _containerQr);
+
+                if (!string.IsNullOrEmpty(oldQrCodePath))
+                {
+                    try
+                    {
+                        await _fileStorage.RemoveFileAsync(oldQrCodePath, _containerQr);
+                    }
+                    catch (Exception ex)
+                    {
+                        BadRequest(ex.Message);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                if (!string.IsNullOrEmpty(oldQrCodePath))
+                {
+                    currentUser.QrCode = oldQrCodePath;
+                }
+
+                throw new InvalidOperationException("Error al generar código QR", ex);
             }
         }
 
@@ -545,6 +592,12 @@ namespace LogisticoWebAPI.Backend.Controllers
                 {
                     return NotFound();
                 }
+
+                var oldQrCodePath = currentUser.QrCode;
+                var oldUserType = currentUser.UserType;
+
+                bool needsQrCodeUpdate = ShouldUpdateQrCode(currentUser, user);
+
                 if (!string.IsNullOrEmpty(user.Photo))
                 {
                     var photoUser = Convert.FromBase64String(user.Photo);
@@ -572,7 +625,18 @@ namespace LogisticoWebAPI.Backend.Controllers
                 if (userMaster.UserType == UserType.SuperAdmin)
                 {
                     currentUser.UserType = user.UserType;
+
+                    if (oldUserType != user.UserType)
+                    {
+                        needsQrCodeUpdate = true;
+                    }
                 }
+
+                if (needsQrCodeUpdate)
+                {
+                    await UpdateUserQrCodeAsync(currentUser, oldQrCodePath);
+                }
+
                 var result = await _usersUnitOfWork.UpdateUserAsync(currentUser);
                 if (result.Succeeded)
                 {
@@ -601,7 +665,6 @@ namespace LogisticoWebAPI.Backend.Controllers
         [HttpPost("CreateUser")]
         public async Task<IActionResult> CreateUser([FromBody] UserDTO model)
         {
-
             User user = model;
             if (!string.IsNullOrEmpty(model.Photo))
             {
@@ -632,12 +695,9 @@ namespace LogisticoWebAPI.Backend.Controllers
         {
             var userQrData = new
             {
-                Id = user.Id,
                 Name = user.FullName,
-                Email = user.Email,
-                Phone = user.PhoneNumber,
                 Document = user.Document,
-                Address = user.Address,
+                Email = user.Email,
                 UserType = user.UserType.ToString(),
                 GeneratedAt = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss UTC")
             };
