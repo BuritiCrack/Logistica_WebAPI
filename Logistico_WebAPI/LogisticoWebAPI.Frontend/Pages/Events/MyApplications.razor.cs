@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Components;
 
 namespace LogisticoWebAPI.Frontend.Pages.Events
 {
-    [Authorize(Roles = "User")]
+    [Authorize(Roles = "User,Coordinator")]
     public partial class MyApplications
     {
         private List<EventUser>? Applications { get; set; }
@@ -32,7 +32,6 @@ namespace LogisticoWebAPI.Frontend.Pages.Events
                     return;
                 }
                 Applications = responseHttp.Response;
-                //!.OrderByDescending(a => a.RegistrationDate).ToList();
             }
             catch (Exception ex)
             {

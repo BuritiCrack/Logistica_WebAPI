@@ -6,13 +6,12 @@ using Microsoft.AspNetCore.Components;
 
 namespace LogisticoWebAPI.Frontend.Pages.Auth
 {
-    [Authorize(Roles = "User")]
+    [Authorize(Roles = "User,Coordinator")]
     public partial class UserCredential
     {
         private User? user;
         private bool isLoading;
 
-        [Inject] private NavigationManager NavigationManager { get; set; } = null!;
         [Inject] private SweetAlertService SweetAlertService { get; set; } = null!;
         [Inject] private IRepository Repository { get; set; } = null!;
 

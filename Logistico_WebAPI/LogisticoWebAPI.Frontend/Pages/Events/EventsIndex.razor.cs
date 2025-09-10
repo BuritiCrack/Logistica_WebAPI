@@ -7,7 +7,7 @@ using System.Net;
 
 namespace LogisticoWebAPI.Frontend.Pages.Events
 {
-    [Authorize(Roles = "User,Admin,SuperAdmin")]
+    [Authorize(Roles = "User,Admin,SuperAdmin,Coordinator")]
     public partial class EventsIndex
     {
         private int CurrentPage = 1;

@@ -126,7 +126,7 @@ else
                             <div class="row">
                                 <div class="col">
                                     <div class="d-flex flex-wrap gap-2 justify-content-center">
-                                        <AuthorizeView Roles="User">
+                                        <AuthorizeView Roles="User,Coordinator">
                                             <Authorized>
                                                 @if (HasAppliedToEvent(eventItem.Id))
                                                 {
