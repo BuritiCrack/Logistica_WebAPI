@@ -73,6 +73,12 @@
     box-shadow: 0 2px 4px rgba(111, 66, 193, 0.3);
 }
 
+/* Clase para las tarjetas de estadísticas - Color morado coordinadores */
+.bg-coordinator {
+    background: linear-gradient(135deg, #6f42c1 0%, #563d7c 50%, #4c1d7e 100%) !important;
+    color: white !important;
+}
+
 .badge i {
     margin-right: 0.25rem;
 }

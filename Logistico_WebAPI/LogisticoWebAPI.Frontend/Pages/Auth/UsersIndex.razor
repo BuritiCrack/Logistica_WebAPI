@@ -11,70 +11,91 @@
         <Authorized>
             @if (AllUsers != null)
             {
-                    <!-- Estadísticas rápidas - Usando AllUsers para mantener estadísticas independientes del filtro -->
-                    <div class="row mb-4">
-                        <div class="col-md-3">
-                            <div class="card bg-primary text-white">
-                                <div class="card-body">
-                                    <div class="d-flex justify-content-between">
-                                        <div>
-                                            <h3>@AllUsers.Count</h3>
-                                            <p class="mb-0">Total Usuarios</p>
-                                        </div>
-                                        <div class="align-self-center">
-                                            <i class="fa fa-users fa-2x"></i>
-                                        </div>
+                <!-- Estadísticas rápidas - Usando AllUsers para mantener estadísticas independientes del filtro -->
+                <div class="row mb-4">
+                    <!-- Total Usuarios -->
+                    <div class="col-lg col-md-6 mb-3 mb-lg-0">
+                        <div class="card bg-primary text-white">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <h3>@AllUsers.Count</h3>
+                                        <p class="mb-0">Total Usuarios</p>
                                     </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="card bg-success text-white">
-                                <div class="card-body">
-                                    <div class="d-flex justify-content-between">
-                                        <div>
-                                            <h3>@AllUsers.Count(u => u.IsActive == true)</h3>
-                                            <p class="mb-0">Usuarios Activos</p>
-                                        </div>
-                                        <div class="align-self-center">
-                                            <i class="fa fa-user-check fa-2x"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="card bg-warning text-white">
-                                <div class="card-body">
-                                    <div class="d-flex justify-content-between">
-                                        <div>
-                                            <h3>@AllUsers.Count(u => u.IsActive != true)</h3>
-                                            <p class="mb-0">Usuarios Inactivos</p>
-                                        </div>
-                                        <div class="align-self-center">
-                                            <i class="fa fa-user-times fa-2x"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="card bg-info text-white">
-                                <div class="card-body">
-                                    <div class="d-flex justify-content-between">
-                                        <div>
-                                            <h3>@AllUsers.Count(u => u.UserType == UserType.Admin)</h3>
-                                            <p class="mb-0">Administradores</p>
-                                        </div>
-                                        <div class="align-self-center">
-                                            <i class="fa fa-user-shield fa-2x"></i>
-                                        </div>
+                                    <div class="align-self-center">
+                                        <i class="fa fa-users fa-2x"></i>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    <!-- Usuarios Activos -->
+                    <div class="col-lg col-md-6 mb-3 mb-lg-0">
+                        <div class="card bg-success text-white">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <h3>@AllUsers.Count(u => u.IsActive == true)</h3>
+                                        <p class="mb-0">Usuarios Activos</p>
+                                    </div>
+                                    <div class="align-self-center">
+                                        <i class="fa fa-user-check fa-2x"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Usuarios Inactivos -->
+                    <div class="col-lg col-md-6 mb-3 mb-lg-0">
+                        <div class="card bg-warning text-white">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <h3>@AllUsers.Count(u => u.IsActive != true)</h3>
+                                        <p class="mb-0">Usuarios Inactivos</p>
+                                    </div>
+                                    <div class="align-self-center">
+                                        <i class="fa fa-user-times fa-2x"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Coordinadores -->
+                    <div class="col-lg col-md-6 mb-3 mb-lg-0">
+                        <div class="card bg-coordinator text-white">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <h3>@AllUsers.Count(u => u.UserType == UserType.Coordinator)</h3>
+                                        <p class="mb-0">Coordinadores</p>
+                                    </div>
+                                    <div class="align-self-center">
+                                        <i class="fa fa-user-cog fa-2x"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Administradores -->
+                    <div class="col-lg col-md-6 mb-3 mb-lg-0">
+                        <div class="card bg-info text-white">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <h3>@AllUsers.Count(u => u.UserType == UserType.Admin)</h3>
+                                        <p class="mb-0">Administradores</p>
+                                    </div>
+                                    <div class="align-self-center">
+                                        <i class="fa fa-user-shield fa-2x"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             }
+
             <!-- Sección de Filtro - Siempre visible -->
             <GenericFilter PlaceHolder="Busca por nombre o cedula..."
                            TexFromFilter="Buscar Usuarios"
@@ -177,7 +198,6 @@
 
                                     <!-- Información del usuario -->
                                     <div class="user-info">
-
                                         <div class="row text-sm mb-2">
                                             <div class="col-4"><strong>Cédula:</strong></div>
                                             <div class="col-8">@user.Document</div>
