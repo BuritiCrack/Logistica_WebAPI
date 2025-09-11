@@ -14,7 +14,7 @@ namespace LogisticoWebAPI.Frontend.Pages.Events
         [EditorRequired, Parameter] public EventDTO EventDTO { get; set; } = null!;
         [EditorRequired, Parameter] public EventCallback OnValidSubmit { get; set; }
         [EditorRequired, Parameter] public EventCallback ReturnAction { get; set; }
-        [EditorRequired, Parameter] public bool IsLoading { get; set; }
+        [Parameter] public bool IsLoading { get; set; }
         [Inject] public SweetAlertService SweetAlertService { get; set; } = null!;
         public bool FormPostedSuccessfully { get; set; } = false;
 
@@ -25,10 +25,8 @@ namespace LogisticoWebAPI.Frontend.Pages.Events
 
         protected override void OnParametersSet()
         {
-            // Recrear el EditContext cuando los parámetros cambien
             editContext = new EditContext(EventDTO);
 
-            // Si el EventDTO tiene una foto que es una URL, asignarla a imageUrl
             if (!string.IsNullOrEmpty(EventDTO.Photo) &&
                 (EventDTO.Photo.StartsWith("http://") || EventDTO.Photo.StartsWith("https://")))
             {

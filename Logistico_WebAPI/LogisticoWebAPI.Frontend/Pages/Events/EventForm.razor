@@ -2,7 +2,7 @@
 
 <EditForm EditContext="editContext" OnValidSubmit="OnValidSubmit">
     <DataAnnotationsValidator />
-    
+
     <div class="card">
         <div class="card-header">
             <h5 class="card-title mb-0">
@@ -10,7 +10,7 @@
                 @(EventDTO.Id == 0 ? "Crear Evento" : $"Editar Evento: {EventDTO.Name}")
             </h5>
         </div>
-        
+
         <div class="card-body">
             <div class="row">
                 <!-- Nombre del Evento -->
@@ -19,7 +19,7 @@
                     <InputText class="form-control" @bind-Value="EventDTO.Name" />
                     <ValidationMessage For="@(() => EventDTO.Name)" />
                 </div>
-                
+
                 <!-- Lugar del Evento -->
                 <div class="col-md-6 mb-3">
                     <label class="form-label">Lugar del Evento:</label>
@@ -27,14 +27,14 @@
                     <ValidationMessage For="@(() => EventDTO.Place)" />
                 </div>
             </div>
-            
+
             <!-- Descripción del Evento -->
             <div class="mb-3">
                 <label class="form-label">Descripción del Evento:</label>
                 <InputTextArea class="form-control" rows="4" @bind-Value="EventDTO.Description" />
                 <ValidationMessage For="@(() => EventDTO.Description)" />
             </div>
-            
+
             <div class="row">
                 <!-- Fecha y Hora de Inicio -->
                 <div class="col-md-6 mb-3">
@@ -42,7 +42,7 @@
                     <InputDate Type="InputDateType.DateTimeLocal" class="form-control" @bind-Value="EventDTO.StartDate" />
                     <ValidationMessage For="@(() => EventDTO.StartDate)" />
                 </div>
-                
+
                 <!-- Fecha y Hora de Fin -->
                 <div class="col-md-6 mb-3">
                     <label class="form-label">Fecha y Hora de Fin:</label>
@@ -50,7 +50,7 @@
                     <ValidationMessage For="@(() => EventDTO.EndDate)" />
                 </div>
             </div>
-            
+
             <div class="row">
                 <!-- Tipo de Comida -->
                 <div class="col-md-6 mb-3">
@@ -58,7 +58,7 @@
                     <InputText class="form-control" @bind-Value="EventDTO.MealType" placeholder="Ej: Almuerzo, Cena, Refrigerio" />
                     <ValidationMessage For="@(() => EventDTO.MealType)" />
                 </div>
-                
+
                 <!-- Pago por Persona -->
                 <div class="col-md-6 mb-3">
                     <label class="form-label">Pago por Persona:</label>
@@ -89,20 +89,32 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="card-footer">
             <div class="d-flex justify-content-between">
                 <button type="button" class="btn btn-secondary" @onclick="ReturnAction">
                     <i class="fa fa-arrow-left"></i> Cancelar
                 </button>
-                <button type="submit" class="btn btn-primary">
-                    <i class="fa fa-save"></i>
-                    @(EventDTO.Id == 0 ? "Crear Evento" : "Actualizar Evento")
-                    @if(IsLoading)
-                    {
-                        <LoadingButton/>
-                    }
-                </button>
+
+                @if (EventDTO.Id == 0)
+                {
+                    <LoadingButton IsLoading="IsLoading"
+                                   Text="Crear Evento"
+                                   LoadingText="Creando..."
+                                   Icon="fa fa-save"
+                                   ButtonType="submit"
+                                   CssClass="btn btn-primary" />
+                }
+                else
+                {
+                    <LoadingButton IsLoading="IsLoading"
+                                   Text="Actualizar Evento"
+                                   LoadingText="Actualizando..."
+                                   Icon="fa fa-save"
+                                   ButtonType="submit"
+                                   CssClass="btn btn-primary" />
+                }
+
             </div>
         </div>
     </div>

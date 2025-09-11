@@ -294,14 +294,14 @@
                                 <i class="fa fa-arrow-left me-1"></i>
                                 Cancelar
                             </a>
-                            <button type="submit" class="btn btn-primary">
-                                <i class="fa fa-save me-1"></i>
-                                Guardar Cambios
-                                @if (isLoading)
-                                {
-                                    <LoadingButton />
-                                }
-                            </button>
+
+                            <LoadingButton  IsLoading="isLoading" 
+                                            Text="Guardar Cambios"
+                                            LoadingText="Guardando..." 
+                                            Icon="fa fa-save" 
+                                            ButtonType="submit" 
+                                            CssClass="btn btn-primary" />
+
                         </div>
                     </div>
                 </EditForm>

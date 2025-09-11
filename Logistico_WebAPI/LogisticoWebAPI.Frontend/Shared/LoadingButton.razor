@@ -1,1 +1,15 @@
-﻿<span class="spinner-border spinner-border-sm ms-2" role="status" aria-hidden="true"></span>
+﻿<button type="@ButtonType" class="@CssClass" disabled="@IsLoading">
+    @if (IsLoading)
+    {
+        <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+        @LoadingText
+    }
+    else
+    {
+        @if (!string.IsNullOrEmpty(Icon))
+        {
+            <i class="@Icon me-1"></i>
+        }
+        @Text
+    }
+</button>

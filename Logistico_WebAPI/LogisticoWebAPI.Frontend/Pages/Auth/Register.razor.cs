@@ -65,20 +65,30 @@ namespace LogisticoWebAPI.Frontend.Pages.Auth
         private async Task CreateUserAsync()
         {
             isLoading = true;
-            userDTO.UserName = userDTO.Email;
-            userDTO.UserType = UserType.User;
-            var responseHttp = await Repository.PostAsync<UserDTO>("/api/accounts/CreateUser", userDTO);
-            isLoading = false;
-            if (responseHttp.Error)
+            StateHasChanged();
+            
+            try
             {
-                var message = await responseHttp.GetErrorMessageAsync();
-                await SweetAlertService.FireAsync("Error", message, SweetAlertIcon.Error);
-                return;
+                userDTO.UserName = userDTO.Email;
+                userDTO.UserType = UserType.User;
+                var responseHttp = await Repository.PostAsync<UserDTO>("/api/accounts/CreateUser", userDTO);
+                
+                if (responseHttp.Error)
+                {
+                    var message = await responseHttp.GetErrorMessageAsync();
+                    await SweetAlertService.FireAsync("Error", message, SweetAlertIcon.Error);
+                    return;
+                }
+                
+                await SweetAlertService.FireAsync("¡Atención!", "Su usuario ha sido creado exitosamente. Por favor, confirme " +
+                    "su cuenta a través del correo electrónico.", SweetAlertIcon.Info);
+                NavigationManager.NavigateTo("/");
             }
-
-            await SweetAlertService.FireAsync("¡Antención!", "Su usuario ha sido creado exitosamente. Por favor, confirme " +
-                "su cuenta a través del correo electrónico.", SweetAlertIcon.Info);
-            NavigationManager.NavigateTo("/");
+            finally
+            {
+                isLoading = false;
+                StateHasChanged(); 
+            }
         }
     }
 }

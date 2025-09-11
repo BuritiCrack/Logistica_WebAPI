@@ -265,13 +265,13 @@
                         <a href="/" class="btn btn-secondary">
                             <i class="fa fa-arrow-left"></i> Cancelar
                         </a>
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fa fa-user-plus"></i> Registrarse
-                            @if (isLoading)
-                            {
-                                <LoadingButton />
-                            }
-                        </button>
+                        
+                        <LoadingButton IsLoading="@isLoading"
+                                       Text="Registrarse"
+                                       LoadingText="Registrando..."
+                                       Icon="fa fa-user-plus"
+                                       CssClass="btn btn-primary"
+                                       ButtonType="submit" />
                     </div>
                 </EditForm>
             </div>
