@@ -467,6 +467,7 @@ namespace LogisticoWebAPI.Backend.Controllers
                 currentUser.PensionFund = user.PensionFund;
                 currentUser.Address = user.Address;
                 currentUser.PhoneNumber = user.PhoneNumber;
+                currentUser.TShirtSize = user.TShirtSize;
                 currentUser.Photo = !string.IsNullOrEmpty(user.Photo) && user.Photo != currentUser.Photo ? user.Photo : currentUser.Photo;
                 currentUser.CityId = user.CityId;
 
@@ -619,6 +620,7 @@ namespace LogisticoWebAPI.Backend.Controllers
                 currentUser.Address = user.Address;
                 currentUser.PhoneNumber = user.PhoneNumber;
                 currentUser.IsActive = user.IsActive;
+                currentUser.TShirtSize = user.TShirtSize;
                 currentUser.Photo = !string.IsNullOrEmpty(user.Photo) && user.Photo != currentUser.Photo ? user.Photo : currentUser.Photo;
                 currentUser.CityId = user.CityId;
 

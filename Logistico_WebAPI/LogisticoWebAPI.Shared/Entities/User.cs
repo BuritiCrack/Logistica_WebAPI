@@ -11,6 +11,12 @@ namespace LogisticoWebAPI.Shared.Entities
         [Required(ErrorMessage = "El campo {0} es obligatorio")]
         public string Document { get; set; } = null!;
 
+        [Display(Name = "Correo electrónico")]
+        [Required(ErrorMessage = "El campo {0} es obligatorio")]
+        [EmailAddress(ErrorMessage = "El campo {0} debe ser un correo electrónico válido")]
+        [MaxLength(256, ErrorMessage = "El campo {0} debe tener máximo {1} caracteres")]
+        public override string? Email { get; set; }
+
         [Display(Name = "Nombres")]
         [MaxLength(50, ErrorMessage = "El campo {0} debe tener maximo {1} caracteres")]
         [Required(ErrorMessage = "El campo {0} es obligatorio")]
@@ -76,6 +82,10 @@ namespace LogisticoWebAPI.Shared.Entities
         [Display(Name = "Estado del usuario")]
         [Required(ErrorMessage = "El campo {0} es obligatorio")]
         public bool IsActive { get; set; } = false;
+
+        [Display(Name = "Talla de Camiseta")]
+        [Required(ErrorMessage = "El campo {0} es obligatorio")]
+        public TShirtSize TShirtSize { get; set; }
 
         [Display(Name = "Foto")]
         public string? Photo { get; set; }

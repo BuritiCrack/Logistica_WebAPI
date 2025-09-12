@@ -104,6 +104,15 @@ else
                                 </div>
                             </div>
 
+                            <div class="row mb-2">
+                                <div class="col">
+                                    <small class="text-muted">
+                                        <i class="fa fa-calendar-check"></i>
+                                        <strong>Fecha de pago:</strong> @eventItem.PaymentDate.ToString("dddd dd 'de' MMMM 'de' yyyy")
+                                    </small>
+                                </div>
+                            </div>
+
                             @if (!string.IsNullOrEmpty(eventItem.MealType))
                             {
                                 <div class="row mb-2">

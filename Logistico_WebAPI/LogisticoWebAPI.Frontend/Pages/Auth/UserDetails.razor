@@ -163,6 +163,10 @@
                             <span class="value">@User.Document</span>
                         </div>
                         <div class="info-item">
+                            <span class="label">Género:</span>
+                            <span class="value">@User.Gender.GetDescription()</span>
+                        </div>
+                        <div class="info-item">
                             <span class="label">Nombres:</span>
                             <span class="value">@User.FirstName</span>
                         </div>
@@ -171,16 +175,16 @@
                             <span class="value">@User.LastName</span>
                         </div>
                         <div class="info-item">
-                            <span class="label">Género:</span>
-                            <span class="value">@User.Gender.GetDescription()</span>
-                        </div>
-                        <div class="info-item">
                             <span class="label">Edad:</span>
                             <span class="value">@User.Age años</span>
                         </div>
                         <div class="info-item">
                             <span class="label">Altura:</span>
                             <span class="value">@User.Height cm</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">Talla de Camiseta:</span>
+                            <span class="value">@User.TShirtSize.GetDescription()</span>
                         </div>
                     </div>
                 </div>
@@ -215,13 +219,6 @@
                             <div class="info-item">
                                 <span class="label">Departamento:</span>
                                 <span class="value">@User.City.State?.Name</span>
-                            </div>
-                        }
-                        @if (User.LockoutEnd.HasValue)
-                        {
-                            <div class="info-item">
-                                <span class="label">Registro:</span>
-                                <span class="value">@User.LockoutEnd.Value.ToString("dd/MM/yyyy")</span>
                             </div>
                         }
                     </div>

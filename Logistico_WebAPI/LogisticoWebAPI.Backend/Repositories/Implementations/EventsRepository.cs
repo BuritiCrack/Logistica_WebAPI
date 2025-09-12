@@ -69,6 +69,7 @@ namespace LogisticoWebAPI.Backend.Repositories.Implementations
                     Description = eventDTO.Description,
                     StartDate = eventDTO.StartDate,
                     EndDate = eventDTO.EndDate,
+                    PaymentDate = eventDTO.PaymentDate.Date,
                     MealType = eventDTO.MealType,
                     Payment = eventDTO.Payment,
                     Photo = eventDTO.Photo
@@ -161,6 +162,7 @@ namespace LogisticoWebAPI.Backend.Repositories.Implementations
                 eventInfo.Place = eventDTO.Place;
                 eventInfo.StartDate = eventDTO.StartDate;
                 eventInfo.EndDate = eventDTO.EndDate;
+                eventInfo.PaymentDate = eventDTO.PaymentDate.Date;
                 eventInfo.Description = eventDTO.Description;
                 eventInfo.MealType = eventDTO.MealType;
                 eventInfo.Payment = eventDTO.Payment;

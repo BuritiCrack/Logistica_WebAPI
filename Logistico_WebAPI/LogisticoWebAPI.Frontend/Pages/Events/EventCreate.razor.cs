@@ -31,6 +31,9 @@ namespace LogisticoWebAPI.Frontend.Pages.Events
 
             // Establecer fecha y hora de fin: 12 horas después del inicio
             EventDTO.EndDate = startTime.AddHours(12);
+
+            // Establecer fecha de pago: el mismo día de fin
+            EventDTO.PaymentDate = EventDTO.EndDate.Date;
         }
 
         private async Task CreateAsync()

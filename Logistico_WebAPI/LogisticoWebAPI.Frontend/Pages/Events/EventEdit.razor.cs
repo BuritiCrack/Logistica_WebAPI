@@ -57,6 +57,7 @@ namespace LogisticoWebAPI.Frontend.Pages.Events
                 Description = newEvent.Description,
                 StartDate = newEvent.StartDate,
                 EndDate = newEvent.EndDate,
+                PaymentDate = newEvent.PaymentDate.Date,
                 MealType = newEvent.MealType,
                 Payment = newEvent.Payment,
                 Photo = newEvent.Photo

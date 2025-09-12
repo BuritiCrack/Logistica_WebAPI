@@ -72,7 +72,7 @@
 
                     <div class="row">
                         <!-- Género -->
-                        <div class="col-md-4 mb-3">
+                        <div class="col-md-3 mb-3">
                             <label class="form-label">Género:</label>
                             <InputSelect class="form-select" @bind-Value="userDTO.Gender">
                                 <option value="">Seleccione...</option>
@@ -85,17 +85,30 @@
                         </div>
 
                         <!-- Altura -->
-                        <div class="col-md-4 mb-3">
+                        <div class="col-md-3 mb-3">
                             <label class="form-label">Altura (cm):</label>
                             <InputText class="form-control" @bind-Value="userDTO.Height" />
                             <ValidationMessage For="@(() => userDTO.Height)" />
                         </div>
 
                         <!-- Edad -->
-                        <div class="col-md-4 mb-3">
+                        <div class="col-md-3 mb-3">
                             <label class="form-label">Edad:</label>
                             <InputText class="form-control" @bind-Value="userDTO.Age" />
                             <ValidationMessage For="@(() => userDTO.Age)" />
+                        </div>
+
+                        <!-- Talla de Camiseta -->
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">Talla de Camiseta:</label>
+                            <InputSelect class="form-select" @bind-Value="userDTO.TShirtSize">
+                                <option value="">Seleccione...</option>
+                                @foreach (var size in Enum.GetValues<TShirtSize>())
+                                {
+                                    <option value="@size">@size.GetDescription()</option>
+                                }
+                            </InputSelect>
+                            <ValidationMessage For="@(() => userDTO.TShirtSize)" />
                         </div>
                     </div>
 

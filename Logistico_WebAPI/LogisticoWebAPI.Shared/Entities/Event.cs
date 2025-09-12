@@ -32,6 +32,11 @@ namespace LogisticoWebAPI.Shared.Entities
         [Display(Name = "Fecha y Hora de Fin")]
         public DateTime EndDate { get; set; }
 
+        [DisplayFormat(DataFormatString = "{0:dddd/MMM/yyyy}")]
+        [Required(ErrorMessage = "El campo {0} es obligatorio.")]
+        [Display(Name = "Fecha y de pago")]
+        public DateTime PaymentDate { get; set; }
+
         [Required(ErrorMessage = "El campo {0} es obligatorio.")]
         [MaxLength(50, ErrorMessage = "El campo {0} no puede tener mas de {1} caracteres.")]
         [Display(Name = "Tipo de Comida")]
