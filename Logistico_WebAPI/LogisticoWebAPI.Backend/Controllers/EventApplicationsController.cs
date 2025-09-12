@@ -43,7 +43,7 @@ namespace LogisticoWebAPI.Backend.Controllers
         }
 
         [HttpPost("apply/{eventId:int}")]
-        [Authorize(Roles = "User")]
+        [Authorize(Roles = "User,Coordinator")]
         public async Task<IActionResult> ApplyToEventAsync(int eventId)
         {
             var action = await _eventUsersUnitOfWork.ApplyToEventAsync(User.Identity!.Name!, eventId);
