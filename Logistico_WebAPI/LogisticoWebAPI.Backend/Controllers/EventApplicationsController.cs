@@ -56,6 +56,7 @@ namespace LogisticoWebAPI.Backend.Controllers
 
         
         [HttpDelete("cancel/{eventId:int}")]
+        [Authorize(Roles = "User,Coordinator")]
         public async Task<IActionResult> CancelApplicationAsync(int eventId)
         {
             var action = await _eventUsersUnitOfWork.CancelApplicationAsync(User.Identity!.Name!, eventId);

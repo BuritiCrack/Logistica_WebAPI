@@ -3,7 +3,7 @@
 @using LogisticoWebAPI.Frontend.Pages.Auth
 @using Microsoft.AspNetCore.Components.Authorization
 
-<PageTitle>EventosPlus - Gestión Integral de Eventos</PageTitle>
+<PageTitle>TalentStage - Gestión Integral de Eventos</PageTitle>
 
 <!-- Hero Section -->
 <section class="hero-section">
@@ -16,7 +16,7 @@
                 <div class="col-lg-6">
                     <div class="hero-text">
                         <h1 class="hero-title">
-                            <span class="text-gradient">EventosPlus</span>
+                            <span class="text-gradient">TalentStage</span>
                             <br />
                             <span class="text-white">Administración Inteligente</span>
                             <br />
@@ -46,9 +46,19 @@
                                                     <span class="role-badge admin">Administrador</span>
                                                 </Authorized>
                                             </AuthorizeView>
+                                            <AuthorizeView Roles="SuperAdmin" Context="superadminAuth">
+                                                <Authorized>
+                                                    <span class="role-badge superadmin">Super Administrador</span>
+                                                </Authorized>
+                                            </AuthorizeView>
                                             <AuthorizeView Roles="User" Context="userAuth">
                                                 <Authorized>
                                                     <span class="role-badge user">Usuario</span>
+                                                </Authorized>
+                                            </AuthorizeView>
+                                            <AuthorizeView Roles="Coordinator" Context="coordinatorAuth">
+                                                <Authorized>
+                                                    <span class="role-badge coordinator">Coordinador</span>
                                                 </Authorized>
                                             </AuthorizeView>
                                         </div>
@@ -286,7 +296,7 @@
                 <div class="cta-content">
                     <h2 class="cta-title">¿Listo para Revolucionar tus Eventos?</h2>
                     <p class="cta-subtitle">
-                        Únete a miles de organizadores exitosos que han transformado su gestión de eventos con EventosPlus
+                        Únete a miles de organizadores exitosos que han transformado su gestión de eventos con TalentStage
                     </p>
                     <AuthorizeView Context="ctaAuth">
                         <NotAuthorized>
