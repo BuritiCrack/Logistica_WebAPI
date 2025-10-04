@@ -21,7 +21,7 @@
 
 ## 📋 Descripción del Proyecto
 
-**Logístico WebAPI** es una aplicación web full-stack desarrollada con **.NET 8** y **Blazor WebAssembly** que permite la gestión completa de eventos logísticos. El sistema facilita la organización de eventos, la aplicación de usuarios a estos eventos, y proporciona un panel de administración robusto para la gestión de usuarios, roles y estados de aplicaciones.
+**TalentStage** es una aplicación web full-stack desarrollada con **.NET 8** y **Blazor WebAssembly** que permite la gestión completa de eventos logísticos. El sistema facilita la organización de eventos, la aplicación de usuarios a estos eventos, y proporciona un panel de administración robusto para la gestión de usuarios, roles y estados de aplicaciones.
 
 ### 🎯 Propósito
 
