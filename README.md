@@ -764,7 +764,7 @@ Para preguntas o soporte:
 
 **⭐ Si este proyecto te fue útil, considera darle una estrella en GitHub ⭐**
 
-Made with ❤️ by Logístico WebAPI Team
+Made with ❤️ by me🙃
 
 [![GitHub stars](https://img.shields.io/github/stars/BuritiCrack/Logistica?style=social)](https://github.com/BuritiCrack/Logistica)
 [![GitHub forks](https://img.shields.io/github/forks/BuritiCrack/Logistica?style=social)](https://github.com/BuritiCrack/Logistica/fork)
