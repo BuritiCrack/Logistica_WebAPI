@@ -72,7 +72,23 @@ namespace LogisticoWebAPI.Backend.Repositories.Implementations
                 };
             }
 
-            var eventUser = new EventUser
+            // Verificar que el usuario no tenga otro evento en el mismo horario
+            var hasConflictingEvent = await _context.EventUsers
+                .Include(eu => eu.Event)
+                .AnyAsync(eu => eu.User!.Email == email &&
+                       eu.Event!.StartDate < eventEntity.EndDate &&
+                       eu.Event.EndDate > eventEntity.StartDate);
+            
+            if (hasConflictingEvent)
+            {
+                return new ActionResponse<EventUser>
+                {
+                    WasSuccess = false,
+                    Message = "No puedes aplicar a este evento porque tienes otro evento en el mismo horario."
+                };
+            }
+
+                var eventUser = new EventUser
             {
                 User = user,
                 Event = eventEntity
