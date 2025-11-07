@@ -90,6 +90,7 @@ namespace LogisticoWebAPI.Backend
             builder.Services.AddTransient<SeedDb>();
             builder.Services.AddScoped<IFileStorage, FileStorage>();
             builder.Services.AddScoped<IMailHelper, MailHelper>();
+            builder.Services.AddScoped<IEmailTemplateService, EmailTemplateService>();
 
             builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             builder.Services.AddScoped(typeof(IGenericUnitOfWork<>), typeof(GenericUnitOfWork<>));

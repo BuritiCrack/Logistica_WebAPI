@@ -39,7 +39,7 @@ namespace LogisticoWebAPI.Backend.Data
                 "102012121",
                 "Sura",
                 "Colpensiones",
-                UserType.Admin
+                UserType.SuperAdmin
                 );
         }
 
