@@ -139,6 +139,14 @@ namespace LogisticoWebAPI.Backend
                     ClockSkew = TimeSpan.Zero
                 });
 
+            // Configurar HSTS
+            builder.Services.AddHsts(options =>
+            {
+                options.Preload = true;
+                options.IncludeSubDomains = true;
+                options.MaxAge = TimeSpan.FromDays(365);
+            });
+
             var app = builder.Build();
 
             SeedData(app);
@@ -150,6 +158,17 @@ namespace LogisticoWebAPI.Backend
                 using var scope = scopedFactory!.CreateScope();
                 var service = scope.ServiceProvider.GetService<SeedDb>();
                 service!.SeedAsync().Wait();
+            }
+
+            app.UseStaticFiles();
+
+            // middleware de headers de seguridad
+            app.UseMiddleware<SecurityHeadersMiddleware>();
+
+            // Configurar HSTS en producción
+            if (!app.Environment.IsDevelopment())
+            {
+                app.UseHsts();
             }
 
             app.UseCors(c => c
