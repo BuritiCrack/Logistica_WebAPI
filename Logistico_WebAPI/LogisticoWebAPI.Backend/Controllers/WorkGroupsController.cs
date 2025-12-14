@@ -4,35 +4,23 @@ using LogisticoWebAPI.Shared.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Runtime.CompilerServices;
 
 namespace LogisticoWebAPI.Backend.Controllers
 {
-
     [ApiController]
     [Route("api/[controller]")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class WorkGroupsController : GenericController<WorkGroup>
     {
         private readonly IWorkGroupsUnitOfWork _workGroupsUnitOfWork;
+
         public WorkGroupsController(IGenericUnitOfWork<WorkGroup> unitOfWork, IWorkGroupsUnitOfWork workGroupsUnitOfWork) : base(unitOfWork)
         {
             _workGroupsUnitOfWork = workGroupsUnitOfWork;
         }
 
-        [HttpGet("full/{id}")]
-        public async Task<IActionResult> GetAsync(int id)
-        {
-            var response = await _workGroupsUnitOfWork.GetAsync(id);
-            if (response.WasSuccess)
-            {
-                return Ok(response.Result);
-            }
-            return NotFound(response.Message);
-        }
-
         [HttpGet]
-        public override async Task<IActionResult> GetAsync([FromQuery] PaginationDTO pagination)
+        public override async Task<IActionResult> GetAsync(PaginationDTO pagination)
         {
             var response = await _workGroupsUnitOfWork.GetAsync(pagination);
             if (response.WasSuccess)
@@ -53,43 +41,10 @@ namespace LogisticoWebAPI.Backend.Controllers
             return BadRequest();
         }
 
-        [HttpGet("byEvent/{eventId}")]
-        public async Task<IActionResult> GetByEventAsync(int eventId)
+        [HttpPost("full")]
+        public async Task<IActionResult> PostAsync(WorkGroupDTO workGroupDTO)
         {
-            var response = await _workGroupsUnitOfWork.GetByEventAsync(eventId);
-            if (response.WasSuccess)
-            {
-                return Ok(response.Result);
-            }
-            return BadRequest();
-        }
-
-        [HttpGet("byCoordinator/{coordinatorId}")]
-        public async Task<IActionResult> GetByCoordinatorAsync(string coordinatorId)
-        {
-            var response = await _workGroupsUnitOfWork.GetByCoordinatorAsync(coordinatorId);
-            if (response.WasSuccess)
-            {
-                return Ok(response.Result);
-            }
-            return BadRequest();
-        }
-
-        [HttpGet("availableUsers/{eventId}/{workGroupId}")]
-        public async Task<IActionResult> GetAvailableUsersAsync(int eventId, int workGroupId)
-        {
-            var response = await _workGroupsUnitOfWork.GetAvailableUsersForGroupAsync(eventId, workGroupId);
-            if (response.WasSuccess)
-            {
-                return Ok(response.Result);
-            }
-            return BadRequest();
-        }
-
-        [HttpPost("addMember")]
-        public async Task<IActionResult> AddMemberAsync(WorkGroupMember member)
-        {
-            var response = await _workGroupsUnitOfWork.AddMemberAsync(member);
+            var response = await _workGroupsUnitOfWork.AddAsync(workGroupDTO);
             if (response.WasSuccess)
             {
                 return Ok(response.Result);
@@ -97,15 +52,15 @@ namespace LogisticoWebAPI.Backend.Controllers
             return BadRequest(response.Message);
         }
 
-        [HttpDelete("removeMember/{memberId}")]
-        public async Task<IActionResult> RemoveMemberAsync(int memberId)
+        [HttpPut("full")]
+        public async Task<IActionResult> PutAsync(WorkGroupDTO workGroupDTO)
         {
-            var response = await _workGroupsUnitOfWork.RemoveMemberAsync(memberId);
+            var response = await _workGroupsUnitOfWork.UpdateAsync(workGroupDTO);
             if (response.WasSuccess)
             {
-                return NoContent();
+                return Ok(response.Result);
             }
-            return NotFound(response.Message);
+            return BadRequest(response.Message);
         }
     }
 }

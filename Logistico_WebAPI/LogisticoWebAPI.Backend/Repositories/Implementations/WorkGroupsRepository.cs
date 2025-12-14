@@ -3,7 +3,6 @@ using LogisticoWebAPI.Backend.Helpers;
 using LogisticoWebAPI.Backend.Repositories.Interfaces;
 using LogisticoWebAPI.Shared.DTOs;
 using LogisticoWebAPI.Shared.Entities;
-using LogisticoWebAPI.Shared.Enums;
 using LogisticoWebAPI.Shared.Responses;
 using Microsoft.EntityFrameworkCore;
 
@@ -41,6 +40,91 @@ namespace LogisticoWebAPI.Backend.Repositories.Implementations
                 WasSuccess = true,
                 Result = workgroup
             };
+        }
+
+        public async Task<ActionResponse<WorkGroup>> AddAsync(WorkGroupDTO workGroupDTO)
+        {
+            try
+            {
+                var workGroup = new WorkGroup
+                {
+                    Name = workGroupDTO.Name,
+                    Description = workGroupDTO.Description,
+                    CoordinatorId = workGroupDTO.CoordinatorId,
+                    EventId = workGroupDTO.EventId
+                };
+
+                _context.WorkGroups.Add(workGroup);
+                await _context.SaveChangesAsync();
+
+                return new ActionResponse<WorkGroup>
+                {
+                    WasSuccess = true,
+                    Result = workGroup
+                };
+            }
+            catch (DbUpdateException)
+            {
+                return new ActionResponse<WorkGroup>
+                {
+                    WasSuccess = false,
+                    Message = "Ya existe un grupo de trabajo con el mismo nombre para este evento."
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ActionResponse<WorkGroup>
+                {
+                    WasSuccess = false,
+                    Message = ex.Message
+                };
+            }
+        }
+
+        public async Task<ActionResponse<WorkGroup>> UpdateAsync(WorkGroupDTO workGroupDTO)
+        {
+            try
+            {
+                var existingWorkGroup = await _context.WorkGroups
+                    .FirstOrDefaultAsync(wg => wg.Id == workGroupDTO.Id);
+
+                if (existingWorkGroup == null)
+                {
+                    return new ActionResponse<WorkGroup>
+                    {
+                        WasSuccess = false,
+                        Message = "Grupo de trabajo no encontrado"
+                    };
+                }
+
+                existingWorkGroup.Name = workGroupDTO.Name;
+                existingWorkGroup.Description = workGroupDTO.Description;
+
+                _context.WorkGroups.Update(existingWorkGroup);
+                await _context.SaveChangesAsync();
+
+                return new ActionResponse<WorkGroup>
+                {
+                    WasSuccess = true,
+                    Result = existingWorkGroup
+                };
+            }
+            catch (DbUpdateException)
+            {
+                return new ActionResponse<WorkGroup>
+                {
+                    WasSuccess = false,
+                    Message = "Ya existe un grupo de trabajo con el mismo nombre para este evento."
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ActionResponse<WorkGroup>
+                {
+                    WasSuccess = false,
+                    Message = ex.Message
+                };
+            }
         }
 
         public override async Task<ActionResponse<IEnumerable<WorkGroup>>> GetAsync(PaginationDTO pagination)
@@ -83,163 +167,6 @@ namespace LogisticoWebAPI.Backend.Repositories.Implementations
                 WasSuccess = true,
                 Result = totalPages
             };
-        }
-
-        public Task<ActionResponse<WorkGroup>> AddAsync(WorkGroup workGroup)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<ActionResponse<WorkGroupMember>> AddMemberAsync(WorkGroupMember member)
-        {
-            // Verificar que el grupo existe
-            var workGroup = await _context.WorkGroups
-                .Include(wg => wg.Event)
-                .FirstOrDefaultAsync(wg => wg.Id == member.WorkGroupId);
-
-            if (workGroup == null)
-            {
-                return new ActionResponse<WorkGroupMember>
-                {
-                    WasSuccess = false,
-                    Message = "Grupo de trabajo no encontrado"
-                };
-            }
-
-            // Verificar que el usuario está registrado en el evento
-            var eventUser = await _context.EventUsers
-                .FirstOrDefaultAsync(eu => eu.EventId == workGroup.EventId
-                                        && eu.UserId == member.UserId
-                                        && eu.Status == ApplicationStatus.Accepted);
-
-            if (eventUser == null)
-            {
-                return new ActionResponse<WorkGroupMember>
-                {
-                    WasSuccess = false,
-                    Message = "El usuario no está aprobado en este evento"
-                };
-            }
-
-            // Verificar que no está ya en el grupo
-            var exists = await _context.WorkGroupMembers
-                .AnyAsync(wgm => wgm.WorkGroupId == member.WorkGroupId
-                              && wgm.UserId == member.UserId);
-
-            if (exists)
-            {
-                return new ActionResponse<WorkGroupMember>
-                {
-                    WasSuccess = false,
-                    Message = "El usuario ya es miembro de este grupo"
-                };
-            }
-
-            _context.WorkGroupMembers.Add(member);
-            await _context.SaveChangesAsync();
-
-            return new ActionResponse<WorkGroupMember>
-            {
-                WasSuccess = true,
-                Result = member
-            };
-        }
-
-        public async Task<ActionResponse<IEnumerable<User>>> GetAvailableUsersForGroupAsync(int eventId, int workGroupId)
-        {
-            // Usuarios aprobados en el evento
-            var eventUserIds = await _context.EventUsers
-                .Where(eu => eu.EventId == eventId && eu.Status == ApplicationStatus.Accepted)
-                .Select(eu => eu.UserId)
-                .ToListAsync();
-
-            // Usuarios ya asignados a este grupo
-            var assignedUserIds = await _context.WorkGroupMembers
-                .Where(wgm => wgm.WorkGroupId == workGroupId)
-                .Select(wgm => wgm.UserId)
-                .ToListAsync();
-
-            // Usuarios disponibles (en el evento pero no en este grupo)
-            var availableUsers = await _context.Users
-                .Where(u => eventUserIds.Contains(u.Id) && !assignedUserIds.Contains(u.Id))
-                .OrderBy(u => u.FirstName)
-                .ThenBy(u => u.LastName)
-                .ToListAsync();
-
-            return new ActionResponse<IEnumerable<User>>
-            {
-                WasSuccess = true,
-                Result = availableUsers
-            };
-        }
-
-        public async Task<ActionResponse<IEnumerable<WorkGroup>>> GetByCoordinatorAsync(string coordinatorId)
-        {
-            var workGroups = await _context.WorkGroups
-                .Include(wg => wg.Event)
-                .Include(wg => wg.Members!)
-                    .ThenInclude(m => m.User)
-                .Where(wg => wg.CoordinatorId == coordinatorId)
-                .OrderBy(wg => wg.Event!.StartDate)
-                .ThenBy(wg => wg.Name)
-                .ToListAsync();
-
-            return new ActionResponse<IEnumerable<WorkGroup>>
-            {
-                WasSuccess = true,
-                Result = workGroups
-            };
-        }
-
-        public async Task<ActionResponse<IEnumerable<WorkGroup>>> GetByEventAsync(int eventId)
-        {
-            var workGroups = await _context.WorkGroups
-                .Include(wg => wg.Coordinator)
-                .Include(wg => wg.Members!)
-                    .ThenInclude(m => m.User)
-                .Where(wg => wg.EventId == eventId)
-                .OrderBy(wg => wg.Name)
-                .ToListAsync();
-
-            return new ActionResponse<IEnumerable<WorkGroup>>
-            {
-                WasSuccess = true,
-                Result = workGroups
-            };
-        }
-
-        public async Task<ActionResponse<bool>> RemoveMemberAsync(int memberId)
-        {
-            var member = await _context.WorkGroupMembers.FindAsync(memberId);
-
-            if (member == null)
-            {
-                return new ActionResponse<bool>
-                {
-                    WasSuccess = false,
-                    Message = "Miembro no encontrado"
-                };
-            }
-
-            _context.WorkGroupMembers.Remove(member);
-            await _context.SaveChangesAsync();
-
-            return new ActionResponse<bool>
-            {
-                WasSuccess = true,
-                Result = true
-            };
-        }
-        
-        
-        public Task<ActionResponse<WorkGroup>> UpdateAsync(WorkGroup workGroup)
-        {
-            throw new NotImplementedException();
-        }
-
-        Task<ActionResponse<bool>> IWorkGroupsRepository.DeleteAsync(int id)
-        {
-            throw new NotImplementedException();
         }
     }
 }
