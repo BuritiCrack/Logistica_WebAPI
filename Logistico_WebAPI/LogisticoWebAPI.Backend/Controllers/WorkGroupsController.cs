@@ -44,7 +44,8 @@ namespace LogisticoWebAPI.Backend.Controllers
         [HttpPost("full")]
         public async Task<IActionResult> PostAsync(WorkGroupDTO workGroupDTO)
         {
-            var response = await _workGroupsUnitOfWork.AddAsync(workGroupDTO);
+            var email = User.Identity?.Name!;
+            var response = await _workGroupsUnitOfWork.AddAsync(workGroupDTO, email);
             if (response.WasSuccess)
             {
                 return Ok(response.Result);

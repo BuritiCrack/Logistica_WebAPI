@@ -15,7 +15,12 @@ namespace LogisticoWebAPI.Shared.DTOs
         [Display(Name = "Descripción")]
         public string? Description { get; set; }
 
+        [Required(ErrorMessage = "El campo {0} es obligatorio")]
+        [Display(Name = "Evento")]
         public int EventId { get; set; }
-        public string CoordinatorId { get; set; } = null!;
+
+
+        public string? CoordinatorName { get; set; }
+        public string? EventName { get; set; }
     }
 }

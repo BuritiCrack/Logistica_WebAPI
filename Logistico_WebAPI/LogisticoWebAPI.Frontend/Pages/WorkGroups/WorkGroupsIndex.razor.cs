@@ -66,7 +66,7 @@ namespace LogisticoWebAPI.Frontend.Pages.WorkGroups
 
         private async Task<bool> LoadListAsync(int page)
         {
-            var url = $"api/workgroups?eventId={EventId}&page={page}";
+            var url = $"api/workgroups?page={page}&Id={EventId}";
             if (!string.IsNullOrWhiteSpace(Filter))
             {
                 url += $"&filter={Filter}";
@@ -89,7 +89,7 @@ namespace LogisticoWebAPI.Frontend.Pages.WorkGroups
             var url = $"api/workgroups/totalPages?eventId={EventId}";
             if (!string.IsNullOrWhiteSpace(Filter))
             {
-                url += $"?filter={Filter}";
+                url += $"&filter={Filter}";
             }
             IsLoading = true;
             var responsehttp = await Repository.GetAsync<int>(url);

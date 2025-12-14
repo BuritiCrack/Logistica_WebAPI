@@ -1,5 +1,7 @@
-﻿<h3>WorkGroupCreate</h3>
+﻿@page "/workgroups/create/{EventId:int}"
 
-@code {
-
-}
+<WorkGroupForm @ref="workGroupForm" 
+               WorkGroupDTO="WorkGroupDTO" 
+               OnValidSubmit="CreateAsync" 
+               ReturnAction="Return"
+               IsLoading="IsLoading" />

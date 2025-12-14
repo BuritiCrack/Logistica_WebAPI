@@ -16,7 +16,7 @@ namespace LogisticoWebAPI.Shared.Entities
         public string? Description { get; set; }
 
         // El coordinador del grupo debe de ser un coordinador del evento
-        [Required(ErrorMessage = "El campo (0) es obligatorio")]
+        [Required(ErrorMessage = "El campo {0} es obligatorio")]
         [Display(Name = "Coordinador del Grupo")] 
         public string CoordinatorId { get; set; } = null!;
 

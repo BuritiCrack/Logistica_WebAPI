@@ -8,7 +8,7 @@ namespace LogisticoWebAPI.Backend.UnitsOfWork.Interfaces
     {
         Task<ActionResponse<WorkGroup>> GetAsync(int id);
 
-        Task<ActionResponse<WorkGroup>> AddAsync(WorkGroupDTO workGroupDTO);
+        Task<ActionResponse<WorkGroup>> AddAsync(WorkGroupDTO workGroupDTO, string email);
 
         Task<ActionResponse<WorkGroup>> UpdateAsync(WorkGroupDTO workGroupDTO);
 

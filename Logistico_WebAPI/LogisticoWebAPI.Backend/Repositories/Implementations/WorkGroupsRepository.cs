@@ -5,16 +5,19 @@ using LogisticoWebAPI.Shared.DTOs;
 using LogisticoWebAPI.Shared.Entities;
 using LogisticoWebAPI.Shared.Responses;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query.Internal;
 
 namespace LogisticoWebAPI.Backend.Repositories.Implementations
 {
     public class WorkGroupsRepository : GenericRepository<WorkGroup>, IWorkGroupsRepository
     {
         private readonly DataContext _context;
+        private readonly IUsersRepository _usersRepository;
 
-        public WorkGroupsRepository(DataContext context) : base(context)
+        public WorkGroupsRepository(DataContext context, IUsersRepository usersRepository) : base(context)
         {
             _context = context;
+            _usersRepository = usersRepository;
         }
 
         public override async Task<ActionResponse<WorkGroup>> GetAsync(int id)
@@ -42,16 +45,27 @@ namespace LogisticoWebAPI.Backend.Repositories.Implementations
             };
         }
 
-        public async Task<ActionResponse<WorkGroup>> AddAsync(WorkGroupDTO workGroupDTO)
+        public async Task<ActionResponse<WorkGroup>> AddAsync(WorkGroupDTO workGroupDTO, string email)
         {
             try
             {
+                var coordinator = await _usersRepository.GetUserAsync(email);
+                if (coordinator == null)
+                {
+                    return new ActionResponse<WorkGroup>
+                    {
+                        WasSuccess = false,
+                        Message = "El coordinador especificado no existe."
+                    };
+                }
+
                 var workGroup = new WorkGroup
                 {
                     Name = workGroupDTO.Name,
                     Description = workGroupDTO.Description,
-                    CoordinatorId = workGroupDTO.CoordinatorId,
-                    EventId = workGroupDTO.EventId
+                    CoordinatorId = coordinator.Id,
+                    Coordinator = coordinator,
+                    EventId = workGroupDTO.EventId,
                 };
 
                 _context.WorkGroups.Add(workGroup);
