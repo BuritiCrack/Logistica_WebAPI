@@ -154,6 +154,10 @@ else
                                         </AuthorizeView>
                                         <AuthorizeView Roles="Admin,SuperAdmin">
                                             <Authorized>
+                                                <a class="btn btn-primary btn-sm"
+                                                   href="/events/workgroups/@eventItem.Id">
+                                                    <i class="fa fa-users-cog"></i> Grupos de Trabajo
+                                                </a>
                                                 <a class="btn btn-info btn-sm"
                                                    href="/events/applications/@eventItem.Id">
                                                     <i class="fa fa-users"></i> Postulaciones
@@ -167,6 +171,18 @@ else
                                                 </button>
                                             </Authorized>
                                         </AuthorizeView>
+
+                                        @if (CanManageWGroupsAsCoordinator(eventItem.Id))
+                                        {
+                                            <AuthorizeView Roles="Coordinator">
+                                                <Authorized>
+                                                    <a class="btn btn-primary btn-sm"
+                                                    href="/events/workgroups/@eventItem.Id">
+                                                        <i class="fa fa-users-cog"></i> Grupos de Trabajo
+                                                    </a>
+                                                </Authorized>
+                                            </AuthorizeView>
+                                        }
                                     </div>
                                 </div>
                             </div>

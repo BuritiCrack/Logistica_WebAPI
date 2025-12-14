@@ -133,6 +133,7 @@ namespace LogisticoWebAPI.Backend.Repositories.Implementations
                 .Include(wg => wg.Event)
                 .Include(wg => wg.Coordinator)
                 .Include(wg => wg.Members)
+                .Where(wg => wg.EventId == pagination.Id)
                 .AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(pagination.Filter))
@@ -152,7 +153,9 @@ namespace LogisticoWebAPI.Backend.Repositories.Implementations
 
         public override async Task<ActionResponse<int>> GetTotalPagesAsync(PaginationDTO pagination)
         {
-            var queryable = _context.WorkGroups.AsQueryable();
+            var queryable = _context.WorkGroups
+                .Where(wg => wg.EventId == pagination.Id)
+                .AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(pagination.Filter))
             {

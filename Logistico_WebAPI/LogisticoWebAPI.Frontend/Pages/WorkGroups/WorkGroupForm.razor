@@ -1,0 +1,54 @@
+﻿<NavigationLock OnBeforeInternalNavigation="OnBeforeInternalNavigation" />
+
+<EditForm EditContext="editContext" OnValidSubmit="OnValidSubmit">
+    <DataAnnotationsValidator />
+
+    <div class="card">
+        <div class="card-header">
+            <h5 class="card-title mb-0">
+                <i class="fa fa-users"></i>
+                @(WorkGroupDTO.Id == 0 ? "Crear Grupo de Trabajo" : $"Editar Grupo de Trabajo: {WorkGroupDTO.Name}")
+            </h5>
+        </div>
+        <div class="card-body">
+            <div class="mb-3">
+                <label class="form-label">Nombre del Grupo de Trabajo:</label>
+                <InputText class="form-control" @bind-Value="WorkGroupDTO.Name" />
+                <ValidationMessage For="@(() => WorkGroupDTO.Name)" />
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Descripción del Grupo de Trabajo:</label>
+                <InputTextArea class="form-control" rows="4" @bind-Value="WorkGroupDTO.Description" />
+                <ValidationMessage For="@(() => WorkGroupDTO.Description)" />
+            </div>
+        </div>
+
+        <div class="card-footer text-end">
+            <div class="d-flex justify-content-between">
+                <button type="button" class="btn btn-secondary" @onclick="ReturnAction">
+                    <i class="fa fa-arrow-left"></i> Volver
+                </button>
+
+                @if (WorkGroupDTO.Id == 0)
+                {
+                    <LoadingButton IsLoading="IsLoading"
+                                   Text="Crear Grupo de Trabajo"
+                                   LoadingText="Creando..."
+                                   Icon="fa fa-save"
+                                   ButtonType="submit"
+                                   CssClass="btn btn-primary" />
+                }
+                else
+                {
+                    <LoadingButton IsLoading="IsLoading"
+                                   Text="Actualizar Grupo de Trabajo"
+                                   LoadingText="Actualizando..."
+                                   Icon="fa fa-save"
+                                   ButtonType="submit"
+                                   CssClass="btn btn-primary" />
+                }
+            </div>
+        </div>
+    </div>
+</EditForm>
+

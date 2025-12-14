@@ -1,6 +1,7 @@
 using CurrieTechnologies.Razor.SweetAlert2;
 using LogisticoWebAPI.Frontend.Repositories;
 using LogisticoWebAPI.Shared.Entities;
+using LogisticoWebAPI.Shared.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
 using System.Net;
@@ -16,7 +17,8 @@ namespace LogisticoWebAPI.Frontend.Pages.Events
         private bool IsLoading { get; set; } = true;
 
         public EventUser EventUser { get; set; } = new EventUser();
-        private HashSet<int> AppliedEventIds { get; set; } = new();
+        private HashSet<int> AppliedEventIds { get; set; } = [];
+        private Dictionary<int, EventUser> UserEventAplications { get; set; } = [];
 
         [Inject] private IRepository Repository { get; set; } = null!;
         [Inject] private NavigationManager NavigationManager { get; set; } = null!;
@@ -109,9 +111,12 @@ namespace LogisticoWebAPI.Frontend.Pages.Events
                 await SweetAlertService.FireAsync("Error", message, SweetAlertIcon.Error);
                 return;
             }
+
+            var applications = responseHttp.Response!;
             AppliedEventIds = responseHttp.Response!
                     .Select(eu => eu.EventId)
                     .ToHashSet();
+            UserEventAplications = applications.ToDictionary(eu => eu.EventId, eu => eu);
         }
 
         private async Task DeleteAsync(Event @event)
@@ -159,7 +164,8 @@ namespace LogisticoWebAPI.Frontend.Pages.Events
 
         private async Task AppyToEventAsync(int eventId)
         {
-            var responseHttp = await Repository.PostAsync($"api/EventApplications/apply/{eventId}", EventUser);
+            var eventUser = new EventUser();
+            var responseHttp = await Repository.PostAsync($"api/EventApplications/apply/{eventId}", eventUser);
             if (responseHttp.Error)
             {
                 var message = await responseHttp.GetErrorMessageAsync();
@@ -184,6 +190,20 @@ namespace LogisticoWebAPI.Frontend.Pages.Events
         private bool HasAppliedToEvent(int eventId)
         {
             return AppliedEventIds.Contains(eventId);
+        }
+
+        private bool CanManageWGroupsAsCoordinator(int eventId)
+        {
+            if (!UserEventAplications.TryGetValue(eventId, out var eventUser))
+            {
+                return false;
+            }
+
+            return eventUser.Status == ApplicationStatus.Accepted
+                   && eventUser.DidAttend == true
+                   && eventUser.User?.UserType == UserType.Coordinator;
+                   
+
         }
     }
 }
