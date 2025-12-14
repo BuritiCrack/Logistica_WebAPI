@@ -106,5 +106,6 @@ namespace LogisticoWebAPI.Shared.Entities
         public string FullName => $"{FirstName} {LastName}";
 
         public ICollection<EventUser>? EventUsers { get; set; }
+        public ICollection<WorkGroupMember>? Members { get; set; }
     }
 }

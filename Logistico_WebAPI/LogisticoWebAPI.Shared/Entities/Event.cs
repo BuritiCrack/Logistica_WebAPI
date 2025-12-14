@@ -56,6 +56,7 @@ namespace LogisticoWebAPI.Shared.Entities
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         public ICollection<EventUser>? EventUsers { get; set; }
+        public ICollection<WorkGroup>? WorkGroups { get; set; }
 
         [Display(Name = "Número de Participantes")]
         public int NumberOfParticipants => EventUsers?.Count ?? 0;

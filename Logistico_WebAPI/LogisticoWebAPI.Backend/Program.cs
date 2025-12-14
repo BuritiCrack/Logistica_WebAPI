@@ -110,6 +110,9 @@ namespace LogisticoWebAPI.Backend
             builder.Services.AddScoped<IEventUsersRepository, EventUsersRepository>();
             builder.Services.AddScoped<IEventUsersUnitOfWork, EventUsersUnitOfWork>();
 
+            builder.Services.AddScoped<IWorkGroupsRepository, WorkGroupsRepository>();
+            builder.Services.AddScoped<IWorkGroupsUnitOfWork, WorkGroupsUnitOfWork>();
+
             builder.Services.AddIdentity<User, IdentityRole>(x =>
             {
                 x.Tokens.AuthenticatorTokenProvider = TokenOptions.DefaultAuthenticatorProvider;

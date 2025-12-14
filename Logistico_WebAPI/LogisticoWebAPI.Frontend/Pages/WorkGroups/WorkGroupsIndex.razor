@@ -1,0 +1,49 @@
+﻿@page "/workgroups/{EventId:int}"
+
+<h3>Grupos de Trabajo - @EventName</h3>
+
+<div class="mb-3">
+    <a class="btn btn-primary" href="/workgroups/create/@EventId">
+        <i class="bi bi-plus-circle"></i> Nuevo Grupo
+    </a>
+    <a class="btn btn-secondary" href="/events">
+        <i class="bi bi-arrow-left"></i> Volver a Eventos
+    </a>
+</div>
+
+<GenericList MyList="workGroups">
+    <Body>
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            @foreach (var workGroup in workGroups!)
+            {
+                <div class="col">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">@workGroup.Name</h5>
+                            <p class="card-text">
+                                <strong>Coordinador:</strong> @workGroup.Coordinator?.FullName<br />
+                                <strong>Miembros:</strong> @workGroup.MembersCount<br />
+                                @if (!string.IsNullOrEmpty(workGroup.Description))
+                                {
+                                    <strong>Descripción:</strong> 
+                                    @workGroup.Description
+                                }
+                            </p>
+                        </div>
+                        <div class="card-footer">
+                            <a href="/workgroups/edit/@workGroup.Id" class="btn btn-warning btn-sm">
+                                <i class="bi bi-pencil"></i> Editar
+                            </a>
+                            <a href="/workgroups/manage/@workGroup.Id" class="btn btn-info btn-sm">
+                                <i class="bi bi-people"></i> Gestionar Miembros
+                            </a>
+                            <button class="btn btn-danger btn-sm" @onclick="@(() => DeleteAsync(workGroup))">
+                                <i class="bi bi-trash"></i> Eliminar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </Body>
+</GenericList>
