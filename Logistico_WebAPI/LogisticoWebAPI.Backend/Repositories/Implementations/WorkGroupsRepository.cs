@@ -12,9 +12,10 @@ namespace LogisticoWebAPI.Backend.Repositories.Implementations
     public class WorkGroupsRepository : GenericRepository<WorkGroup>, IWorkGroupsRepository
     {
         private readonly DataContext _context;
+
         public WorkGroupsRepository(DataContext context) : base(context)
         {
-            _context = context;        
+            _context = context;
         }
 
         public override async Task<ActionResponse<WorkGroup>> GetAsync(int id)
@@ -52,7 +53,6 @@ namespace LogisticoWebAPI.Backend.Repositories.Implementations
                     Description = workGroupDTO.Description,
                     CoordinatorId = workGroupDTO.CoordinatorId,
                     EventId = workGroupDTO.EventId,
-
                 };
 
                 _context.WorkGroups.Add(workGroup);
@@ -139,7 +139,10 @@ namespace LogisticoWebAPI.Backend.Repositories.Implementations
 
             if (!string.IsNullOrWhiteSpace(pagination.Filter))
             {
-                queryable = queryable.Where(x => x.Name.ToLower().Contains(pagination.Filter.ToLower()));
+                queryable = queryable.Where(x => x.Name.ToLower().Contains(pagination.Filter.ToLower()) ||
+                                                 x.Coordinator!.FirstName.ToLower().Contains(pagination.Filter.ToLower()) ||
+                                                 x.Coordinator!.LastName.ToLower().Contains(pagination.Filter.ToLower()) ||
+                                                 (x.Coordinator!.FirstName + " " + x.Coordinator.LastName).ToLower().Contains(pagination.Filter.ToLower()));
             }
 
             return new ActionResponse<IEnumerable<WorkGroup>>
@@ -155,12 +158,16 @@ namespace LogisticoWebAPI.Backend.Repositories.Implementations
         public override async Task<ActionResponse<int>> GetTotalPagesAsync(PaginationDTO pagination)
         {
             var queryable = _context.WorkGroups
+                .Include(wg => wg.Coordinator)
                 .Where(wg => wg.EventId == pagination.Id)
                 .AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(pagination.Filter))
             {
-                queryable = queryable.Where(x => x.Name.ToLower().Contains(pagination.Filter.ToLower()));
+                queryable = queryable.Where(x => x.Name.ToLower().Contains(pagination.Filter.ToLower()) ||
+                                                 x.Coordinator!.FirstName.ToLower().Contains(pagination.Filter.ToLower()) ||
+                                                 x.Coordinator!.LastName.ToLower().Contains(pagination.Filter.ToLower()) ||
+                                                 (x.Coordinator!.FirstName + " " + x.Coordinator.LastName).ToLower().Contains(pagination.Filter.ToLower()));
             }
 
             double count = await queryable.CountAsync();
@@ -195,7 +202,6 @@ namespace LogisticoWebAPI.Backend.Repositories.Implementations
             }
             catch (Exception ex)
             {
-                
                 return new ActionResponse<IEnumerable<User>>
                 {
                     WasSuccess = false,

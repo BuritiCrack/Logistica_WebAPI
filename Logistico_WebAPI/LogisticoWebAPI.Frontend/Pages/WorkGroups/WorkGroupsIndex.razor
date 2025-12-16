@@ -8,6 +8,11 @@
     <div class="header-subtitle">@EventName</div>
 </div>
 
+<GenericFilter PlaceHolder="Buscar..."
+               TexFromFilter="Buscar Grupo de Trabajo"
+               TexToFilter="@Filter"
+               Callback="@OnFilterChangedAsync" />
+
 @if (workGroups is null)
 {
     <Loading />
@@ -15,19 +20,38 @@
 else if (!workGroups.Any())
 {
     <div class="empty-state">
-        <div class="empty-state-icon">
-            <i class="bi bi-people-fill"></i>
-        </div>
-        <h3 class="empty-state-title">No hay grupos de trabajo</h3>
-        <p class="empty-state-description">
-            Este evento aún no tiene grupos de trabajo creados.
-        </p>
-        <a class="btn btn-primary" href="/workgroups/create/@EventId">
-            <i class="bi bi-plus-circle"></i> Crear Primer Grupo
-        </a>
-        <a class="btn btn-secondary" href="/events">
-            <i class="bi bi-arrow-left"></i> Volver a Eventos
-        </a>
+        @if (!string.IsNullOrWhiteSpace(Filter))
+        {
+            <div class="empty-state-icon">
+                <i class="bi bi-people-fill"></i>
+            </div>
+            <h3 class="empty-state-title">Grupos de Trabajo no encontrados</h3>
+            <p class="empty-state-description">
+                Ningún grupo de trabajo coincide con: <span class="search-term">"@Filter"</span>.
+                <br>Prueba con otros términos de búsqueda.
+            </p>
+        }
+        else
+        {
+            <div class="empty-state-icon">
+                <i class="bi bi-people-fill"></i>
+            </div>
+            <h3 class="empty-state-title">No hay grupos de trabajo</h3>
+            <p class="empty-state-description">
+                Este evento aún no tiene grupos de trabajo creados.
+            </p>
+            <AuthorizeView>
+                <Authorized>
+                    <a class="btn btn-primary" href="/workgroups/create/@EventId">
+                        <i class="bi bi-plus-circle"></i> Crear Grupo
+                    </a>
+                </Authorized>
+            </AuthorizeView>
+
+            <a class="btn btn-secondary" href="/events">
+                <i class="bi bi-arrow-left"></i> Volver a Eventos
+            </a>
+        }
     </div>
 }
 else
