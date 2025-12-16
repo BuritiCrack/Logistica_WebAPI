@@ -1,6 +1,7 @@
 using CurrieTechnologies.Razor.SweetAlert2;
 using LogisticoWebAPI.Frontend.Repositories;
 using LogisticoWebAPI.Shared.DTOs;
+using LogisticoWebAPI.Shared.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
@@ -12,13 +13,14 @@ namespace LogisticoWebAPI.Frontend.Pages.WorkGroups
     public partial class WorkGroupForm
     {
         private EditContext editContext = null!;
-
+        private bool IsLoadingCoordinator;
         [Inject] public IRepository Repository { get; set; } = null!;
         [Inject] public SweetAlertService SweetAlertService { get; set; } = null!;
         [EditorRequired, Parameter] public WorkGroupDTO WorkGroupDTO { get; set; } = null!;
         [EditorRequired, Parameter] public EventCallback OnValidSubmit { get; set; }
         [EditorRequired, Parameter] public EventCallback ReturnAction { get; set; }
         [Parameter] public bool IsLoading { get; set; }
+        [Parameter] public List<User>? Coordinators { get; set; } = new();
         public bool FormPostedSuccessfully { get; set; } = false;
 
         protected override void OnInitialized()

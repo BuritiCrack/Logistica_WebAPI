@@ -19,6 +19,8 @@ namespace LogisticoWebAPI.Shared.DTOs
         [Display(Name = "Evento")]
         public int EventId { get; set; }
 
+        [Display(Name = "Coordinador")]
+        public string CoordinatorId { get; set; } = null!;
 
         public string? CoordinatorName { get; set; }
         public string? EventName { get; set; }

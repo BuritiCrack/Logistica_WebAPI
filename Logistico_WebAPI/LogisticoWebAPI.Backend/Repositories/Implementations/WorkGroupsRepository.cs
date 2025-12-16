@@ -3,21 +3,18 @@ using LogisticoWebAPI.Backend.Helpers;
 using LogisticoWebAPI.Backend.Repositories.Interfaces;
 using LogisticoWebAPI.Shared.DTOs;
 using LogisticoWebAPI.Shared.Entities;
+using LogisticoWebAPI.Shared.Enums;
 using LogisticoWebAPI.Shared.Responses;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Query.Internal;
 
 namespace LogisticoWebAPI.Backend.Repositories.Implementations
 {
     public class WorkGroupsRepository : GenericRepository<WorkGroup>, IWorkGroupsRepository
     {
         private readonly DataContext _context;
-        private readonly IUsersRepository _usersRepository;
-
-        public WorkGroupsRepository(DataContext context, IUsersRepository usersRepository) : base(context)
+        public WorkGroupsRepository(DataContext context) : base(context)
         {
-            _context = context;
-            _usersRepository = usersRepository;
+            _context = context;        
         }
 
         public override async Task<ActionResponse<WorkGroup>> GetAsync(int id)
@@ -45,27 +42,17 @@ namespace LogisticoWebAPI.Backend.Repositories.Implementations
             };
         }
 
-        public async Task<ActionResponse<WorkGroup>> AddAsync(WorkGroupDTO workGroupDTO, string email)
+        public async Task<ActionResponse<WorkGroup>> AddAsync(WorkGroupDTO workGroupDTO)
         {
             try
             {
-                var coordinator = await _usersRepository.GetUserAsync(email);
-                if (coordinator == null)
-                {
-                    return new ActionResponse<WorkGroup>
-                    {
-                        WasSuccess = false,
-                        Message = "El coordinador especificado no existe."
-                    };
-                }
-
                 var workGroup = new WorkGroup
                 {
                     Name = workGroupDTO.Name,
                     Description = workGroupDTO.Description,
-                    CoordinatorId = coordinator.Id,
-                    Coordinator = coordinator,
+                    CoordinatorId = workGroupDTO.CoordinatorId,
                     EventId = workGroupDTO.EventId,
+
                 };
 
                 _context.WorkGroups.Add(workGroup);
@@ -184,6 +171,37 @@ namespace LogisticoWebAPI.Backend.Repositories.Implementations
                 WasSuccess = true,
                 Result = totalPages
             };
+        }
+
+        public async Task<ActionResponse<IEnumerable<User>>> GetEventCoordinatorsAsync(int eventId)
+        {
+            try
+            {
+                var coordinators = await _context.EventUsers
+                    .Include(eu => eu.User)
+                    .Where(eu => eu.EventId == eventId
+                        && eu.Status == ApplicationStatus.Accepted
+                        && eu.User!.UserType == UserType.Coordinator)
+                    .Select(eu => eu.User!)
+                    .OrderBy(u => u.FirstName)
+                    .ThenBy(u => u.LastName)
+                    .ToListAsync();
+
+                return new ActionResponse<IEnumerable<User>>
+                {
+                    WasSuccess = true,
+                    Result = coordinators
+                };
+            }
+            catch (Exception ex)
+            {
+                
+                return new ActionResponse<IEnumerable<User>>
+                {
+                    WasSuccess = false,
+                    Message = ex.Message
+                };
+            }
         }
     }
 }

@@ -23,6 +23,41 @@
             </div>
         </div>
 
+        <AuthorizeView Roles="Admin, SuperAdmin">
+            <Authorized Context="auth">
+                <div class="mb-3">
+                    <label class="form-label">Coordinador del Grupo: <span class="text-danger">*</span></label>
+
+                    @if (IsLoadingCoordinator)
+                    {
+                        <div class="d-flex align-items-center">
+                            <div class="spinner-border spinner-border-sm me-2" role="status">
+                                <span class="visually-hidden">Cargando...</span>
+                            </div>
+                            <span>Cargando coordinadores...</span>
+                        </div>
+                    }
+                    else if (Coordinators == null || !Coordinators.Any())
+                    {
+                        <div class="alert alert-warning" role="alert">
+                            <i class="fa fa-exclamation-triangle"></i>
+                            No hay coordinadores aprobados en este evento.
+                        </div>
+                    }
+                    else
+                    {
+                        <InputSelect class="form-select" @bind-Value="WorkGroupDTO.CoordinatorId">
+                            <option value="">-- Seleccione un coordinador --</option>
+                            @foreach (var coordinator in Coordinators)
+                            {
+                                <option value="@coordinator.Id">@coordinator.FullName</option>
+                            }
+                        </InputSelect>
+                        <ValidationMessage For="@(() => WorkGroupDTO.CoordinatorId)" />
+                    }
+                </div>
+            </Authorized>
+        </AuthorizeView>
         <div class="card-footer text-end">
             <div class="d-flex justify-content-between">
                 <button type="button" class="btn btn-secondary" @onclick="ReturnAction">

@@ -108,6 +108,25 @@ namespace LogisticoWebAPI.Backend.Controllers
             return Ok(user);
         }
 
+        [HttpGet("currentuser")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> GetCurrentUserAsync()
+        {
+            var user = await _usersUnitOfWork.GetUserAsync(User.Identity!.Name!);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            var currentUser = new CurrentUserDTO
+            {
+                UserId = user.Id.ToString(),
+                FullName = user.FullName,
+                UserType = user.UserType.ToString()
+            };
+            return Ok(currentUser);
+        }
+
         [HttpPost("RecoverPassword")]
         public async Task<IActionResult> RecoverPasswordAsync([FromBody] EmailDTO model)
         {

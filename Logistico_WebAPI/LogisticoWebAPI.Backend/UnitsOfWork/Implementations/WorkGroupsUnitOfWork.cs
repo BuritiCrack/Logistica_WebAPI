@@ -16,8 +16,8 @@ namespace LogisticoWebAPI.Backend.UnitsOfWork.Implementations
             _workGroupsRepository = workGroupsRepository;
         }
 
-        public async Task<ActionResponse<WorkGroup>> AddAsync(WorkGroupDTO workGroupDTO, string email)
-            => await _workGroupsRepository.AddAsync(workGroupDTO,email);
+        public async Task<ActionResponse<WorkGroup>> AddAsync(WorkGroupDTO workGroupDTO)
+            => await _workGroupsRepository.AddAsync(workGroupDTO);
 
         public async Task<ActionResponse<WorkGroup>> UpdateAsync(WorkGroupDTO workGroupDTO)
             => await _workGroupsRepository.UpdateAsync(workGroupDTO);
@@ -27,5 +27,8 @@ namespace LogisticoWebAPI.Backend.UnitsOfWork.Implementations
 
         public override async Task<ActionResponse<int>> GetTotalPagesAsync(PaginationDTO pagination)
             => await _workGroupsRepository.GetTotalPagesAsync(pagination);
+
+        public async Task<ActionResponse<IEnumerable<User>>> GetEventCoordinatorsAsync(int eventId)
+            => await _workGroupsRepository.GetEventCoordinatorsAsync(eventId);
     }
 }

@@ -8,12 +8,14 @@ namespace LogisticoWebAPI.Backend.UnitsOfWork.Interfaces
     {
         Task<ActionResponse<WorkGroup>> GetAsync(int id);
 
-        Task<ActionResponse<WorkGroup>> AddAsync(WorkGroupDTO workGroupDTO, string email);
+        Task<ActionResponse<WorkGroup>> AddAsync(WorkGroupDTO workGroupDTO);
 
         Task<ActionResponse<WorkGroup>> UpdateAsync(WorkGroupDTO workGroupDTO);
 
         Task<ActionResponse<IEnumerable<WorkGroup>>> GetAsync(PaginationDTO pagination);
 
         Task<ActionResponse<int>> GetTotalPagesAsync(PaginationDTO pagination);
+
+        Task<ActionResponse<IEnumerable<User>>> GetEventCoordinatorsAsync(int eventId);
     }
 }
